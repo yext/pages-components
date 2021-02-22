@@ -1,0 +1,47 @@
+{namespace components.Modal}
+
+/**
+ * Modal component
+ * @param? jsClasses
+ * @param modalContent
+ * @param openButtons
+ * @param? closeOnOutsideClick
+ * @param? overlay
+ * @param baseUrl
+ * @param? iconName
+ * @param? title
+ * @param? modalHeader
+ */
+{template .Modal}
+  {let $closeText}
+    {call strings.modal_close /}
+  {/let}
+
+  <div class="c-Modal js-Modal{if $jsClasses} {$jsClasses}{/if}"
+       data-open-buttons="{$openButtons}"
+       {if $closeOnOutsideClick} data-close-on-outside-click="true"{/if}
+       {if $overlay} data-overlay="true"{/if}>
+    <div class="c-Modal-content">
+      {if $modalHeader}
+        {$modalHeader |noAutoescape}
+      {else}
+        <div class="c-Modal-header">
+          {if $title}
+            <h2 class="Heading--major c-Modal-title">
+              {$title}
+            </h2>
+          {/if}
+          <span class="c-Modal-closeButton" tabindex="0">
+            {call components.Svg.Icon}
+              {param iconName: $iconName ?: $closeText /}
+              {param baseUrl: $baseUrl /}
+            {/call}
+          </span>
+        </div>
+      {/if}
+      <div class="c-Modal-messageWrapper">
+        {$modalContent |noAutoescape}
+      </div>
+    </div>
+  </div>
+{/template}

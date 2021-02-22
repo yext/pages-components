@@ -1,0 +1,42 @@
+{namespace components.Phone}
+
+/**
+ * [Define] .Phones accepts a list of phone types to render.
+ * Each type must be one of the default profile phone types available in the platform
+ * (i.e. Main Phone, Alternate Phone, Mobile Phone, Fax, TTY, and Toll Free Phone)
+ *
+ * Entity params
+ * @param  profile
+ *
+ * Content params
+ * @param  phoneTypes List of strings
+ *         Example: ['main', 'fax', 'tollFree']
+ * @param? phoneLabelMap
+ *         Example: [['main': 'Main Phone Number'], ['fax': 'Fax Us']]
+ * @param? phoneYaTrackMap
+ *         Example: [['main': 'mainPhone'], ['tollFree': 'tollFreePhone']]
+ *
+ * Configuration params
+ * @param? disableMobileLink
+ * @param? hideId
+ * @param? hideLabel
+ * @param? hideSchema
+ */
+{template .Phones}
+  {let $defaultPhones: [
+    'main': $profile.mainPhone,
+    'alternate': $profile.alternatePhone,
+    'mobile': $profile.mobilePhone,
+    'fax': $profile.fax,
+    'tty': $profile.ttyPhone,
+    'tollFree': $profile.tollFreePhone
+  ] /}
+  {foreach $type in $phoneTypes}
+     {if $defaultPhones[$type]}
+      {call .Phone data="all"}
+        {param phone: $defaultPhones[$type] /}
+        {param phoneType: $type /}
+      {/call}
+    {/if}
+  {/foreach}
+{/template}

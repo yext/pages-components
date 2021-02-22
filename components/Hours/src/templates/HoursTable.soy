@@ -1,0 +1,182 @@
+{namespace components.Hours}
+
+/**
+ * @param hours
+ * @param utcOffsets
+ * @param? highlightToday boolean
+ * @param? highlightTodayBackground boolean
+ * @param? open24HoursMessage
+ * @param? hideSchema
+ * @param? dayOfWeekMap
+ * @param? twentyFourHourClock
+ * @param? collapseDays
+ * @param? wholeWeekMessage
+ * @param? showOpenToday
+ * @param? disableOpenUntil
+ * @param? disableTodayFirst
+ * @param? omitConfig
+ * @param? weekStartsOn
+ * @param? timeFormatString
+ */
+{template .HoursTable}
+  {let $hoursConfig: [
+    'highlightToday': $highlightToday,
+    'highlightTodayBackground': $highlightTodayBackground,
+    'open24HoursMessage': $open24HoursMessage,
+    'hideSchema': $hideSchema,
+    'dayOfWeekMap': $dayOfWeekMap,
+    'twentyFourHourClock': $twentyFourHourClock,
+    'collapseDays': $collapseDays,
+    'wholeWeekMessage': $wholeWeekMessage,
+    'showOpenToday': $showOpenToday,
+    'disableOpenUntil': $disableOpenUntil,
+    'disableTodayFirst': $disableTodayFirst,
+    'hours': $hours,
+    'utcOffsets': $utcOffsets,
+    'weekStartsOn': $weekStartsOn,
+    'timeFormatString': $timeFormatString
+  ] /}
+  {let $days: $collapseDays ? collapseDays($hours) : $hours /}
+  {let $dayIndexes: [
+    'SUNDAY': 0,
+    'MONDAY': 1,
+    'TUESDAY': 2,
+    'WEDNESDAY': 3,
+    'THURSDAY': 4,
+    'FRIDAY': 5,
+    'SATURDAY': 6
+  ] /}
+  {let $allDayMessage}
+    {if $open24HoursMessage}
+      {$open24HoursMessage}
+    {else}
+      {call strings.hours_open24Hours /}
+    {/if}
+  {/let}
+  <div class="c-hours-details-wrapper js-hours-table" {call .Hours_data data="all" /}>
+    {if not $omitConfig}
+      {call components.Util.DataForJs data="all"}
+        {param class: 'js-hours-config' /}
+        {param content: $hoursConfig /}
+      {/call}
+    {/if}
+    {if $collapseDays
+        and length($days) == 1
+        and ($dayIndexes[$days[0].through] + 1) % 7 == $dayIndexes[$days[0].day]}
+      {let $allWeekMessage: $wholeWeekMessage ?: 'All Week' /}
+      <div class="c-hours-details"
+        {if not $hideSchema ?: false}
+          {sp}
+          {call .Schema data="$days[0]"}
+            {param collapseDays: $collapseDays /}
+          {/call}
+        {/if}
+        >
+        {if not $days[1]}
+          <span class="c-hours-details-row-day">
+            {$allWeekMessage}
+          </span>
+        {/if}
+        {if length($days[0].intervals) > 0}
+          {foreach $interval in $days[0].intervals}
+            {call .Interval data="$interval"}
+              {param allDayMessage}
+                {$allDayMessage}, {$allWeekMessage}
+              {/param}
+              {param twentyFourHourClock: $twentyFourHourClock /}
+              {param parentClass: 'c-hours-details' /}
+              {param timeFormatString: $timeFormatString /}
+            {/call}
+          {/foreach}
+        {else}
+          {call strings.hours_statusClosed /}
+          {sp}{$allWeekMessage}
+        {/if}
+      </div>
+    {else}
+      <table class="c-hours-details">
+        <thead class="sr-only">
+          <tr>
+            <th scope="col">{call strings.hours_colHeadingDays /}</th>
+            <th scope="col">{call strings.hours_colHeadingHours /}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {foreach $d in $days}
+            {let $dayHours: $d.dailyHolidayHours?.isRegularHours ? $d.intervals : $d.dailyHolidayHours?.intervals ?: $d.intervals /}
+            <tr class="c-hours-details-row{if $d.dailyHolidayHours} is-holiday{/if}{if $highlightToday or $highlightTodayBackground or not $disableOpenUntil} js-day-of-week-row{/if}{if $highlightToday} highlight-text{/if}{if $highlightTodayBackground} highlight-background{/if}"
+                  {if $highlightToday or $highlightTodayBackground or not $disableOpenUntil}
+                    {sp}
+                    data-day-of-week-start-index="{$dayIndexes[$d.day]}"
+                    {sp}
+                    data-day-of-week-end-index="
+                      {if $collapseDays and $d.through}
+                        {$dayIndexes[$d.through]}
+                      {else}
+                        {$dayIndexes[$d.day]}
+                      {/if}"
+                 {/if}
+                 {if not $hideSchema ?: false}
+                   {sp}
+                   {call .Schema data="$d"}
+                     {param collapseDays: $collapseDays /}
+                   {/call}
+                {/if}>
+              <td class="c-hours-details-row-day">
+                  {call .Helpers_localizeDayOfWeek data="all"}
+                    {param dayOfWeek: $d.day /}
+                  {/call}
+                  {if $collapseDays and strlen($d.through ?:'') > 0}
+                    {sp}-{sp}
+                    {call .Helpers_localizeDayOfWeek data="all"}
+                      {param dayOfWeek: $d.through /}
+                    {/call}
+                  {/if}
+              </td>
+              <td class="c-hours-details-row-intervals">
+                {if length($dayHours) == 0}
+                  {call strings.hours_statusClosed /}
+                {else}
+                  {foreach $interval in $dayHours}
+                    {let $disable: length($dayHours) > 1 ? true : $disableOpenUntil /}
+                    {call .Interval data="$interval"}
+                      {param allDayMessage: $allDayMessage /}
+                      {param twentyFourHourClock: $twentyFourHourClock /}
+                      {param parentClass: 'c-hours-details-row' /}
+                      {param disableOpenUntil: $disable /}
+                      {param timeFormatString: $timeFormatString /}
+                    {/call}
+                  {/foreach}
+                {/if}
+              </td>
+            </tr>
+          {/foreach}
+        </tbody>
+      </table>
+    {/if}
+  </div>
+{/template}
+
+/**
+ * @param hours
+ * @param profile
+ * @param? highlightToday boolean
+ * @param? highlightTodayBackground boolean
+ * @param? open24HoursMessage
+ * @param? hideSchema
+ * @param? dayOfWeekMap
+ * @param? twentyFourHourClock
+ * @param? collapseDays
+ * @param? wholeWeekMessage
+ * @param? showOpenToday
+ * @param? disableOpenUntil
+ * @param? disableTodayFirst
+ * @param? omitConfig
+ * @param? weekStartsOn
+ * @param? timeFormatString
+ */
+{template .HoursTable_wrapper}
+  {call .HoursTable data="all"}
+    {param utcOffsets: $profile.meta.utcOffsets /}
+  {/call}
+{/template}

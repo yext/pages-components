@@ -1,0 +1,158 @@
+{namespace components.yext_analytics}
+
+/**
+ * IMPORTANT
+ *
+ * This file is for backwards compatibility only! Do not these templates on new sites.
+ */
+
+/**
+ * @param businessId
+ * @param isStaging
+ * @param siteId
+ */
+{template .launch}
+  {call components.YextAnalytics.Launch data="all" /}
+{/template}
+
+/**
+ * @param data
+ * @param? invokePageView
+ * @param? clickTrackings
+ */
+{template .invoke}
+  {call components.YextAnalytics.Invoke data="all" /}
+{/template}
+
+{template .disableDelayNavigation}
+  {call components.YextAnalytics.Helpers_disableDelayNavigation data="all" /}
+{/template}
+
+/**
+ * @param siteAttributes
+ */
+{template .enableConversionTracking}
+  {call components.YextAnalytics.Helpers_enableConversionTracking data="all" /}
+{/template}
+
+/**
+ * Yext Analytics Location component
+ * This component is for backwards compatibility only! Do not use it on new sites.
+ * @param businessId
+ * @param isStaging
+ * @param locationPageSetId
+ * @param siteAttributes
+ * @param siteId
+ *
+ * Location params
+ * @param id
+ *
+ * Configuration params
+ * @param? clickTrackings
+ * @param? invokePageView Default: true. Put the code in to automatically trigger a page view
+ */
+{template .location}
+  {call .entity data="all"}
+    {param entityPageSetId: $locationPageSetId /}
+    {param profile: ['meta': ['yextId': $id]] /}
+  {/call}
+{/template}
+
+/**
+ * @param businessId
+ * @param entityPageSetId
+ * @param isStaging
+ * @param siteAttributes
+ * @param siteId
+ * @param profile
+ * @param? clickTrackings
+ * @param? invokePageView
+ */
+{template .entity}
+  {call components.YextAnalytics.Entity data="all" /}
+{/template}
+
+/**
+ * @param businessId
+ * @param crumbNames
+ * @param directoryId
+ * @param isStaging
+ * @param siteAttributes
+ * @param siteId
+ * @param? clickTrackings
+ * @param? invokePageView
+ */
+{template .directory_default}
+  {call components.YextAnalytics.Directory_default data="all" /}
+{/template}
+
+/**
+ * @param businessId
+ * @param directoryId
+ * @param isStaging
+ * @param siteAttributes
+ * @param siteId
+ * @param path
+ * @param? clickTrackings
+ * @param? invokePageView
+ */
+{template .directory}
+  {call components.YextAnalytics.Directory data="all" /}
+{/template}
+
+/**
+ * @param crumbNames
+ */
+{template .directory_path}
+  {call components.YextAnalytics.Directory_path data="all" /}
+{/template}
+
+/**
+ * @param businessId
+ * @param isStaging
+ * @param searchId
+ * @param siteAttributes
+ * @param siteId
+ * @param? clickTrackings
+ * @param? invokePageView
+ */
+{template .search}
+  {call components.YextAnalytics.Search data="all" /}
+{/template}
+
+/**
+ * @param businessId
+ * @param isStaging
+ * @param siteAttributes
+ * @param siteId
+ * @param staticPageId
+ * @param? clickTrackings
+ * @param? invokePageView
+ */
+{template .static}
+  {call components.YextAnalytics.Static data="all" /}
+{/template}
+
+/**
+ * @param selector
+ * @param analyticsEventName
+ */
+{template .click}
+  {call components.YextAnalytics.Click data="all" /}
+{/template}
+
+{template .calltoactionclick}
+  {call components.YextAnalytics.Click_callToAction data="all" /}
+{/template}
+
+{template .phonecall}
+  {call components.YextAnalytics.Click_phoneCall data="all" /}
+{/template}
+
+{template .drivingdirection}
+  {call components.YextAnalytics.Click_drivingDirection data="all" /}
+{/template}
+
+{template .clicktowebsite}
+  {call components.YextAnalytics.Click_website data="all" /}
+{/template}

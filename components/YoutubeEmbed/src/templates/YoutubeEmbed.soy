@@ -1,0 +1,57 @@
+{namespace components.YoutubeEmbed}
+
+/**
+ * @param video
+ * @param? embedYouTube
+ * @param? hideVideoControls
+ * @param? showVideoTitle
+ * @param? thumbnailIndex
+ * @param? hideSchema
+ * @param? hideRelated
+ * @param? id required if you use embedded iframe
+ */
+{template .YoutubeEmbed}
+  {if strlen($video) > 0}
+    <div class="youtube-video-wrapper"{if not $hideSchema} itemscope itemtype="http://schema.org/MediaObject"{/if}>
+      {if not $hideSchema}
+        <div itemprop="embedUrl" content="{$video}">
+      {/if}
+      {if $embedYouTube ?: true}
+        <div class="youtube-embed-video-wrapper">
+          <a class="youtube-embed"
+             data-youtubeurl="{$video}"
+             data-showcontrols="{$hideVideoControls ? 0 : 1}"
+             data-showtitle="{$showVideoTitle ? 1 : 0}"
+             data-showrelated="{$hideRelated ? 0 : 1}"
+             href="{$video}"
+             id="{$id ?: 'youtube-embed'}">
+             {call strings.social_youtubeCTA /}
+          </a>
+        </div>
+      {else}
+        <div class="youtube-thumbnail-wrapper-outer">
+          <div class="youtube-thumbnail-wrapper-inner">
+            <img class="youtube-thumbnail-image"
+                 data-youtubeurl="{$video}"
+                 data-thumbnailindex="{$thumbnailIndex ?: 'mqdefault'}"
+                 id="{$id ?: 'youtube-preview'}">
+            <div class="youtube-thumbnail-play-table-wrapper">
+              <table class="youtube-thumbnail-play-table">
+                <tr>
+                  <td>
+                    <a class="youtube-thumbnail-play-button"
+                       href="{$video}"
+                       {call common.helpers.link_new_tab /}></a>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      {/if}
+      {if not $hideSchema}
+        </div>
+      {/if}
+    </div>
+  {/if}
+{/template}

@@ -1,0 +1,23 @@
+{namespace components.YextAnalytics}
+
+/**
+ * Yext Analytics Static component
+ * @param businessId
+ * @param isStaging
+ * @param siteAttributes
+ * @param siteId
+ * @param staticPageId
+ *
+ * Configuration params
+ * @param? clickTrackings
+ * @param? invokePageView Default: true. Put the code in to automatically trigger a page view
+ */
+{template .Static}
+  {call .Launch data="all" /}
+  {call .Helpers_enableConversionTracking data="all" /}
+  {call .Invoke data="all"}
+    {param data: [
+      'staticPageId': $staticPageId
+    ] /}
+  {/call}
+{/template}

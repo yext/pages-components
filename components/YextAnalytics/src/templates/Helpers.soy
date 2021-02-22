@@ -1,0 +1,22 @@
+{namespace components.YextAnalytics}
+
+/**
+ * disableDelayNavigation
+ */
+{template .Helpers_disableDelayNavigation}
+  <script>
+    ya('setDelayNavigation',{false |json});
+  </script>
+{/template}
+
+/**
+ * enableConversionTracking
+ * @param siteAttributes
+ */
+{template .Helpers_enableConversionTracking}
+  {if isNonnull($siteAttributes.yext_analytics?.enable_conversion_tracking)}
+    <script>
+      ya('setConversionTrackingEnabled',{true |json});
+    </script>
+  {/if}
+{/template}

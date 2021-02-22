@@ -1,0 +1,86 @@
+{namespace components.Performance}
+
+/**
+ * @param content
+ * @param? contentDoesNotMatch
+ * @param? identifier
+ * @param mediaQuery
+ * @param? removeNoScriptFallback
+ * @param? loadContentEventName
+ * @param? loadDoesNotMatchContentEventName
+ */
+{template .LoadContent}
+  {let $id: $identifier ?: 'js-load-content' /}
+  {if not $removeNoScriptFallback}
+    <noscript>
+      {$content |noAutoescape}
+    </noscript>
+  {/if}
+  <script type="text/template" id="{$id}">
+    {$content |noAutoescape}
+  </script>
+  {if $contentDoesNotMatch}
+    <script type="text/template" id="{$id}-nomatch">
+      {$contentDoesNotMatch |noAutoescape}
+    </script>
+  {/if}
+  <script>
+    (function(){lb}
+      var contentHolder = document.createElement('div');
+      var existingContentNodes = [];
+      var replaceContent = function(target, html) {lb}
+        while (existingContentNodes.length > 0) {lb}
+          var child = existingContentNodes.pop();
+          child.parentNode.removeChild(child);
+        {rb}
+        contentHolder.innerHTML = html;
+        while (contentHolder.childNodes.length > 0) {lb}
+          existingContentNodes.push(contentHolder.firstChild);
+          target.parentNode.appendChild(contentHolder.firstChild);
+        {rb}
+      {rb};
+      var loadContent = function(){lb}
+        var template = document.getElementById('{$id}');
+        replaceContent(template, template.innerHTML);
+        {if $loadContentEventName}
+          window.dispatchEvent(new Event('{$loadContentEventName}'));
+        {/if}
+      {rb};
+      {if $contentDoesNotMatch}
+        var loadNonMatchingContent = function(){lb}
+          var template = document.getElementById('{$id}-nomatch');
+          replaceContent(template, template.innerHTML);
+          {if $loadDoesNotMatchContentEventName}
+            window.dispatchEvent(new Event('{$loadDoesNotMatchContentEventName}'));
+          {/if}
+        {rb};
+      {/if}
+      var listener = function(query) {lb}
+        if (query.matches) {lb}
+          loadContent();
+        {rb} {if $contentDoesNotMatch} else {lb}
+          loadNonMatchingContent();
+        {rb} {/if}
+      {rb};
+      if(window.matchMedia) {lb}
+        var mq = window.matchMedia('{$mediaQuery}');
+        {if $contentDoesNotMatch}
+          mq.addListener(listener);
+          if (mq.matches) {lb}
+            loadContent();
+          {rb} else {lb}
+            loadNonMatchingContent();
+          {rb}
+        {else}
+          if (mq.matches) {lb}
+            loadContent();
+          {rb} else {lb}
+            mq.addListener(listener);
+          {rb}
+        {/if}
+      {rb} else {lb}
+        loadContent();
+      {rb}
+    {rb})();
+  </script>
+{/template}

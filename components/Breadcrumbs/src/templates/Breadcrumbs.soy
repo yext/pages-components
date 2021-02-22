@@ -1,0 +1,72 @@
+{namespace components.Breadcrumbs}
+
+/**
+ * Bread crumbs component
+ * @param baseUrl Passthrough
+ * @param crumbNames Passthrough
+ * @param crumbUrls Passthrough
+ * @param? crumbBaseName The first entry in the crumb list
+ * @param? hideSchema
+ * @param? abbrState
+ * @param? separator
+ * @param? suppressIndexHtml Setting to true means that the first crumb goes to domain without /index.html
+ */
+{template .Breadcrumbs}
+  {let $abbr: $abbrState ?: true /}
+
+  <nav class="c-bread-crumbs" data-ya-scope="breadcrumbs" aria-label="Breadcrumb">
+    <ol class="c-bread-crumbs-list"{if not $hideSchema and length($crumbNames) > 1} itemscope itemtype="http://schema.org/BreadcrumbList"{/if}>
+      {foreach $name in $crumbNames}
+        <li class="c-bread-crumbs-item"
+            {if not $hideSchema and not isLast($name)}
+              {sp}itemscope
+              {sp}itemprop="itemListElement"
+              {sp}itemtype="http://schema.org/ListItem"
+            {/if}
+        >
+          {if not isLast($name)}
+            // We use the link tag for schema because href="." breaks schema,
+            // but many clients don't want to append the 'index.html' to the base crumb URL.
+            {if not $hideSchema}
+              <link itemprop="item" href="{$baseUrl}{$crumbUrls[index($name)] |noAutoescape}">
+            {/if}
+            {let $url}
+              {if $suppressIndexHtml and $crumbUrls[index($name)] == 'index.html'}
+                {$baseUrl ? $baseUrl : '.'}
+              {else}
+                {$baseUrl}{$crumbUrls[index($name)] |noAutoescape}
+              {/if}
+            {/let}
+            <a href="{$url}" data-ya-track="#">
+          {/if}
+            <span class="c-bread-crumbs-name"
+                  {if isLast($name)} aria-current="page"{/if}
+                  {if not $hideSchema and not isLast($name)} itemprop="name"{/if}
+            >
+              {if isFirst($name)}
+                {if $crumbBaseName}
+                  {$crumbBaseName |noAutoescape}
+                {else}
+                  {call strings.breadcrumbs_crumbBaseName /}
+                {/if}
+              {else}
+                {$name |abbr:$abbr |noAutoescape}
+              {/if}
+            </span>
+          {if not isLast($name)}
+            </a>
+          {/if}
+          {if not $hideSchema and not isLast($name)}
+            // Google Example found at https://developers.google.com/structured-data/breadcrumbs is 1 based
+            <meta itemprop="position" content="{index($name) + 1}">
+          {/if}
+        </li>
+        {if $separator and not isLast($name)}
+          <li>
+            {$separator |noAutoescape}
+          </li>
+        {/if}
+      {/foreach}
+    </ol>
+  </nav>
+{/template}

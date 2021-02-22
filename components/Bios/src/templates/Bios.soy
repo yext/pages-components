@@ -1,0 +1,258 @@
+{namespace components.Bios}
+
+/**
+ * Bios component
+ * @param bios Passthrough
+ * @param listName Bios List Name
+ * @param? title
+ * @param? numberOfBiosToDisplay Number of Bios to display
+ * @param? sectionName Section Name
+ * @param? linkText
+ * @param? emailText
+ * @param? hideSchema Optional Passthrough
+ * @param? itemprop
+ * @param? showReadMore Enable text truncation
+ * @param? readMoreText Text for read more button
+ * @param? readLessText Text for read less button
+ * @param? readMoreTextLength Number of characters to truncate to
+ */
+{template .Bios_wrapper}
+  {let $numbBios : $numberOfBiosToDisplay ?: 4 /}
+
+  {if $title and isNonnull($bios) and length($bios ?: []) > 0}
+    <h3 class="c-bios-list-title">
+      {$title}
+    </h3>
+  {/if}
+  {if isNonnull($bios) and length($bios ?: []) > 0}
+    {foreach $list in $bios}
+      {if ($list.title == $listName) and length($list.sections) > 0}
+        {if strlen($sectionName ?: '') >0}
+          {foreach $section in $list.sections}
+            {if (not isNonnull($sectionName) and $section.name == '') or $section.name == $sectionName}
+              {call .Bios data="all"}
+                {param bios: $section.items /}
+                {param numberOfBiosToDisplay: $numbBios /}
+              {/call}
+            {/if}
+          {/foreach}
+        {else}
+          {call .Bios data="all"}
+            {param bios: listItems($list.sections) /}
+            {param numberOfBiosToDisplay: $numbBios /}
+          {/call}
+        {/if}
+      {/if}
+    {/foreach}
+  {/if}
+{/template}
+
+/**
+ * @param bios
+ * @param numberOfBiosToDisplay
+ * @param? linkText
+ * @param? emailText
+ * @param? hideSchema
+ * @param? itemprop
+ * @param? showReadMore Enable text truncation
+ * @param? readMoreText Text for read more button
+ * @param? readLessText Text for read less button
+ * @param? readMoreTextLength Number of characters to truncate to
+ */
+{template .Bios}
+  <div class="c-bios-list">
+    {foreach $bio in $bios}
+      {if index($bio) < $numberOfBiosToDisplay}
+        <div class="c-bios-bio-wrapper">
+          {call .Bios_bio data="all"}
+            {param bio: $bio /}
+          {/call}
+        </div>
+      {/if}
+    {/foreach}
+  </div>
+{/template}
+
+/**
+ * @param bio
+ * @param? linkText
+ * @param? emailText
+ * @param? hideSchema Optional Passthrough
+ * @param? itemprop
+ * @param? showReadMore Enable text truncation
+ * @param? readMoreText Text for read more button
+ * @param? readLessText Text for read less button
+ * @param? readMoreTextLength Number of characters to truncate to
+ */
+{template .Bios_bio}
+  <div class="c-bios-bio"{if not $hideSchema} itemprop="{$itemprop ?: 'employee'}" itemscope itemtype="http://schema.org/Person"{/if}>
+    {call .Bios_image data="all" /}
+    {call .Bios_name data="all" /}
+    {call .Bios_title data="all" /}
+    {call .Bios_phone data="all" /}
+    {call .Bios_description data="all" /}
+    {call .Bios_education data="all" /}
+    {call .Bios_certifications data="all" /}
+    {call .Bios_services data="all" /}
+    {call .Bios_email data="all" /}
+    {call .Bios_url data="all" /}
+  </div>
+{/template}
+
+/**
+ * @param bio
+ * @param? hideSchema
+ */
+{template .Bios_image}
+  <div class="c-bios-bio-image-wrapper">
+    <img class="c-bios-bio-image"
+         src="{$bio.photo?.sizes?[0]?.url?:''}"
+         alt="Photo of {$bio.name}"
+         {if not $hideSchema} itemprop="image"{/if}>
+  </div>
+{/template}
+
+/**
+ * @param bio
+ * @param? hideSchema
+ */
+{template .Bios_name}
+  <div class="c-bios-bio-name"{if not $hideSchema} itemprop="name"{/if}>
+    {$bio.name}
+  </div>
+{/template}
+
+/**
+ * @param bio
+ * @param? hideSchema
+ */
+{template .Bios_title}
+  {if strlen($bio.title ?: '') > 0}
+    <div class="c-bios-bio-title"{if not $hideSchema} itemprop="jobTitle"{/if}>
+      {$bio.title}
+    </div>
+  {/if}
+{/template}
+
+/**
+ * @param bio
+ * @param? hideSchema
+ */
+{template .Bios_phone}
+  {if strlen($bio.phone ?: '') > 0}
+    <div class="c-bios-bio-phone"{if not $hideSchema} itemprop="telephone"{/if}>
+      {prettyPrintPhone($bio.phone)}
+    </div>
+  {/if}
+{/template}
+
+/**
+ * @param bio
+ * @param? showReadMore Passthrough
+ * @param? readMoreText Passthrough
+ * @param? readLessText Passthrough
+ * @param? readMoreTextLength Passthrough
+ * @param? hideSchema Passthrough
+ */
+{template .Bios_description}
+  {if strlen($bio.description ?: '') > 0}
+    <div class="c-bios-bio-description">
+      {call components.Description.Description data="all"}
+        {param description: $bio.description /}
+      {/call}
+    </div>
+  {/if}
+{/template}
+
+/**
+ * @param bio
+ * @param? hideSchema
+ */
+{template .Bios_education}
+  {if length($bio.education ?: []) > 0}
+    <div class="c-bios-bio-education">
+      <ul class="c-bios-bio-education-list">
+        {foreach $school in $bio.education}
+          <li class="c-bios-bio-education-list-item"{if not $hideSchema} itemprop="alumniOf"{/if}>
+            {$school}
+          </li>
+        {/foreach}
+      </ul>
+    </div>
+  {/if}
+{/template}
+
+/**
+ * @param bio
+ * @param? hideSchema
+ */
+{template .Bios_certifications}
+  {if length($bio.affiliationAndCertification ?: []) > 0}
+    <div class="c-bios-bio-affiliations">
+      <ul class="c-bios-bio-affiliations-list">
+        {foreach $affilitation in $bio.affiliationAndCertification}
+          <li class="c-bios-bio-affiliations-list-item"{if not $hideSchema} itemprop="affiliation"{/if}>
+            {$affilitation}
+          </li>
+        {/foreach}
+      </ul>
+    </div>
+  {/if}
+{/template}
+
+/**
+ * @param bio
+ */
+{template .Bios_services}
+  {if length($bio.services ?: []) > 0}
+    <div class="c-bios-bio-services">
+      <ul class="c-bios-bio-services-list">
+        {foreach $service in $bio.services}
+          <li class="c-bios-bio-services-list-item">
+            {$service}
+          </li>
+        {/foreach}
+      </ul>
+    </div>
+  {/if}
+{/template}
+
+/**
+ * @param bio
+ * @param? emailLabel
+ * @param? hideSchema
+ * @param? emailText
+ */
+{template .Bios_email}
+  {if strlen($bio.email ?: '') > 0}
+    <div class="c-bios-bio-email-wrapper">
+    {if $emailLabel and strlen($emailLabel) > 0}
+      <div class="c-bios-bio-email-label">
+        {$emailLabel}
+      </div>
+    {/if}
+      <a class="c-bios-bio-email" href="mailto:{$bio.email}">
+        {if not $hideSchema}
+          <meta itemprop="email" content="{$bio.email}">
+        {/if}
+        {if $emailText}
+          {$emailText}
+        {else}
+          {$bio.email}
+        {/if}
+      </a>
+    </div>
+  {/if}
+{/template}
+
+/**
+ * @param bio
+ * @param? linkText
+ */
+{template .Bios_url}
+  {if strlen($bio.url ?: '') > 0}
+    <div class="c-bios-bio-url-wrapper">
+      <a class="c-bios-bio-url" href="{$bio.url}">{$linkText ?: ($bio.url ?: '')}</a>
+    </div>
+  {/if}
+{/template}

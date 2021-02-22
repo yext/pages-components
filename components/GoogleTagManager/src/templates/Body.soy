@@ -1,0 +1,18 @@
+{namespace components.GoogleTagManager}
+
+/**
+ * include this at the beginning of <body>
+ * Example:
+ * {call components.GoogleTagManager.Body}
+ *   {param id: 'GTM-XXXXXXX' /}
+ *   {param name: 'dataLayer' /}
+ * {/call}
+ * @param id container ID for Google Tag Manager (GTM)
+ * @param? name container Name for Google Tag Manager (GTM)
+ */
+{template .Body}
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={$id}{if $name and $name != 'dataLayer'}&l={$name}{/if}"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+{/template}

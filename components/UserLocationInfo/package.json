@@ -1,0 +1,28 @@
+{
+  "name": "@yext/components-user-location-info",
+  "version": "1.1.1",
+  "description": "",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=12.16.x"
+  },
+  "main": "index.js",
+  "directories": {
+    "lib": "src"
+  },
+  "files": [
+    "src",
+    "index.js"
+  ],
+  "sideEffects": [],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "@yext/components-geo": "1.1.1",
+    "whatwg-fetch": "2.0.3"
+  },
+  "peerDependencies": {
+    "@yext/components-geo": "1.1.1"
+  }
+}

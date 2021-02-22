@@ -1,0 +1,54 @@
+{namespace components.Hours}
+
+/**
+ * Location hours component
+ * @param hours
+ * @param profile
+ * @param? highlightToday boolean
+ * @param? highlightTodayBackground boolean
+ * @param? showOpenToday
+ * @param? open24HoursMessage
+ * @param? openTodayMessage
+ * @param? hideSchema
+ * @param? dayOfWeekMap
+ * @param? collapseDays
+ * @param? wholeWeekMessage
+ * @param? hourIntervalSeparator
+ * @param? closedTodayMessage
+ * @param? allWeekMessage
+ * @param? disableOpenUntil passthrough to intervals
+ * @param? openUntilMidnightMessage passthrough to intervals
+ * @param? openUntilMessage passthrough to intervals
+ * @param? opensAtMessage passthrough to intervals
+ * @param? closedAtMessage passthrough to intervals
+ * @param? twentyFourHourClock passthrough to intervals
+ * @param? timeFormatString passthrough to intervals
+ * @param? useDayForOpenToday
+ * @param? disableTodayFirst
+ * @param? bootstrapClasses
+ * @param? addCollapsed
+ * @param? id
+ * @param? yaTrack
+ * @param additionalHoursText
+ */
+{template .HoursCollapse}
+  <div class="c-hours-collapse{if $bootstrapClasses} {$bootstrapClasses}{/if}">
+    <button class="c-hours-toggle{if $addCollapsed} collapsed{/if}"
+            data-toggle="collapse"
+            data-target="{$id ? '#' + $id : '#c-hours-collapse'}"
+            aria-expanded="{not $addCollapsed}"
+            {if $yaTrack} data-ya-track="{$yaTrack}"{/if}>
+      {call .HoursToday data="all" /}
+    </button>
+    <div id="{$id ? $id : 'c-hours-collapse'}" class="c-hours-collapse {if $addCollapsed}collapse{else}collapse in{/if}">
+      {call .HoursTable_wrapper data="all"}
+        {param hideSchema: true /}
+      {/call}
+      {if $additionalHoursText}
+        <div class="c-hours-collapse-additional-text">
+          {$additionalHoursText}
+        </div>
+      {/if}
+    </div>
+  </div>
+{/template}

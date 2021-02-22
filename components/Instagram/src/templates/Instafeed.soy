@@ -1,0 +1,34 @@
+{namespace components.Instagram}
+
+/**
+ * @param siteAttributes
+ * @param endpoint Instagram API endpoint base
+ * @param? divId needed when you want multiple instances of the component on a page
+ * @param? limit
+ * @param? resolution
+ */
+{template .Instafeed}
+  {call .Instafeed_root data="all"}
+    {param accessToken: $siteAttributes.instagram.token /}
+    {param userId: $siteAttributes.instagram.user_id /}
+  {/call}
+{/template}
+
+/**
+ * @param endpoint Instagram API endpoint base
+ * @param? divId needed when you want multiple instances of the component on a page
+ * @param? accessToken
+ * @param? userId
+ * @param? limit
+ * @param? resolution
+ */
+{template .Instafeed_root}
+  <div class="instafeed"
+       id="{$divId ?: 'instafeed'}"
+       data-accesstoken="{$accessToken}"
+       data-userid="{$userId}"
+       data-limit="{$limit ?: 4}"
+       data-resolution="{$resolution ?: 'low_resolution'}"
+       data-endpoint="{$endpoint}">
+  </div>
+{/template}

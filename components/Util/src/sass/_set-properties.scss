@@ -1,0 +1,31 @@
+// these are helpers used by higher level mixins
+@mixin set-property($property, $value)
+{
+  #{$property}: #{$value};
+}
+
+@mixin properties($value, $property, $subproperties: null)
+{
+  @if type-of($subproperties) == 'list'
+  {
+    @each $prop in $subproperties
+    {
+      @include set-property('#{$property}-#{$prop}', $value);
+    }
+  }
+
+  @elseif type-of($subproperties) == 'string'
+  {
+    @include set-property('#{$property}-#{$subproperties}', $value);
+  }
+
+  @elseif type-of($subproperties) == 'null'
+  {
+    @include set-property($property, $value);
+  }
+
+  @else
+  {
+    @error 'Unexpected value of subproperties: #{$subproperties}, expect list, string or empty';
+  }
+}

@@ -1,0 +1,22 @@
+// This will create a button with a minimum height as specified by design by
+// calculating the padding needed to acheive a given min-height while accounting
+// for borders, font-size and line-height.
+// It assumes borders are even on both top and bottom and will produce a font-size
+// relative padding.
+@mixin Button--minHeight($min-height, $border-width: 1px, $fontSize: null, $line-height: 1.2)
+{
+  $baseFont: $fontSize;
+
+  @if $baseFont == null
+  {
+    $baseFont: map-get($font-sizes, base);
+  }
+
+  $padding-box: $min-height - ($border-width * 2);
+  $paddingY: ((($padding-box - $baseFont * $line-height) / 2) / $baseFont) * 1em;
+
+  min-height: $min-height;
+  padding-top: $paddingY;
+  padding-bottom: $paddingY;
+  line-height: $line-height;
+}

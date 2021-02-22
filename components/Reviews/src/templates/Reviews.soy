@@ -1,0 +1,213 @@
+{namespace components.Reviews}
+
+/** TO USE COMPONENT:
+    yarn add slick-carousel
+
+    Uncomment Slick Carousel css in vendor.scss
+
+    DateFormat String Options:
+      DateFormatFull
+      DateFormatLong
+      DateFormatMedium
+      DateFormatShort
+      TimeFormatFull
+      TimeFormatLong
+      TimeFormatMedium
+      TimeFormatShort
+      TimeFormatShortZone
+      DateTimeFormatFull
+      DateTimeFormatLong
+      DateTimeFormatMedium
+      DateTimeFormatShort
+**/
+
+/**
+ * @param reviews
+ * @param brandName
+ * @param? dateFormatString
+ * @param? hLevel
+ * @param? title
+ * @param? reviewsPerSlideDesktop
+ * @param? reviewsPerSlideMobile
+ * @param? mobileBreakpoint
+ * @param? fullStarIcon
+ * @param? halfStarIcon
+ * @param? emptyStarIcon
+ **/
+{template .Reviews}
+  {if length($reviews.recent ?: []) > 0}
+    {let $perSlideDesktopDefault: 4 /}
+    {let $perSlideMobileDefault: 2 /}
+    {let $mobileBreakpointDefault: 768 /}
+    <div class="c-Reviews">
+      <header class="c-Reviews-header">
+        {call components.Util.HLevel data="all"}
+          {param class: 'c-Reviews-title' /}
+          {param contents}
+            {if isNonnull($title)}
+              {$title |noAutoescape}
+            {else}
+              {call strings.reviews_recentTitle /}
+            {/if}
+          {/param}
+          {param level: $hLevel ?: 2 /}
+        {/call}
+        <div class="c-Reviews-summary">
+          {call .Reviews_summary data="all"}
+            {param totalMessage}
+              {msg desc="Recent Reviews for"}(Based on {$reviews.total} Reviews){/msg}
+            {/param}
+          {/call}
+        </div>
+      </header>
+      <div class="c-Reviews-list">
+        {call .Reviews_list data="all"}
+          {param dateFormatString: $dateFormatString ? $dateFormatString : 'DateFormatShort'/}
+          {param reviewsPerSlideDesktop: $reviewsPerSlideDesktop ?: $perSlideDesktopDefault /}
+          {param reviewsPerSlideMobile: $reviewsPerSlideMobile ?: $perSlideMobileDefault /}
+          {param mobileBreakpoint: $mobileBreakpoint ?: $mobileBreakpointDefault /}
+        {/call}
+      </div>
+      <div class="c-Reviews-paging">
+        {call .Reviews_paging data="all"}
+          {param reviewsPerSlideDesktop: $reviewsPerSlideDesktop ?: $perSlideDesktopDefault /}
+        {/call}
+      </div>
+    </div>
+  {/if}
+{/template}
+
+/**
+ * @param reviews
+ * @param reviewsPerSlideDesktop
+ */
+{template .Reviews_paging}
+  <div class="c-ReviewsPaging">
+    <div class="c-ReviewsPaging-currentPage">
+      {call .Reviews_page data="all" /}
+    </div>
+    <div class="c-ReviewsPaging-controls">
+      {call .Reviews_controls data="all" /}
+    </div>
+  </div>
+{/template}
+
+/**
+ * @param reviews
+ * @param reviewsPerSlideDesktop
+ */
+{template .Reviews_page}
+  <div class="c-ReviewsPage">
+    {if $reviews.total > 2}
+      {let $maxReviewsToDisplay: min(length($reviews.recent), $reviewsPerSlideDesktop) /}
+      <span class="js-ReviewsPage-showing ReviewsPage-showing">
+        {if length($reviews.recent) == 1}
+          {call strings.reviews_recentStatus /}
+        {elseif length($reviews.recent) > 1}
+          {msg desc=""}
+            Displaying reviews 1 - {$maxReviewsToDisplay} out of the{sp}
+            {length($reviews.recent)} most recent
+          {/msg}
+        {/if}
+      </span>
+    {/if}
+  </div>
+{/template}
+
+{template .Reviews_controls}
+   <div class="c-ReviewsControls"></div>
+{/template}
+
+/**
+ * @param? linkText
+ */
+{template .Reviews_controlsLinkPrevious}
+  {let $previousText}
+    {call strings.reviews_controlsPrevious /}
+  {/let}
+  <button class="c-ReviewsControls-link c-ReviewsControls-link--previous">
+    <span class="fa fa-angle-left"></span>
+    {$linkText ?: $previousText}
+  </button>
+{/template}
+
+/**
+ * @param? linkText
+ */
+{template .Reviews_controlsLinkNext}
+  {let $nextText}
+    {call strings.reviews_controlsNext /}
+  {/let}
+  <button class="c-ReviewsControls-link c-ReviewsControls-link--next">
+    {$linkText ?: $nextText}
+    <span class="fa fa-angle-right"></span>
+  </button>
+{/template}
+
+/**
+ * @param? separator
+ */
+{template .Reviews_controlsLinkSeparator}
+  <span class="c-ReviewsControls-linkSeparator">
+    {$separator ?: '|'}
+  </span>
+{/template}
+
+/**
+ * @param reviews
+ * @param? dateFormatString
+ * @param? fullStarIcon
+ * @param? halfStarIcon
+ * @param? emptyStarIcon
+ * @param reviewsPerSlideDesktop
+ * @param reviewsPerSlideMobile
+ * @param mobileBreakpoint
+ * @param brandName
+ **/
+{template .Reviews_list}
+  <ul class="c-ReviewsList" data-total="{length($reviews.recent)}" data-showdesktop="{$reviewsPerSlideDesktop}"
+  {sp}data-showmobile="{$reviewsPerSlideMobile}" data-mobilebreakpoint="{$mobileBreakpoint}">
+    {foreach $review in $reviews.recent}
+      <li class="c-ReviewsList-item">
+        {call .Review data="$review"}
+          {param dateFormatString: $dateFormatString /}
+          {param fullStarIcon: $fullStarIcon /}
+          {param halfStarIcon: $halfStarIcon /}
+          {param emptyStarIcon: $emptyStarIcon /}
+          {param brandName: $brandName /}
+        {/call}
+      </li>
+    {/foreach}
+  </ul>
+{/template}
+
+/**
+ * @param reviews
+ * @param? fullStarIcon
+ * @param? halfStarIcon
+ * @param? emptyStarIcon
+ * @param? totalMessage
+ * @param? hideSchema
+ **/
+{template .Reviews_summary}
+  {if $reviews.total ?: 0 > 0}
+    <div class="c-ReviewsSummary"{if not $hideSchema} itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating"{/if}>
+      <span class="c-ReviewsSummary-number"{if not $hideSchema} itemprop="ratingValue"{/if}>
+        {floor($reviews.averageRating)}.{floor(10*($reviews.averageRating-floor($reviews.averageRating)))}
+      </span>
+      <span class="c-ReviewsSummary-stars">
+        {call .Review_stars data="all"}
+          {param rating: $reviews.averageRating /}
+        {/call}
+      </span>
+      <span class="c-ReviewsSummary-count">
+        {if not $hideSchema}<meta itemprop="reviewCount" content="{$reviews.total}">{/if}
+        {if $totalMessage}
+          {$totalMessage}
+        {else}
+          {$reviews.total} {call strings.reviews_total /}
+        {/if}
+      </span>
+    </div>
+  {/if}
+{/template}

@@ -1,0 +1,11 @@
+{namespace components.TealiumAnalytics}
+
+/**
+ * sync
+ * @param tealiumAccount
+ * @param tealiumProfile // typically 'main'
+ * @param tealiumEnv // 'dev', 'qa', or 'prod'
+ */
+{template .Sync}
+  <script src="//tags.tiqcdn.com/utag/{$tealiumAccount}/{$tealiumProfile}/{$tealiumEnv}/utag.sync.js"></script>
+{/template}

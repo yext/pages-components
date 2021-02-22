@@ -1,0 +1,32 @@
+{
+  "name": "@yext/components-util",
+  "version": "1.1.1",
+  "description": "",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=12.16.x"
+  },
+  "scripts": {
+    "test-unit": "mocha 'tests/unit' --require @babel/register,esm,should --file tests/soyLoader.js --recursive"
+  },
+  "main": "index.js",
+  "directories": {
+    "lib": "src",
+    "test": "tests"
+  },
+  "files": [
+    "src",
+    "_index.scss",
+    "index.js"
+  ],
+  "sideEffects": [],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "@yext/components-spinner-modal": "1.1.1"
+  },
+  "peerDependencies": {
+    "@yext/components-spinner-modal": "1.1.1"
+  }
+}

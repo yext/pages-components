@@ -1,0 +1,9 @@
+{namespace components.TealiumAnalytics}
+
+/**
+ * Template used to format into a proper JSON formattable string for use in js.
+ * @param string e.g. {param string: '"event_name":"' + $name + '","search_store_keyword":"12345"' /}
+ */
+{template .TrackAsJson}
+  data-tealium-track='{lb}{$string}{rb}'
+{/template}

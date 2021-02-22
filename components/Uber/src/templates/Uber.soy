@@ -1,0 +1,118 @@
+{namespace components.Uber}
+
+/**
+ * @param profile
+ * @param derivedData
+ *
+ * Configuration params
+ * @param? customVisibility
+ * @param? linkText Passthrough for Uber Link
+ * @param? uberIconBefore Passthrough for Uber Link
+ * @param? uberIconAfter Passthrough for Uber Link
+ * @param? useCircleUberIcon Passthrough for Uber Link
+ * @param? createUrl Passthrough for Uber Url
+ * @param? useWrappedUrl Passthrough for Uber Url
+ * @param? action Passthrough for Uber Url
+ * @param? pickup Passthrough for Uber Url
+ * @param? defaultClientId Passthrough for Uber Url
+ * @param? modifier
+ */
+{template .Uber}
+  <div class="c-uber
+              {if $modifier} {$modifier}{/if}
+              {if $customVisibility} {$customVisibility}{else} visible-xs{/if}">
+    {call .Uber_rideLink data="all" /}
+  </div>
+{/template}
+
+/**
+ * @param profile
+ * @param derivedData
+ *
+ * Configuration params
+ * @param? linkText
+ * @param? uberIconBefore
+ * @param? uberIconAfter
+ * @param? useCircleUberIcon
+ * @param? createUrl Passthrough for Uber Url
+ * @param? useWrappedUrl Passthrough for Uber Url
+ * @param? action Passthrough for Uber Url
+ * @param? pickup Passthrough for Uber Url
+ * @param? defaultClientId Passthrough for Uber Url
+ */
+{template .Uber_rideLink}
+  {let $defaultLinkText}
+    {call strings.uberCTAText /}
+  {/let}
+  {let $uberIconClassName: $useCircleUberIcon ? 'circle' : 'square' /}
+
+  // Be very careful tracking the unwrapped (Universal Link on iOS) with an
+  // onclick/analytics handler unless you know what you are doing.  The
+  // data-ya-no-wait is here to instruct the Yext Analytics component not to
+  // hijack the click event in order to ensure that the Universal Link works
+  // as expected.
+  <a class="c-uber-ride-link{$useWrappedUrl ? ' is-uber-wrapped' : ' is-uber-unwrapped' }"
+     href="{call .Uber_rideUrl data="all" /}"
+     data-ya-no-wait="true"
+     data-ya-track="{if $useWrappedUrl}yext_uber_click{else}uber_click{/if}">
+    {if $uberIconBefore}<span class="c-uber-ride-link-icon {$uberIconClassName}" aria-hidden="true"></span>{/if}
+    <span class="c-uber-ride-link-text">
+      {if $linkText}
+        {$linkText|noAutoescape}
+      {else}
+        {$defaultLinkText}
+      {/if}
+    </span>
+    {if $uberIconAfter}<span class="c-uber-ride-link-icon" aria-hidden="true"></span>{/if}
+  </a>
+{/template}
+
+/**
+ * @param profile
+ * @param derivedData
+ *
+ * Configuration params
+ * @param? createUrl
+ * @param? useWrappedUrl
+ * @param? action
+ * @param? pickup
+ * @param? defaultClientId
+ */
+{template .Uber_rideUrl}
+  {if $createUrl}
+    {let $routableCoordExists: $profile.yextRoutableCoordinate?.lat and $profile.yextRoutableCoordinate?.long /}
+    {let $uberEnabledStoreLat}
+      {if $routableCoordExists}
+        {$profile.yextRoutableCoordinate.lat}
+      {else}
+        {$profile.yextDisplayCoordinate.lat}
+      {/if}
+    {/let}
+    {let $uberEnabledStoreLng}
+      {if $routableCoordExists}
+        {$profile.yextRoutableCoordinate.long}
+      {else}
+        {$profile.yextDisplayCoordinate.long}
+      {/if}
+    {/let}
+    {let $clientId: $profile.uberClientId ? $profile.uberClientId : $defaultClientId /}
+
+    https://m.uber.com/ul/{nil}
+    ?action={$action ? $action : 'setPickup'}
+    &pickup={$pickup ? $pickup : 'my_location'}
+    {if $clientId}
+      &client_id={$clientId}
+    {/if}
+    &dropoff[latitude]={$uberEnabledStoreLat}
+    &dropoff[longitude]={$uberEnabledStoreLng}
+    {if $profile.name}
+      &dropoff[nickname]={$profile.name |encodeUrl}
+    {/if}
+  {elseif $derivedData.uber}
+    {if $useWrappedUrl and $derivedData.uber.wrappedUrl}
+      {$derivedData.uber.wrappedUrl |noAutoescape}
+    {elseif $derivedData.uber.url}
+      {$derivedData.uber.url |noAutoescape}
+    {/if}
+  {/if}
+{/template}

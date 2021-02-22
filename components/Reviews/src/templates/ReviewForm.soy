@@ -1,0 +1,265 @@
+{namespace components.Reviews}
+
+/**
+ * @param title
+ * @param subtext
+ * @param? hiddenInputs
+ * @param? rating
+ * @param? customStarSvg Passthrough to .ReviewForm_starRating
+ * @param? reviewText
+ * @param? messageInputLabel
+ * @param? privacyCheckboxLabel
+ * @param? submitButtonText
+ * @param? editMode
+ */
+{template .ReviewForm}
+  <form class="c-reviews-form {$editMode ? 'edit' : 'new'}-form"
+        method="post">
+    {call .ReviewForm_title data="all" /}
+    {if $hiddenInputs}
+      {$hiddenInputs |noAutoescape}
+    {/if}
+    {call .ReviewForm_starRating data="all" /}
+    {call .ReviewForm_messageInput data="all" /}
+    {call .ReviewForm_privacyCheck data="all" /}
+    {call .ReviewForm_submitButton data="all" /}
+  </form>
+{/template}
+
+/**
+ * @param? title
+ * @param? subtext
+ * @param? customStarSvg Passthrough to .ReviewForm_starRating
+ * @param? privacyCheckboxLabel
+ * @param? submitButtonText
+ */
+{template .ReviewForm_new}
+  {let $defaultTitle}
+    {call strings.reviews_newReviewTitle /}
+  {/let}
+  {let $defaultSubtext}
+    {call strings.reviews_subTitle /}
+  {/let}
+  {call .ReviewForm data="all"}
+    {param title: $title ?: $defaultTitle /}
+    {param subtext: $subtext ?: $defaultSubtext /}
+    {param hiddenInputs}
+      <input class="js-recaptcha-target" type="hidden" name="g-recaptcha-response" value="">
+    {/param}
+  {/call}
+{/template}
+
+/**
+ * @param reviewText
+ * @param rating
+ * @param? title
+ * @param? subtext
+ * @param? customStarSvg Passthrough to .ReviewForm_starRating
+ * @param? privacyCheckboxLabel
+ * @param? submitButtonText
+ */
+{template .ReviewForm_edit}
+  {let $defaultTitle}
+    {call strings.reviews_editReviewTitle /}
+  {/let}
+  {let $defaultSubtext}
+    {call strings.reviews_subTitle /}
+  {/let}
+  {call .ReviewForm data="all"}
+    {param title: $title ?: $defaultTitle /}
+    {param subtext: $subtext ?: $defaultSubtext /}
+    {param editMode: true /}
+    {param hiddenInputs}
+      <input class="js-recaptcha-target" type="hidden" name="g-recaptcha-response" value="">
+    {/param}
+  {/call}
+{/template}
+
+/**
+ * @param baseUrl
+ */
+{template .ReviewForm_target}
+  <div class="c-reviews-form-wrapper">
+    <div class="c-reviews-form-target"></div>
+    {call components.SpinnerModal.SpinnerModal data="all" /}
+  </div>
+{/template}
+
+/**
+ * @param title
+ * @param subtext
+ * @param? result
+ */
+{template .ReviewForm_title}
+  <h2 class="c-reviews-form-title{if $result} {$result}{/if}" aria-level="2">
+    {$title |noAutoescape}
+  </h2>
+  <div class="c-reviews-form-subtext{if $result} {$result}{/if}">
+    {$subtext |noAutoescape}
+  </div>
+{/template}
+
+{template .ReviewForm_invalidAlert}
+  {call strings.reviews_invalidFormMessage /}
+{/template}
+
+/**
+ * @param? rating
+ * @param? customStarSvg
+ */
+{template .ReviewForm_starRating}
+  <fieldset class="c-reviews-form-star-rating">
+    <legend class="sr-only">
+      {call strings.reviews_rating /}
+    </legend>
+    <div class="c-reviews-form-star-rating-stars-wrapper">
+      {for $index in range(5)}
+        {let $i: 5 - $index /} // Reversed for styling reasons
+        <input id="c-reviews-form-star-rating-{$i}"
+               class="sr-only"
+               type="radio"
+               name="rating"
+               value="{$i}"
+               required
+               {if $rating == $i} checked{/if}>
+        <label for="c-reviews-form-star-rating-{$i}"
+               class="c-reviews-form-star"
+               aria-label="{$i}-star rating">
+          {if $customStarSvg}
+            {$customStarSvg |noAutoescape}
+          {else}
+            {call .ReviewForm_star /}
+          {/if}
+        </label>
+      {/for}
+    </div>
+  </fieldset>
+{/template}
+
+{template .ReviewForm_star}
+  // Avoid specifying stroke and fill colors here so they can be styled with CSS
+  <svg viewBox="0 0 50 48" xmlns="http://www.w3.org/2000/svg">
+    <path d="M48.43 19.16c0 .41-.243.855-.727 1.34l-10.128 9.876 2.4 13.95c.018.13.027.317.027.56 0 .39-.097.72-.293.99-.196.27-.48.404-.852.404-.353 0-.725-.11-1.116-.335L25.214 39.36l-12.528 6.585c-.41.224-.78.335-1.116.335-.39 0-.683-.135-.88-.404-.194-.27-.292-.6-.292-.99 0-.113.02-.3.056-.56l2.4-13.95L2.698 20.5C2.233 19.996 2 19.55 2 19.16c0-.69.52-1.116 1.563-1.284l14.006-2.037 6.277-12.696C24.2 2.38 24.657 2 25.214 2c.558 0 1.014.38 1.367 1.144l6.28 12.695 14.006 2.036c1.042.168 1.563.595 1.563 1.284z" fill-rule="evenodd"/>
+  </svg>
+{/template}
+
+/**
+ * @param? messageInputLabel
+ * @param? reviewText
+ */
+{template .ReviewForm_messageInput}
+  <label class="c-reviews-form-label">
+    {$messageInputLabel ?: 'Leave a Message:' |noAutoescape}
+  </label>
+  <textarea class="c-reviews-form-text-input"
+            name="content"
+            rows="5" cols="60"
+            required>
+    {$reviewText ?: ''}
+  </textarea>
+{/template}
+
+/**
+ * @param? privacyCheckboxLabel
+ */
+{template .ReviewForm_privacyCheck}
+  <input id="c-reviews-form-privacy-check"
+         class="c-reviews-form-privacy-check"
+         type="checkbox" value="true"
+         required>
+  <span class="c-reviews-form-terms-policy">
+    {if $privacyCheckboxLabel}
+      <label for="c-reviews-form-privacy-check">
+        {$privacyCheckboxLabel |noAutoescape}
+      </label>
+    {else}
+      <label for="c-reviews-form-privacy-check">
+        {call strings.reviews_privacyCheck /}
+      </label>
+      <br><br>
+      {call strings.reviews_disclaimer /}
+    {/if}
+  </span>
+{/template}
+
+/**
+ * @param? submitButtonText
+ * @param? editMode
+ * @param? yaEventName
+ */
+{template .ReviewForm_submitButton}
+  {let $newText}{call strings.reviews_submit /}{/let}
+  {let $editText}{call strings.reviews_update /}{/let}
+  {let $defaultText: $editMode ? $editText : $newText /}
+  <button type="submit"
+          class="c-reviews-form-submit"
+          data-ya-track="{$yaEventName ?: 'review_form_submit'}">
+    {$submitButtonText ?: $defaultText}
+  </button>
+{/template}
+
+/**
+ */
+{template .ReviewForm_privacyPolicy}
+  {let $here}
+    <a class="c-reviews-privacy-policy-link"
+       href="https://www.locationrater.com/privacyPolicy">
+      {call strings.reviews_privacyPolicyHere /}
+    </a>
+  {/let}
+
+  <div class="c-reviews-privacy-policy">
+    {msg desc=""}
+      We will not sell your information without your consent. You can review our privacy policy {$here |noAutoescape}.
+    {/msg}
+  </div>
+{/template}
+
+/*
+{call components.Reviews.ReviewForm_params}
+  {param newReviewFormParams: [
+    'title': 'New Form Title',
+    'subtext': 'Override form subtext',
+    'submitButtonText': 'Press me!'
+  ] /}
+  {param errorParams: [
+    'title': 'You totally goofed up'
+  ] /}
+{/call}
+*/
+/**
+ * @param? newReviewFormParams Map of params and values to override template defaults
+ * @param? editReviewFormParams
+ * @param? successParams
+ * @param? errorParams
+ */
+{template .ReviewForm_params}
+  {let $successTitle}
+    {call strings.reviews_success /}
+  {/let}
+  {let $successSubtext}
+    {call strings.reviews_successSubtext /}
+  {/let}
+  {let $errorTitle}
+    {call strings.reviews_error /}
+  {/let}
+  {let $errorSubtext}
+    {call strings.reviews_errorSubtext /}
+  {/let}
+
+  {call components.Util.DataForJs}
+    {param id: 'js-reviews-params' /}
+    {param content: [
+      'newReviewFormParams': $newReviewFormParams ?: [:],
+      'editReviewFormParams': $editReviewFormParams ?: [:],
+      'successParams': $successParams ?: [
+        'title': $successTitle,
+        'subtext': $successSubtext
+      ],
+      'errorParams': $errorParams ?: [
+        'title': $errorTitle,
+        'subtext': $errorSubtext
+      ]
+    ] /}
+  {/call}
+{/template}

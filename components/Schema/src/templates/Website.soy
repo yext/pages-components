@@ -1,0 +1,33 @@
+{namespace components.Schema}
+
+/**
+ * @param websiteUrl
+ * @param websiteName
+ * @param? websiteAlternateName
+ */
+{template .Website}
+  <script type="application/ld+json">
+    {if $websiteAlternateName}
+      {let $data: ['@context': 'http://schema.org', '@type': 'WebSite', 'name': $websiteName, 'alternateName': $websiteAlternateName, 'url': $websiteUrl] /}
+      {$data | json}
+    {else}
+      {let $data: ['@context': 'http://schema.org', '@type': 'WebSite', 'name': $websiteName, 'url': $websiteUrl] /}
+      {$data | json}
+    {/if}
+  </script>
+{/template}
+
+/**
+ * @param websiteName
+ * @param? websiteAlternateName
+ * @param siteDomain
+ * @param crumbUrls
+ * @param isHttps
+ */
+{template .Website_defaultUrl}
+  {call .Website data="all"}
+    {param websiteUrl}
+      {call common.helpers.canonical_link_url data="all" /}
+    {/param}
+  {/call}
+{/template}

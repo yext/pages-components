@@ -1,0 +1,25 @@
+{namespace components.Util}
+
+/**
+ * Performs a soft redirect to a given URL
+ * @param url
+ */
+{template .SoftRedirect}
+  <meta http-equiv="refresh" content="1;URL={$url}">
+  <script>
+    window.location.href="{$url}"
+  </script>
+{/template}
+
+/**
+ * Performs a soft redirect to a given URL
+ * @param url
+ */
+{template .SoftRedirect_html}
+  <!DOCTYPE html>
+  <html>
+    <head>
+      {call .SoftRedirect data="all" /}
+    </head>
+  </html>
+{/template}

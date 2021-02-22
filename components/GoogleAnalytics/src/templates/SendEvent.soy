@@ -1,0 +1,17 @@
+{namespace components.GoogleAnalytics}
+
+/**
+ * see here: https://developers.google.com/analytics/devguides/collection/analyticsjs/sending-hits
+ * @param name
+ * @param? properties
+ */
+{template .SendEvent}
+  {let $jsonProperties}
+    {$properties ?: ''| json}
+  {/let}
+  <script>
+    (function () {lb}
+      ga('{$name}.send', {$jsonProperties| noAutoescape});
+    {rb})();
+  </script>
+{/template}

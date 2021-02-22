@@ -1,0 +1,348 @@
+//
+// Yext analytics Component SCSS Stylesheet
+//
+
+// default variables
+$analytics-debugger-z-index: 99999;
+$analytics-debugger-settings-accent: #178acd !default;
+$analytics-debugger-settings-text: white !default;
+$analytics-debugger-tooltip-background: #178acd !default;
+$analytics-debugger-tooltip-text: white !default;
+$analytics-debugger-scope-background: rgba(0, 0, 0, 0.45) !default;
+$analytics-debugger-scope-text: white !default;
+$analytics-debugger-attribute-track: blue !default;
+$analytics-debugger-attribute-scope: green !default;
+$analytics-debugger-attribute-implicit-thickness: 1px !default;
+$analytics-debugger-attribute-track-thickness: 1px !default;
+$analytics-debugger-attribute-scope-thickeness: 1px !default;
+
+.xYextDebug
+{
+  --settings-accent: #{$analytics-debugger-settings-accent};
+  --settings-text: #{$analytics-debugger-settings-text};
+  --tooltip-background: #{$analytics-debugger-tooltip-background};
+  --tooltip-text: #{$analytics-debugger-tooltip-text};
+  --scope-background: #{$analytics-debugger-scope-background};
+  --scope-text: #{$analytics-debugger-scope-text};
+
+  a,
+  button,
+  input
+  {
+    &:not(.no-tooltip)
+    {
+      outline: $analytics-debugger-attribute-implicit-thickness dashed $analytics-debugger-attribute-track;
+    }
+  }
+
+  [data-ya-track]
+  {
+    outline: $analytics-debugger-attribute-track-thickness solid $analytics-debugger-attribute-track;
+  }
+
+  [data-ya-scope]
+  {
+    outline: $analytics-debugger-attribute-scope-thickeness dashed $analytics-debugger-attribute-scope;
+  }
+
+  .Highlight
+  {
+    animation-name: pulse;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    outline: 2px dashed black;
+    padding: 8px 16px;
+  }
+
+  .Tooltip
+  {
+    background: var(--tooltip-background);
+    color: var(--tooltip-text);
+    position: absolute;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: all 300ms ease-out;
+    font-size: 12px;
+    z-index: #{$analytics-debugger-z-index - 1};
+  }
+}
+
+img[src*="www.yext-pixel.com"]
+{
+  position: absolute;
+}
+
+@keyframes pulse
+{
+  0%
+  {
+    background: transparent;
+  }
+
+  50%
+  {
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+  100%
+  {
+    background: transparent;
+  }
+}
+
+.Analytics
+{
+  position: fixed;
+  height: 80%;
+  top: 10%;
+  bottom: 10%;
+  right: -250px;
+  transition: right 300ms ease-out;
+  width: 350px;
+  color: var(--settings-text);
+  display: flex !important;
+  z-index: $analytics-debugger-z-index;
+
+  &.show
+  {
+    right: 0;
+  }
+
+  &-toggles
+  {
+    width: 100px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    background: rgba(0, 0, 0, 0.75);
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid white;
+
+    &--item
+    {
+      outline: none;
+      text-align: center;
+      padding: 10px;
+
+      &:not(:last-child)
+      {
+        border-bottom: 1px solid white;
+      }
+
+      &:hover
+      {
+        cursor: pointer;
+      }
+
+      &:hover,
+      &.active
+      {
+        background: var(--settings-accent);
+
+        &:first-child
+        {
+          border-top-left-radius: 4px;
+        }
+
+        &:last-child
+        {
+          border-bottom-left-radius: 4px;
+        }
+      }
+    }
+  }
+
+  &-tabs
+  {
+    width: 250px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    background: rgba(0, 0, 0, 0.75);
+
+    &--footerToggle
+    {
+      min-height: 46px;
+      width: 100%;
+      text-align: left;
+      padding: 10px 20px;
+      border-top: 1px solid white;
+      border-bottom-left-radius: 4px;
+      outline: none;
+
+      &:not(.active):hover
+      {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      &:hover
+      {
+        cursor: pointer;
+      }
+
+      &.active
+      {
+        background: var(--settings-accent);
+      }
+    }
+
+    &--title
+    {
+      background: var(--settings-accent);
+      color: var(--settings-text);
+      padding: 20px;
+      border-bottom: 1px solid white;
+      border-top-left-radius: 4px;
+    }
+
+    &--search
+    {
+      outline: none;
+      background: transparent;
+      padding: 10px 20px;
+      border-bottom: 1px solid white;
+      width: 100%;
+    }
+
+    &--item
+    {
+      display: none;
+
+      &.active
+      {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+    }
+  }
+
+  &-list
+  {
+    overflow-y: scroll;
+    flex-grow: 1;
+
+    &--item
+    {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+
+      &:not(:last-child)
+      {
+        border-bottom: 1px solid white;
+      }
+    }
+  }
+}
+
+.Settings
+{
+  &-input
+  {
+    display: none;
+    outline: none;
+    width: 100%;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    background: transparent;
+    border-bottom: 1px solid white;
+
+    .edit &
+    {
+      display: block;
+    }
+  }
+
+  &-toggle
+  {
+    display: flex;
+    justify-content: space-between;
+    outline: none;
+    align-items: center;
+    width: 100%;
+    padding: 10px 20px;
+
+    &:hover
+    {
+      background: rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+    }
+  }
+
+  &-tbc,
+  &-ttc,
+  &-sbc,
+  &-stc,
+  &-accent,
+  &-text
+  {
+    height: 14px;
+    width: 14px;
+    border: 1px solid white;
+  }
+
+  &-tbc
+  {
+    background: var(--tooltip-background);
+  }
+
+  &-ttc
+  {
+    background: var(--tooltip-text);
+  }
+
+  &-accent
+  {
+    background: var(--settings-accent);
+  }
+
+  &-text
+  {
+    background: var(--settings-text);
+  }
+
+  &-sbc
+  {
+    background: var(--scope-background);
+  }
+
+  &-stc
+  {
+    background: var(--scope-text);
+  }
+}
+
+.EventNameTab
+{
+  &-button
+  {
+    padding: 10px 20px;
+    text-align: left;
+    width: 100%;
+
+    &--active
+    {
+      background: var(--settings-accent);
+      outline: none;
+    }
+
+    &:not(&--active):hover
+    {
+      background: rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+    }
+  }
+}
+
+.Scope
+{
+  position: absolute;
+  padding: 10px;
+  outline: 1px solid var(--settings-accent);
+  background: var(--scope-background);
+  color: var(--scope-text);
+  z-index: 2147483647;  // max signed 32 bit int, this should always win
+}

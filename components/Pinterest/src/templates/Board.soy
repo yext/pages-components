@@ -1,0 +1,32 @@
+{namespace components.Pinterest}
+
+/**
+ * @param boardUrl
+ * @param? scaleWidth
+ * @param? scaleHeight
+ * @param? boardWidth
+ */
+{template .Board}
+  <div class="pinterest-board">
+    <a href="{$boardUrl}"
+      data-pin-do="embedBoard"
+      data-pin-scale-width="{$scaleWidth ?: 80}"
+      data-pin-scale-height="{$scaleHeight ?: 320}"
+      data-pin-board-width="{$boardWidth ?: 400}">
+      Check out our boards on Pinterest
+    </a>
+  </div>
+
+  // Only call pinterest script once
+  {literal}
+    <script>
+      if (!pinterest) {
+        var pinterest = true;
+        var script= document.createElement('script');
+        script.type= 'text/javascript';
+        script.src= '//assets.pinterest.com/js/pinit.js';
+        document.head.appendChild(script);
+      }
+    </script>
+  {/literal}
+{/template}

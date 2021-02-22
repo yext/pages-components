@@ -1,0 +1,36 @@
+{namespace components.GoogleAdwords}
+
+/**
+ * Used only for page load
+ * @param conversionId
+ * @param conversionLabel // deprecated according to Google, but some clients using
+ * @param? remarketingOnly // should always be true, but some clients set to false
+ */
+{template .GoogleAdwords}
+  <!-- Google Code for Lead - Form Fill Conversion Page -->
+  <script>
+  /* <![CDATA[ */
+  var google_conversion_id = {$conversionId};
+  var google_conversion_language = "en";
+  var google_conversion_format = "2";
+  var google_conversion_color = "ffffff";
+  var google_conversion_label = "{$conversionLabel}";
+  var google_remarketing_only = {$remarketingOnly ?: true};
+  /* ]]> */
+  </script>
+  <script src="//www.googleadservices.com/pagead/conversion.js">
+  </script>
+  <noscript>
+  <div style="display:inline;">
+  <img height="1" width="1" style="border-style:none;" alt="" src="//www.googleadservices.com/pagead/conversion/{$conversionId}/?label={$conversionLabel}&guid=ON&script=0"/>
+  </div>
+  </noscript>
+{/template}
+
+// Used when tags need to be fired dynamically
+// Add in <head>
+// Used in conjuction with window.google_trackConversion()
+// https://developers.google.com/adwords-remarketing-tag/asynchronous/#placement-amp-behaviour
+{template .GoogleAdwords_async}
+  <script src="https://www.googleadservices.com/pagead/conversion_async.js" charset="utf-8"></script>
+{/template}

@@ -1,0 +1,34 @@
+{namespace components.GoogleAnalytics}
+
+/**
+ * see here: https://developers.google.com/analytics/devguides/collection/analyticsjs/creating-trackers
+ * @param id
+ * @param name
+ * @param? customConfig
+ * @param? isLocalStorage
+ */
+{template .AddTracker}
+  {let $jsonCustomConfig}
+    {$customConfig ?: '' | json}
+  {/let}
+  <script>
+    (function () {lb}
+      {if $customConfig}
+        ga('create', {$jsonCustomConfig| noAutoescape});
+      {elseif $isLocalStorage}
+        ga('create', {lb}
+          'clientId': localStorage.getItem('ga:{$name}'),
+          'trackingId': '{$id}',
+          'storage': 'none',
+          'storeGac': false
+        {rb});
+      {else}
+        ga('create', {lb}
+          'name': '{$name}',
+          'trackingId': '{$id}',
+          'cookieDomain': 'auto'
+        {rb});
+      {/if}
+    {rb})();
+  </script>
+{/template}

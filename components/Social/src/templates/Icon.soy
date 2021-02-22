@@ -1,0 +1,27 @@
+{namespace components.Social}
+
+/**
+ * @param prettyName
+ * @param networkName
+ * @param url
+ * @param baseUrl
+ * @param yaTrack
+ * @param? hideSchema
+ * @param? linkNewTab
+ */
+{template .Icon}
+  <a href="{$url}"
+     class="c-social-link"
+     {if $yaTrack} data-ya-track="{$networkName}"{/if}
+     {if not $hideSchema} itemprop="sameAs"{/if}
+     {if $linkNewTab} target="_blank" rel="noopener noreferrer"{/if}>
+    <span class="sr-only">
+      {call strings.social_CTA /}
+      {sp}{$prettyName |noAutoescape}
+    </span>
+    {call components.Svg.Icon data="all"}
+      {param iconName: $networkName /}
+      {param additionalClasses: 'icon-social' /}
+    {/call}
+  </a>
+{/template}

@@ -1,0 +1,58 @@
+// uses IE11 compatabile CSS Grid explicit placement
+@mixin grid-place($type, $start, $spans)
+{
+  grid-#{$type}-start: $start;
+  grid-#{$type}-end: span $spans;
+}
+
+@mixin grid-column-place($start, $covers: 1)
+{
+  @include grid-place('column', $start, $covers);
+}
+
+@mixin grid-row-place($start, $covers: 1)
+{
+  @include grid-place('row', $start, $covers);
+}
+
+$grid-gap: $grid-gutter-width !default;
+$grid-columns: 12 !default;
+
+$grid-widths: (
+  sm: calc(#{$container-tablet} / #{$grid-columns} - #{$grid-gap}),
+  md: calc(#{$container-desktop} / #{$grid-columns} - #{$grid-gap}),
+  lg: calc(#{$container-large-desktop} / #{$grid-columns} - #{$grid-gap})
+) !default;
+
+$grid-containers: (
+  sm: calc(#{$container-tablet} - #{$grid-gap}),
+  md: calc(#{$container-desktop} - #{$grid-gap}),
+  lg: calc(#{$container-large-desktop} - #{$grid-gap})
+) !default;
+
+// aspect-ratio will give you a height that will cause a given grid-cell
+// that spans $columns a height that equals the aspect ratio for the given
+// breakpoint.  e.g. if you have a cell that spans 3 columns, with a 30px gap,
+// and you want the cell to be 3 wide x 2 high on sm, aspect ratio will return
+// 2 / 3 * ((750px / 12) - 30px)*3 + (2 * 30px) = (2/3) * 157.5px = 137.5px
+@function aspect-ratio($ratio, $bp, $columns)
+{
+  $gaps: $columns - 1;
+  $width: $columns * map-get($grid-widths, $bp) + $gaps * $grid-gap;
+
+  @return $ratio * $width;
+}
+
+// make-grid will make a grid-template-columns that creates a 12 column grid (default)
+// for the given breakpoint, with auto widths on the outside.
+@mixin make-grid($bp)
+{
+  @include bpgte($bp, $col-widths: $grid-widths, $col-gap: $grid-gap)
+  {
+    grid-template-columns:
+      1fr
+      repeat(11, map-get($grid-widths, $bp) $grid-gap)
+      map-get($grid-widths, $bp)
+      1fr;
+  }
+}

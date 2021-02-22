@@ -1,0 +1,277 @@
+{namespace components.Notification}
+
+// GENERATOR TODO: implement expand collapse
+/**
+ * @param title
+ * @param message
+ * @param ctaCopy
+ * @param ctaUrl
+ * @param datePosted
+ * @param bannerBackground
+ * @param fontColor
+ * @param? hideSchema
+ */
+{template .CollapsingBanner}
+  {let $styles}
+    {if $bannerBackground}{sp}background-color: {$bannerBackground|noAutoescape};{/if}
+    {if $fontColor}{sp}color: {$fontColor|noAutoescape};{/if}
+  {/let}
+
+  {if $message}
+    {if not $hideSchema}
+      {call .CollapsingBanner_initSchema data="all" /}
+    {/if}
+
+    <div class="CollapsingBanner"{if $styles} style="{$styles}"{/if} data-ya-scope="alertbanner">
+      <div class="CollapsingBanner-container">
+        <div class="CollapsingBanner-row CollapsingBanner-left">
+          {if $title}
+            <div class="CollapsingBanner-content">
+              <div class="CollapsingBanner-heading">
+                {$title|noAutoescape}
+              </div>
+            </div>
+          {/if}
+          <div class="CollapsingBanner-content CollapsingBanner-content--full">
+            {$message|noAutoescape}
+          </div>
+        </div>
+
+        {if $ctaCopy and $ctaUrl}
+          <div class="CollapsingBanner-row CollapsingBanner-right">
+            <div class="CollapsingBanner-content">
+              <div class="CollapsingBanner-ctaWrapper">
+                <a class="CollapsingBanner-cta" href="{$ctaUrl|noAutoescape}" data-ya-track="cta" target="_blank">
+                  {$ctaCopy|noAutoescape}
+                </a>
+              </div>
+            </div>
+          </div>
+        {/if}
+      </div>
+    </div>
+  {/if}
+{/template}
+
+/**
+ * @param date
+ */
+{template .CollapsingBanner_parseDate}
+  {if $date.month < 10}0{/if}{$date.month}/
+  {if $date.day < 10}0{/if}{$date.day}/
+  {$date.year}
+{/template}
+
+/**
+ * @param title
+ * @param message
+ * @param ctaUrl
+ * @param datePosted
+ */
+{template .CollapsingBanner_initSchema}
+  <script type="application/ld+json">
+    [
+      {lb}
+        "@context":"http://schema.org",
+        "@type":"SpecialAnnouncement",
+        {if $title}"name":"{$title}",{/if}
+        "text": "{$message}",
+        {if $ctaUrl}"url":"{$ctaUrl}",{/if}
+        {if $datePosted}"datePosted":"{$datePosted}",{/if}
+        "category":"https://www.wikidata.org/wiki/Q81068910"
+      {rb}
+    ]
+  </script>
+{/template}
+
+/**
+ * @param? customByName
+ * @param siteAttributes
+ */
+{template .CollapsingBanner_initV6}
+  {call .CollapsingBanner data="all"}
+    {param title}
+      {if $customByName?['Alert Banner Title']}
+        {$customByName['Alert Banner Title']|noAutoescape}
+      {elseif $siteAttributes.alert_banner?.title}
+        {$siteAttributes.alert_banner.title|noAutoescape}
+      {/if}
+    {/param}
+    {param message}
+      {if $customByName?['Alert Banner Text']}
+        {$customByName['Alert Banner Text']|noAutoescape}
+      {elseif $siteAttributes.alert_banner?.text}
+        {$siteAttributes.alert_banner.text|noAutoescape}
+      {/if}
+    {/param}
+    {param ctaCopy}
+      {if $customByName?['Alert Banner CTA Text']}
+        {$customByName['Alert Banner CTA Text']|noAutoescape}
+      {elseif $siteAttributes.alert_banner?.cta_text}
+        {$siteAttributes.alert_banner.cta_text|noAutoescape}
+      {else}
+        {msg desc=""}
+          Learn More
+        {/msg}
+      {/if}
+    {/param}
+    {param ctaUrl}
+      {if $customByName?['Alert Banner CTA URL']}
+        {$customByName['Alert Banner CTA URL']|noAutoescape}
+      {elseif $siteAttributes.alert_banner?.cta_url}
+        {$siteAttributes.alert_banner.cta_url|noAutoescape}
+      {/if}
+    {/param}
+    {param datePosted}
+      {if $customByName?['Alert Banner Date Posted']}
+        {call .CollapsingBanner_parseDate}
+          {param date: $customByName['Alert Banner Date Posted'] /}
+        {/call}
+      {elseif $siteAttributes.alert_banner?.dateposted}
+        {$siteAttributes.alert_banner.dateposted|noAutoescape}
+      {/if}
+    {/param}
+    {param bannerBackground}
+      {if $customByName?['Alert Banner Background Color']}
+        {$customByName['Alert Banner Background Color']|noAutoescape}
+      {elseif $siteAttributes.alert_banner?.backgroundcolor}
+        {$siteAttributes.alert_banner.backgroundcolor|noAutoescape}
+      {/if}
+    {/param}
+    {param fontColor}
+      {if $customByName?['Alert Banner Font Color']}
+        {$customByName['Alert Banner Font Color']|noAutoescape}
+      {elseif $siteAttributes.alert_banner?.fontcolor}
+        {$siteAttributes.alert_banner.fontcolor|noAutoescape}
+      {/if}
+    {/param}
+    {param hideSchema: $siteAttributes.alert_banner?.turn_off_schema /}
+  {/call}
+{/template}
+
+/**
+ * @param customByName
+ * @param siteAttributes
+ */
+{template .CollapsingBanner_initCustomFieldsV6}
+  {call .CollapsingBanner data="all"}
+    {param title: $customByName['Alert Banner Title'] /}
+    {param message: $customByName['Alert Banner Text'] /}
+    {param ctaCopy: $customByName['Alert Banner CTA Text'] /}
+    {param ctaUrl: $customByName['Alert Banner CTA URL'] /}
+    {param datePosted}
+      {if $customByName['Alert Banner Date Posted']}
+        {call .CollapsingBanner_parseDate}
+          {param date: $customByName['Alert Banner Date Posted'] /}
+        {/call}
+      {/if}
+    {/param}
+    {param bannerBackground: $customByName['Alert Banner Background Color'] /}
+    {param fontColor: $customByName['Alert Banner Font Color'] /}
+    {param hideSchema: $siteAttributes.alert_banner?.turn_off_schema /}
+  {/call}
+{/template}
+
+/**
+ * @param siteAttributes
+ */
+{template .CollapsingBanner_initSiteAttributes}
+  {call .CollapsingBanner data="all"}
+    {param title: $siteAttributes.alert_banner?.title /}
+    {param message: $siteAttributes.alert_banner?.text /}
+    {param ctaCopy: $siteAttributes.alert_banner?.cta_text /}
+    {param ctaUrl: $siteAttributes.alert_banner?.cta_url /}
+    {param datePosted: $siteAttributes.alert_banner?.dateposted /}
+    {param bannerBackground: $siteAttributes.alert_banner?.backgroundcolor /}
+    {param fontColor: $siteAttributes.alert_banner?.fontcolor /}
+    {param hideSchema: $siteAttributes.alert_banner?.turn_off_schema /}
+  {/call}
+{/template}
+
+/**
+ * @param profile
+ * @param siteAttributes
+ */
+{template .CollapsingBanner_initV8}
+  {call .CollapsingBanner data="all"}
+    {param title}
+      {if $profile.c_alertBannerTitle}
+        {$profile.c_alertBannerTitle|noAutoescape}
+      {elseif $siteAttributes.alert_banner?.title}
+        {$siteAttributes.alert_banner.title|noAutoescape}
+      {/if}
+    {/param}
+    {param message}
+      {if $profile.c_alertBannerText}
+        {$profile.c_alertBannerText|noAutoescape}
+      {elseif $siteAttributes.alert_banner?.text}
+        {$siteAttributes.alert_banner.text|noAutoescape}
+      {/if}
+    {/param}
+    {param ctaCopy}
+      {if $profile.c_alertBannerCTAText}
+        {$profile.c_alertBannerCTAText|noAutoescape}
+      {elseif $siteAttributes.alert_banner?.cta_text}
+        {$siteAttributes.alert_banner.cta_text|noAutoescape}
+      {else}
+        {msg desc=""}
+          Learn More
+        {/msg}
+      {/if}
+    {/param}
+    {param ctaUrl}
+      {if $profile.c_alertBannerCTAURL}
+        {$profile.c_alertBannerCTAURL|noAutoescape}
+      {elseif $siteAttributes.alert_banner?.cta_url}
+        {$siteAttributes.alert_banner.cta_url|noAutoescape}
+      {/if}
+    {/param}
+    {param datePosted}
+      {if $profile.c_alertBannerDatePosted}
+        {call .CollapsingBanner_parseDate}
+          {param date: $profile.c_alertBannerDatePosted /}
+        {/call}
+      {elseif $siteAttributes.alert_banner?.dateposted}
+        {$siteAttributes.alert_banner.dateposted|noAutoescape}
+      {/if}
+    {/param}
+    {param bannerBackground}
+      {if $profile.c_alertBannerBackgroundColor}
+        {$profile.c_alertBannerBackgroundColor|noAutoescape}
+      {elseif $siteAttributes.alert_banner?.backgroundcolor}
+        {$siteAttributes.alert_banner.backgroundcolor|noAutoescape}
+      {/if}
+    {/param}
+    {param fontColor}
+      {if $profile.c_alertBannerFontColor}
+        {$profile.c_alertBannerFontColor|noAutoescape}
+      {elseif $siteAttributes.alert_banner?.fontcolor}
+        {$siteAttributes.alert_banner.fontcolor|noAutoescape}
+      {/if}
+    {/param}
+    {param hideSchema: $siteAttributes.alert_banner?.turn_off_schema /}
+  {/call}
+{/template}
+
+/**
+ * @param profile
+ * @param siteAttributes
+ */
+{template .CollapsingBanner_initCustomFieldsV8}
+  {call .CollapsingBanner data="all"}
+    {param title: $profile.c_alertBannerTitle /}
+    {param message: $profile.c_alertBannerText /}
+    {param ctaCopy: $profile.c_alertBannerCTAText /}
+    {param ctaUrl: $profile.c_alertBannerCTAURL /}
+    {param datePosted}
+      {if $profile.c_alertBannerDatePosted}
+        {call .CollapsingBanner_parseDate}
+          {param date: $profile.c_alertBannerDatePosted /}
+        {/call}
+      {/if}
+    {/param}
+    {param bannerBackground: $profile.c_alertBannerBackgroundColor /}
+    {param fontColor: $profile.c_alertBannerFontColor /}
+    {param hideSchema: $siteAttributes.alert_banner?.turn_off_schema /}
+  {/call}
+{/template}

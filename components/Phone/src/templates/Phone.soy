@@ -1,0 +1,126 @@
+{namespace components.Phone}
+
+/**
+ * [Define] .Phone renders a phone number containing the following parts:
+ * 1) A label specifying the phone type (optional)
+ * 2) A phone number (hidden on mobile if there is a phone link)
+ * 3) A phone link that is displayed on mobile only (optional)
+ * Can be called by either .Phones or an external template
+ *
+ * Content params
+ * @param  phone Phone object
+ *         Example: {'countryCode': 'US', 'display': '(888)555-2355', 'number': '+18885552355'}
+ * @param  phoneType
+ * @param? displayText Used in place of the phone number as the phone link text
+ *         Example: 'Click to call'
+ * @param? label String passed by external template
+ *         Example: 'Main Office Phone:'
+ * @param? phoneLabelMap Map passed by .Phones
+ *         Example: [['main': 'Main Phone Number'], ['fax': 'Fax Us']]
+ *
+ * Configuration params
+ * @param? disableMobileLink
+ * @param? hideId
+ * @param? hideSchema
+ * @param? hideLabel
+ * @param? yaTrack String passed by external template
+ * @param? phoneYaTrackMap Map passed by .Phones
+ *         Example: [['main': 'mainPhone'], ['tollFree': 'tollFreePhone']]
+ */
+{template .Phone}
+  <div class="Phone Phone--{$phoneType}">
+    {if not $hideLabel}
+      {call .Phone_label data="all" /}
+    {/if}
+    <div class="Phone-numberWrapper">
+      {call .Phone_display data="all" /}
+      {if not $disableMobileLink}
+        {call .Phone_link data="all" /}
+      {/if}
+    </div>
+  </div>
+{/template}
+
+/**
+ * @param phoneType
+ * @param? label
+ * @param? phoneLabelMap
+ */
+{template .Phone_label}
+  {let $main}
+    {call strings.phone_mainLabel /}
+  {/let}
+  {let $alternate}
+    {call strings.phone_altLabel /}
+  {/let}
+  {let $mobile}
+    {call strings.phone_mobileLabel /}
+  {/let}
+  {let $fax}
+    {call strings.phone_faxLabel /}
+  {/let}
+  {let $tty}
+    {call strings.phone_ttyLabel /}
+  {/let}
+  {let $tollFree}
+    {call strings.phone_tollFreeLabel /}
+  {/let}
+  {let $defaultLabelMap: [
+    'main': $main,
+    'alternate': $alternate,
+    'mobile': $mobile,
+    'fax': $fax,
+    'tty': $tty,
+    'tollFree': $tollFree
+  ] /}
+  <div class="Phone-label">
+    {$label ? $label : $phoneLabelMap?[$phoneType] ? $phoneLabelMap[$phoneType] : $defaultLabelMap[$phoneType] |noAutoescape}
+  </div>
+{/template}
+
+/**
+ * @param phone
+ * @param phoneType
+ * @param? displayText
+ * @param? disableMobileLink
+ * @param? hideId
+ * @param? hideSchema
+ */
+{template .Phone_display}
+  {let $itemProp}
+    {if $phoneType == 'main'}
+      telephone
+    {elseif $phoneType == 'fax'}
+      faxNumber
+    {/if}
+  {/let}
+  <div class="Phone-display{if not $disableMobileLink} Phone-display--withLink{/if}"
+       {if not $hideSchema and $itemProp} itemprop="{$itemProp}"{/if}
+       {if not $hideId} id="phone-{$phoneType}"{/if}>
+    {$displayText ? $displayText : $phone.display |noAutoescape}
+  </div>
+{/template}
+
+/**
+ * @param phone
+ * @param phoneType
+ * @param? displayText
+ * @param? yaTrack
+ * @param? phoneYaTrackMap
+ */
+{template .Phone_link}
+  {let $defaultYaTrackMap: [
+    'main': 'phone',
+    'alternate': 'alternatePhone',
+    'mobile': 'mobilePhone',
+    'fax': 'faxNumber',
+    'tty': 'ttyNumber',
+    'tollFree': 'tollFreeNumber'
+  ] /}
+  {let $trackingTag: $yaTrack ? $yaTrack : $phoneYaTrackMap?[$phoneType] ? $phoneYaTrackMap[$phoneType] : $defaultYaTrackMap[$phoneType] /}
+  <div class="Phone-linkWrapper">
+    <a class="Phone-link" href="tel:{$phone.number}" data-ya-track="{$trackingTag}">
+      {$displayText ? $displayText : $phone.display |noAutoescape}
+    </a>
+  </div>
+{/template}

@@ -1,0 +1,55 @@
+.c-Autocomplete
+{
+  color: black;
+  background: #f9f9f9;
+  position: absolute;
+
+  &-instructions
+  {
+    display: none;
+  }
+
+  &-attrContainer
+  {
+    display: none;
+    justify-content: flex-end;
+  }
+
+  &--expanded &-attrContainer
+  {
+    display: flex;
+  }
+
+  &-matchedSubstr
+  {
+    font-weight: $font-weight-bold;
+  }
+
+  &-item
+  {
+    display: none;
+    padding: 10px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+
+    &:hover
+    {
+      background-color: #e6e6e6;
+      border-top-color: #e6e6e6;
+      border-bottom-color: #e6e6e6;
+    }
+
+    &[aria-selected="true"]
+    {
+      background-color: rgba(192, 206, 255, 0.95);
+      border-top-color: rgba(192, 206, 255, 0.95);
+      border-bottom-color: rgba(192, 206, 255, 0.95);
+    }
+  }
+
+  &--expanded &-item
+  {
+    display: block;
+  }
+}

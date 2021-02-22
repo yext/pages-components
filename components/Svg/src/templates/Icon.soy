@@ -1,0 +1,14 @@
+{namespace components.Svg}
+
+/**
+ * @param iconName
+ * @param baseUrl
+ * @param? additionalClasses
+ * @param? svgFileName // needs to be full filename
+ */
+{template .Icon}
+  <svg class="icon icon-{$iconName}{$additionalClasses ? ' ' + $additionalClasses : ''}"
+       aria-hidden="true">
+    <use xlink:href="{$baseUrl}{$svgFileName ?: 'assets/modules/icons.svg'}#{$iconName}" />
+  </svg>
+{/template}

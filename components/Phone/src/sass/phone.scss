@@ -1,0 +1,23 @@
+//
+// Phone Component SCSS Stylesheet
+//
+
+.Phone
+{
+  &-display--withLink
+  {
+    @include bplte(xs)
+    {
+      display: none;
+    }
+  }
+
+  &-linkWrapper
+  {
+    @include bpgte(sm)
+    {
+      display: none;
+    }
+  }
+}
+

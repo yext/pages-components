@@ -1,0 +1,27 @@
+{namespace components.YextAnalytics}
+
+/**
+ * Yext Analytics Entity component
+ * @param businessId
+ * @param entityPageSetId
+ * @param isStaging
+ * @param siteAttributes
+ * @param siteId
+ *
+ * Entity params
+ * @param profile
+ *
+ * Configuration params
+ * @param? clickTrackings
+ * @param? invokePageView Default: true. Put the code in to automatically trigger a page view
+ */
+{template .Entity}
+  {call .Launch data="all" /}
+  {call .Helpers_enableConversionTracking data="all" /}
+  {call .Invoke data="all"}
+    {param data: [
+      'ids': $profile.meta.yextId,
+      'pageSetId': $entityPageSetId
+    ] /}
+  {/call}
+{/template}

@@ -1,0 +1,108 @@
+{namespace components.Reviews}
+
+/**
+ * @param authorName
+ * @param rating
+ * @param content
+ * @param comments
+ * @param reviewDate
+ * @param brandName
+ * @param? dateFormatString
+ * @param? fullStarIcon
+ * @param? halfStarIcon
+ * @param? emptyStarIcon
+ */
+{template .Review}
+  <div class="c-Review" itemprop="review" itemscope itemtype="http://schema.org/Review">
+    <div class="c-Review-body">
+      <div class="c-Review-author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">
+          {$authorName}
+        </span>
+      </div>
+      <div class="c-Review-stars" itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">
+        <meta itemprop="worstRating" content="1">
+        <meta itemprop="bestRating" content="5">
+        <meta itemprop="ratingValue" content="{$rating}">
+        {call .Review_stars data="all"}
+          {param rating: $rating /}
+        {/call}
+      </div>
+      <div class="c-Review-date" itemprop="datePublished">
+        {let $dateFormat: $dateFormatString ?: 'DateFormatLong' /}
+        {ltimestampf('en_US', $dateFormat, $reviewDate)}
+      </div>
+      <div class="c-Review-content" itemprop="reviewBody">
+        {$content |changeNewlineToBr}
+      </div>
+    </div>
+    {if length($comments) > 0}
+      <div class="c-Review-comment">
+        {foreach $comment in $comments}
+        // There can be at most one response, by owner only, for first party reviews
+          {if $comment.isOwnerResponse }
+            {call .Review_comment data="all" }
+              {param comment: $comment /}
+            {/call}
+          {/if}
+        {/foreach}
+      </div>
+    {/if}
+  </div>
+{/template}
+
+/**
+ * @param rating
+ * @param? fullStarIcon
+ * @param? halfStarIcon
+ * @param? emptyStarIcon
+ */
+{template .Review_stars}
+  <div class="c-ReviewStars">
+    <span class="sr-only">
+      {call strings.reviews_rating /}
+      {sp}{floor($rating)}.{floor(10*($rating-floor($rating)))}
+    </span>
+    {foreach $i in range(floor($rating))}
+      {$fullStarIcon ?: '<span class="c-ReviewStars-star fa fa-star" aria-hidden="true"></span>' |noAutoescape}
+    {/foreach}
+    {let $remainder: $rating - floor($rating) /}
+
+    {if $remainder > 0.75}
+      {$fullStarIcon ?: '<span class="c-ReviewStars-star fa fa-star" aria-hidden="true"></span>' |noAutoescape}
+    {elseif  $remainder >= 0.25 and $remainder <= 0.75}
+      {$halfStarIcon ?: '<span class="c-ReviewStars-star fa fa-star-half-o" aria-hidden="true"></span>' |noAutoescape}
+    {elseif $remainder < 0.25 and $remainder != 0}
+      {$emptyStarIcon ?: '<span class="c-ReviewStars-star fa fa-star-o" aria-hidden="true"></span>' |noAutoescape}
+    {/if}
+
+    {foreach $i in range(ceiling($rating),5)}
+      {$emptyStarIcon ?: '<span class="c-ReviewStars-star fa fa-star-o" aria-hidden="true"font></span>' |noAutoescape}
+    {/foreach}
+  </div>
+{/template}
+
+/**
+ * @param comment
+ * @param? dateFormatString
+ * @param brandName
+ **/
+{template .Review_comment}
+  <div class="c-ReviewComment" itemscope itemprop="comment" itemtype="http://schema.org/Comment">
+    <div class="c-ReviewComment-title" itemprop="name">
+      {msg desc=""}
+        Response from {$brandName |noAutoescape}
+      {/msg}
+    </div>
+    <div class="c-ReviewComment-author" itemprop="author" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="{$brandName |noAutoescape}" />
+    </div>
+    <div class="c-ReviewComment-date" itemprop="datePublished">
+      {let $dateFormat: $dateFormatString ?: 'DateFormatLong' /}
+      {ltimestampf('en_US', $dateFormat, $comment.date)}
+    </div>
+    <div class="c-ReviewComment-content" itemprop="text">
+      {$comment.content |changeNewlineToBr}
+    </div>
+  </div>
+{/template}

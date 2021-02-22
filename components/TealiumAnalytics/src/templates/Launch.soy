@@ -1,0 +1,35 @@
+{namespace components.TealiumAnalytics}
+
+/**
+ * @param tealiumAccount
+ * @param tealiumProfile // typically 'main'
+ * @param tealiumEnv // 'dev', 'qa', or 'prod'
+ * @param? pageViewFireEvent Default: false
+ * @param? pageViewSetTag Default: true
+ */
+{template .Launch}
+  <script>
+    (function(w,d,y){lb}
+      w['TealiumAnalyticsObject'] = y;
+      w[y] = w[y] || function() {lb}
+        (w[y].q = w[y].q || []).push(arguments)
+      {rb};
+      w[y]('create', {$pageViewFireEvent ?: false |json}, {$pageViewSetTag ?: true |json});
+    {rb})(window, document, 'tealium');
+
+    // Tealium Script Load
+    // Add utag.js to beginning of <body>
+    var utag_data = utag_data || {lb}{rb};
+
+    var scriptSrc = '//tags.tiqcdn.com/utag/{$tealiumAccount}/{$tealiumProfile}/{$tealiumEnv}/utag.js';
+    var docElement = document.createElement('script');
+    docElement.src = scriptSrc;
+    docElement.type = 'text/javascript';
+    docElement.async = true;
+    var position = document.getElementsByTagName('script')[0];
+    docElement.onload = function () {lb}
+      tealium('start');
+    {rb};
+    position.parentNode.insertBefore(docElement, position);
+  </script>
+{/template}

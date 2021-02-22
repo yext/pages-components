@@ -1,0 +1,508 @@
+// This file contains utiltiy mixins that aren't meant to be overridden
+
+@mixin bp($min, $max: $min)
+{
+  $MediaQueriesEnabled: true !default;
+
+  @if $MediaQueriesEnabled
+  {
+    $bps: xs, sm, md, lg;
+    $valid-input: true;
+    $use-media-query: true;
+    $mq: "";
+
+    $maxes: (
+      xs: "(max-width: #{$screen-xs-max})",
+      sm: "(max-width: #{$screen-sm-max})",
+      md: "(max-width: #{$screen-md-max})"
+    );
+
+    $mins: (
+      sm: "(min-width: #{$screen-sm-min})",
+      md: "(min-width: #{$screen-md-min})",
+      lg: "(min-width: #{$screen-lg-min})"
+    );
+
+    @if ($min != null and $max != null)
+    {
+      @if index($bps, $min) and index($bps, $max)
+      {
+        $mq: "#{map-get($mins, $min)} and #{map-get($maxes, $max)}";
+      }
+
+      @else
+      {
+        @warn "Breakpoint parameters must be either xs, sm, md, or lg.";
+        $valid-input: false;
+      }
+    }
+
+    @else if ($min != null and $max == null)
+    {
+      @if $min == xs
+      {
+        @warn "There is no min-width for Mobile Screens.";
+        $valid-input: false;
+      }
+
+      @else if $min == min
+      {
+        $use-media-query: false;
+      }
+
+      @else if $min == max
+      {
+        $valid-input: false;
+      }
+
+      @else
+      {
+        $mq: "#{map-get($mins, $min)}";
+      }
+    }
+
+    @else if ($min == null and $max != null)
+    {
+      @if $max == lg
+      {
+        @warn "There is no Max Width for Large Screens.";
+        $valid-input: false;
+      }
+
+      @else if $max == max
+      {
+        $use-media-query: false;
+      }
+
+      @else if $max == min
+      {
+        $valid-input: false;
+      }
+
+      @else
+      {
+        $mq: "#{map-get($maxes, $max)}";
+      }
+    }
+
+    @else
+    {
+      @warn "You must pass a parameter to the bp() mixin!";
+      $valid-input: false;
+    }
+
+    @if $valid-input and $use-media-query
+    {
+      @media #{$mq}
+      {
+        @content;
+      }
+    }
+
+    @else if $valid-input
+    {
+      @content;
+    }
+  }
+}
+
+@mixin bplte($max)
+{
+  @include bp(null, $max)
+  {
+    @content;
+  }
+}
+
+@mixin bpgte($min)
+{
+  @include bp($min, null)
+  {
+    @content;
+  }
+}
+
+@mixin l-container
+{
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: $grid-gutter-width-xs/2;
+  padding-right: $grid-gutter-width-xs/2;
+  width: 100%;
+
+  @include bpgte(sm)
+  {
+    width: $container-tablet-base;
+    padding-left: $grid-gutter-width-sm/2;
+    padding-right: $grid-gutter-width-sm/2;
+  }
+
+  @include bpgte(md)
+  {
+    width: $container-desktop-base;
+    padding-left: $grid-gutter-width-md/2;
+    padding-right: $grid-gutter-width-md/2;
+  }
+
+  @include bpgte(lg)
+  {
+    width: $container-large-desktop-base;
+    padding-left: $grid-gutter-width-lg/2;
+    padding-right: $grid-gutter-width-lg/2;
+  }
+}
+
+@mixin l-row
+{
+  display: flex;
+  margin-left: -$grid-gutter-width-xs/2;
+  margin-right: -$grid-gutter-width-xs/2;
+
+  @include bpgte(sm)
+  {
+    margin-left: -$grid-gutter-width-sm/2;
+    margin-right: -$grid-gutter-width-sm/2;
+  }
+
+  @include bpgte(md)
+  {
+    margin-left: -$grid-gutter-width-md/2;
+    margin-right: -$grid-gutter-width-md/2;
+  }
+
+  @include bpgte(lg)
+  {
+    margin-left: -$grid-gutter-width-lg/2;
+    margin-right: -$grid-gutter-width-lg/2;
+  }
+
+  @include bplte(xs)
+  {
+    flex-direction: column;
+  }
+
+  @include bpgte(sm)
+  {
+    flex-wrap: wrap;
+  }
+}
+
+@mixin l-col($num1, $num2)
+{
+  width: percentage($num1/$num2);
+  padding-left: $grid-gutter-width-xs/2;
+  padding-right: $grid-gutter-width-xs/2;
+
+  @include bp(sm,sm)
+  {
+    padding-left: $grid-gutter-width-sm/2;
+    padding-right: $grid-gutter-width-sm/2;
+  }
+
+  @include bp(md,md)
+  {
+    padding-left: $grid-gutter-width-md/2;
+    padding-right: $grid-gutter-width-md/2;
+  }
+
+  @include bpgte(lg)
+  {
+    padding-left: $grid-gutter-width-lg/2;
+    padding-right: $grid-gutter-width-lg/2;
+  }
+}
+
+// CSS Column Count
+@mixin l-columns($count, $gap-width: 0)
+{
+  columns: $count;
+  column-gap: $gap-width;
+
+  & > *
+  {
+    page-break-inside: avoid;
+  }
+}
+
+@mixin l-centeredColumn
+{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+$names: (
+  1: one,
+  2: two,
+  3: three,
+  4: four,
+) !default;
+
+$grids: (
+  half: 2,
+  thirds: 3,
+  fourths: 4,
+) !default;
+
+@mixin l-Split($bp, $gap, $parentclass: &)
+{
+  @at-root
+  {
+    @include bpgte($bp)
+    {
+      #{$parentclass}--#{$bp}
+      {
+        @include margin(-$gap, (left, right));
+
+        display: flex;
+
+        & > *
+        {
+          @include padding($gap, (left, right));
+        }
+      }
+
+      @each $name, $denominator in $grids
+      {
+        @for $i from 1 through $denominator
+        {
+          $childName: map-get($names, $i);
+          $combined: $parentclass + '--' + $bp + $parentclass + '--' + $name;
+
+          #{$combined} > #{$parentclass}-#{$childName}
+          {
+            width: percentage($i/$denominator);
+          }
+        }
+      }
+    }
+  }
+}
+
+@mixin hidden-xs
+{
+  @include bplte(xs)
+  {
+    display: none;
+  }
+}
+
+@mixin hidden-sm
+{
+  @include bp(sm, sm)
+  {
+    display: none;
+  }
+}
+
+@mixin hidden-md
+{
+  @include bp(md, md)
+  {
+    display: none;
+  }
+}
+
+@mixin hidden-lg
+{
+  @include bpgte(lg)
+  {
+    display: none;
+  }
+}
+
+@mixin visible-only-xs
+{
+  @include bpgte(sm)
+  {
+    display: none;
+  }
+}
+
+@mixin font-sizes($font-size, $line-height: 'normal', $font-size-xs: $font-size, $line-height-xs: $line-height, $bp: sm)
+{
+  font-size: $font-size-xs;
+  line-height: $line-height-xs;
+
+  @if $font-size != $font-size-xs or $line-height != $line-height-xs
+  {
+    @include bpgte($bp)
+    {
+      font-size: $font-size;
+      line-height: $line-height;
+    }
+  }
+}
+
+@mixin word-wrap()
+{
+  word-break: break-word;
+  hyphens: auto;
+}
+
+@mixin hideBR
+{
+  br
+  {
+    content: ' ';
+
+    &::after
+    {
+      content: ', ';
+    }
+  }
+}
+
+@mixin break($pseudo:'after')
+{
+  &:#{$pseudo}
+  {
+    content: "\000A";
+    white-space: pre;
+    // fixes weird flebox edgecase where the before grows to whole line
+    display: block;
+    height: 0;
+  }
+}
+
+@mixin break-after
+{
+  @include break();
+}
+
+@mixin break-before
+{
+  @include break('before');
+}
+
+@mixin fa-icon($placement, $icon, $font-size:inherit)
+{
+  &:#{$placement}
+  {
+    content: $icon;
+    font-family: 'FontAwesome';
+    font-size: $font-size;
+
+    @content;
+  }
+}
+
+@mixin fa-icon-before($icon, $font-size:inherit)
+{
+  @include fa-icon(before, $icon, $font-size) { @content; }
+}
+
+@mixin fa-icon-after($icon, $font-size:inherit)
+{
+  @include fa-icon(after, $icon, $font-size) { @content; }
+}
+
+@mixin link($color-default, $color-visited:$color-default, $color-hover:$color-default, $color-active:$color-default)
+{
+  color: $color-default;
+
+  &:link
+  {
+    color: $color-default;
+  }
+
+  &:visited
+  {
+    color: $color-visited;
+  }
+
+  &:hover
+  {
+    color: $color-hover;
+  }
+
+  &:active
+  {
+    color: $color-active;
+  }
+}
+
+@mixin link-states($selector:'&')
+{
+  #{$selector},
+  #{$selector}:hover,
+  #{$selector}:visited,
+  #{$selector}:active,
+  #{$selector}:link
+  {
+    @content;
+  }
+}
+
+@mixin vertical-center
+{
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@mixin disable-collapse
+{
+  height: auto !important;
+  display: block;
+}
+
+@mixin sr-only()
+{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+  white-space: nowrap;
+
+  // Fixes false WCAG contrast errors
+  color: black;
+  background: white;
+}
+
+@mixin sr-only-focusable()
+{
+  &:active,
+  &:focus
+  {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+  }
+}
+
+@mixin reset-list
+{
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+@mixin anti-aliased
+{
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@mixin clearfix()
+{
+  &::before,
+  &::after
+  {
+    content: " ";
+    display: table;
+  }
+
+  &::after
+  {
+    clear: both;
+  }
+}

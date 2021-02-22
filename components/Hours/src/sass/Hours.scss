@@ -1,0 +1,100 @@
+//
+// Location hours Component SCSS Stylesheet
+//
+
+.c-hours
+{
+  @include clearfix();
+  &-details
+  {
+    &-row
+    {
+      &.is-today
+      {
+        &.highlight-text
+        {
+          font-weight: $font-weight-bold;
+        }
+        &.highlight-background
+        {
+          background-color: #D8D8D8;
+        }
+      }
+
+      &-day
+      {
+        padding-right: 20px;
+      }
+
+      &-intervals-instance
+      {
+        display: block;
+      }
+    }
+
+    &-opentoday
+    {
+      display: none;
+    }
+  }
+}
+
+.c-hours-today
+{
+  display: block;
+  &-details-row
+  {
+    display: none;
+
+    &.is-today
+    {
+      display: block;
+    }
+  }
+
+  &-day-hours
+  {
+    display: inline-block;
+
+    &-interval-separator
+    {
+      display: inline-block;
+    }
+
+    &-intervals-instance
+    {
+      display: inline-block;
+    }
+  }
+}
+
+.c-hours-collapse
+{
+  .c-hours-toggle
+  {
+    display: inline-block;
+
+    @include fa-icon-after($fa-var-caret-down)
+    {
+      display: inline-block;
+      transform: rotateX(180deg);
+      transition: transform .5s;
+      vertical-align: middle;
+      margin-left: 1ex;
+    }
+
+    &.collapsed
+    {
+      &:after
+      {
+        transform: rotate(0);
+      }
+    }
+  }
+
+  .c-hours-today,
+  .c-hours-today-details-row.is-today
+  {
+    display: inline-block;
+  }
+}

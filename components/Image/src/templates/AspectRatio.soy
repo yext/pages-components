@@ -1,0 +1,26 @@
+{namespace components.Image}
+
+/**
+ * @param imageEl         passthrough Image.ObjectFit
+ * @param aspectRatio
+ * @param? maxWidth
+ * @param? baseClass
+ * @param? imageFit       passthrough Image.ObjectFit
+ * @param? imagePosition  passthrough Image.ObjectFit
+ */
+{template .AspectRatio}
+  {call components.Layout.AspectRatio}
+    {param aspectRatio: $aspectRatio /}
+    {param maxWidth: $maxWidth /}
+    {param baseClass: $baseClass /}
+    {param displayEl}
+      {call .ObjectFit}
+        {param fit: $imageFit ?: 'cover' /}
+        {param position: $imagePosition ?: 'center' /}
+        {param image}
+          {$imageEl |noAutoescape}
+        {/param}
+      {/call}
+    {/param}
+  {/call}
+{/template}

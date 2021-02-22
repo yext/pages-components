@@ -1,0 +1,61 @@
+/** @define Accordion */
+
+.Accordion
+{
+  &.is-expanded
+  {
+    .Accordion-button--default::after
+    {
+      content: none;
+    }
+  }
+
+  &[aria-expanded=false]
+  {
+    .Accordion-content
+    {
+      display: none;
+      height: 0;
+    }
+  }
+
+  &-button--default
+  {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0;
+    flex-shrink: 0;
+    pointer-events: none;
+    height: 25px;
+    width: 25px;
+    margin-right: 2px;
+    margin-left: 16px;
+
+    &::before,
+    &::after
+    {
+      content: '';
+      height: 2px;
+      width: 18px;
+      background-color: $brand-primary;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    &::after
+    {
+      transform: translate(-50%, -50%) rotateZ(90deg);
+    }
+  }
+
+  &-content
+  {
+    transition: height 0.2s ease-in-out;
+    overflow: hidden;
+    height: auto;
+    display: block;
+  }
+}

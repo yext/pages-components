@@ -1,0 +1,100 @@
+{namespace components.Address}
+
+/**
+ * @param profile
+ */
+{template .Fields_address1}
+  <span class="c-address-street-1">{$profile.address.line1}</span>
+{/template}
+
+/**
+ * @param profile
+ */
+{template .Fields_address2}
+  <span class="c-address-street-2">{$profile.address.line2}</span>
+{/template}
+
+/**
+ * @param profile
+ */
+{template .Fields_sublocality}
+  <span class="c-address-sublocality">{$profile.address.sublocality}</span>
+{/template}
+
+/**
+ * @param profile
+ */
+{template .Fields_city}
+  <span class="c-address-city">{$profile.address.city}</span>
+{/template}
+
+
+/**
+ * @param profile
+ * @param? hideSchema
+ */
+{template .Fields_streetSchema}
+  {let $address1: $profile.address.line1 /}
+  {let $address2: $profile.address.line2 /}
+
+  {if not $hideSchema}
+    <meta itemprop="streetAddress" content="{$address1}{if $address2} {$address2}{/if}">
+  {/if}
+{/template}
+
+
+/**
+ * @param profile
+ * @param? hideSchema
+ */
+{template .Fields_localitySchema}
+  {let $city: $profile.address.city /}
+  {let $sublocality: $profile.address.sublocality /}
+
+  {if not $hideSchema}
+    <meta itemprop="addressLocality" content="{$city}{if $sublocality and $city} {/if}{$sublocality}">
+  {/if}
+{/template}
+
+/**
+ * @param profile
+ * @param? derivedData
+ * @param? hideSchema
+ * @param? regionAbbr
+ */
+{template .Fields_region}
+  {let $region: $profile.address.region ?: '' /}
+  {let $regionName: $derivedData?.address?.stateName ?: $region /}
+  {let $abbreviated: $regionAbbr and $region != $regionName /}
+
+  <{if $abbreviated}abbr title="{$regionName}" aria-label="{$regionName}"{else}span{/if}
+   {sp}class="c-address-state" {if not $hideSchema}itemprop="addressRegion"{/if}>
+      {$regionAbbr ? $region : $regionName |noAutoescape}
+  </{$abbreviated ? 'abbr': 'span'}>
+{/template}
+
+
+/**
+ * @param profile
+ * @param? hideSchema
+ */
+{template .Fields_postalCode}
+  <span class="c-address-postal-code"{if not $hideSchema} itemprop="postalCode"{/if}>{$profile.address.postalCode}</span>
+{/template}
+
+/**
+ * @param profile
+ * @param? derivedData
+ * @param? hideSchema
+ */
+{template .Fields_country}
+  {let $country: $profile.address.countryCode /}
+  {let $countryName: $derivedData?.address?.countryName ?: $country /}
+
+  <{if $country != $countryName}abbr title="{$countryName}" aria-label="{$countryName}"{else}span{/if}
+    {sp}class="c-address-country-name c-address-country-{$country |slugify}"
+    {if not $hideSchema} itemprop="addressCountry"{/if}
+  >
+    {$country}
+  </{$country != $countryName ? 'abbr': 'span'}>
+{/template}

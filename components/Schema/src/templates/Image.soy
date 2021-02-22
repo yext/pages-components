@@ -1,0 +1,15 @@
+{namespace components.Schema}
+
+/**
+ * @param uri
+ */
+{template .Image}
+  <link itemprop="image" href="{$uri}">
+{/template}
+
+/**
+ * @param logo // the url from the Business Logo profile field
+ */
+{template .Image_logo}
+  {call .Image}{param uri: $logo /}{/call}
+{/template}

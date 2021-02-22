@@ -1,0 +1,33 @@
+{
+  "name": "@yext/components-reviews",
+  "version": "2.0.0",
+  "description": "",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=12.16.x"
+  },
+  "main": "index.js",
+  "directories": {
+    "lib": "src"
+  },
+  "files": [
+    "src",
+    "_index.scss",
+    "index.js"
+  ],
+  "sideEffects": [],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "@yext/components-spinner-modal": "1.1.1",
+    "@yext/components-util": "1.1.1",
+    "raven-js": "3.27.2",
+    "slick-carousel": "1.8.1",
+    "urijs": "1.18.12"
+  },
+  "peerDependencies": {
+    "@yext/components-spinner-modal": "1.1.1",
+    "@yext/components-util": "1.1.1"
+  }
+}

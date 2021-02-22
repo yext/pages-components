@@ -1,0 +1,322 @@
+{namespace components.Events}
+
+/**
+ * @param baseUrl
+ * @param crumbUrls
+ * @param url
+ * @param profile
+ *
+ * Content params
+ * @param? eventLinkText
+ *
+ * Configuration params
+ * @param? customSeparator
+ * @param? dateFormat
+ * @param? dateFormatNoYear
+ * @param? disableEventTitleLink
+ * @param? hideEventTime
+ * @param? hideSchema
+ * @param? hLevel
+ * @param? hourFormat
+ * @param? imageSize
+ * @param? showStartTimeOnly
+ *
+ * Description params
+ * @param? allowHTML
+ * @param? readMoreText
+ * @param? readLessText
+ * @param? readMoreTextLength
+ * @param? showReadMore
+ */
+{template .Event_default}
+  {call .Event data="all"}
+    {param start: $profile.time.start.unix /}
+    {param end: $profile.time.end.unix /}
+    {param startISO: $profile.time.start.iso /}
+    {param endISO: $profile.time.end.iso /}
+    {param eventUrl: $url ? $baseUrl + $url : $profile.websiteUrl ?: '' /}
+    {param title: $profile.name /}
+    {param photo: $profile.photoGallery?[0] /}
+    {param description: $profile.description /}
+  {/call}
+{/template}
+
+/**
+ * @param crumbUrls
+ *
+ * Content params
+ * @param event
+ * @param? eventLinkText
+ *
+ * Configuration params
+ * @param? customSeparator
+ * @param? dateFormat
+ * @param? dateFormatNoYear
+ * @param? disableEventTitleLink
+ * @param? hideEventTime
+ * @param? hideSchema
+ * @param? hLevel
+ * @param? hourFormat
+ * @param? imageSize
+ * @param? showStartTimeOnly
+ *
+ * Description params
+ * @param? allowHTML
+ * @param? readMoreText
+ * @param? readLessText
+ * @param? readMoreTextLength
+ * @param? showReadMore
+ */
+{template .Event_ecl}
+  {call .Event data="all"}
+    {param description: $event.description /}
+    {param start: $event.start /}
+    {param end: $event.end /}
+    {param startISO: timestampf('2006-01-02T15:04', $event.start) /}
+    {param endISO: timestampf('2006-01-02T15:04', $event.end) /}
+    {param photo: $event.gallery[0] /}
+    {param title: $event.name /}
+    {param eventUrl: $event.url /}
+  {/call}
+{/template}
+
+/**
+ * @param crumbUrls
+ *
+ * Event content params
+ * @param description
+ * @param eventUrl
+ * @param photo
+ * @param start
+ * @param end
+ * @param startISO
+ * @param endISO
+ * @param title
+ *
+ * Customizable content params
+ * @param? eventLinkText
+ *
+ * Configuration params
+ * @param? customSeparator
+ * @param? dateFormat
+ * @param? dateFormatNoYear
+ * @param? disableEventTitleLink
+ * @param? hideEventTime
+ * @param? hideSchema
+ * @param? hLevel
+ * @param? hourFormat
+ * @param? imageSize
+ * @param? showStartTimeOnly
+ *
+ * Description params
+ * @param? allowHTML
+ * @param? readMoreText
+ * @param? readLessText
+ * @param? readMoreTextLength
+ * @param? showReadMore
+ */
+{template .Event}
+  <article class="Event"
+           data-event-start="{$start}"
+           data-event-end="{$end}"
+           {if not $hideSchema}
+             {sp}itemprop="event" itemscope itemtype="http://schema.org/Event" itemref="schema-location"
+           {/if}>
+    {if not $hideSchema}
+      <meta itemprop="startDate" content="{$startISO}">
+      <meta itemprop="endDate" content="{$endISO}">
+    {/if}
+    <div class="Event-details">
+      {call .Event_date data="all" /}
+      {call .Event_time data="all" /}
+      {call .Event_title data="all" /}
+      {call .Event_image data="all" /}
+      {call .Event_description data="all" /}
+      {call .Event_link data="all" /}
+      {if not $hideSchema}
+        {call .Event_offerSchema data="all" /}
+      {/if}
+    </div>
+  </article>
+{/template}
+
+/**
+ * @param start
+ * @param end
+ * @param? customSeparator
+ * @param? dateFormat
+ * @param? dateFormatNoYear
+ */
+{template .Event_date}
+  {let $separator: $customSeparator ?: ' - ' /}
+
+  <div class="Event-date">
+    {let $format: $dateFormat ? $dateFormat : 'January 2, 2006' /}
+    {let $formatNoYear: $dateFormatNoYear ? $dateFormatNoYear : 'January 2' /}
+    {let $formattedStartNoYear: timestampf($formatNoYear, $start) /}
+    {let $formattedEndNoYear: timestampf($formatNoYear, $end) /}
+
+    {if $end == 0}
+      {timestampf($format, $start)}
+    {elseif sameDay($start, $end)}
+      {timestampf($formatNoYear, $start)}
+    {elseif sameYear($start, $end) and sameMonth($start, $end)}
+      {$formattedStartNoYear}
+      {$separator |noAutoescape}
+      {timestampf('2, 2006', $end)}
+    {elseif sameYear($start, $end)}
+      {$formattedStartNoYear}
+      {$separator |noAutoescape}
+      {$formattedEndNoYear}
+    {else}
+      {timestampf($format, $start)}
+      {$separator |noAutoescape}
+      {timestampf($format, $end)}
+    {/if}
+  </div>
+{/template}
+
+/**
+ * @param start
+ * @param end
+ * @param? customSeparator
+ * @param? hideEventTime
+ * @param? hourFormat
+ * @param? showStartTimeOnly
+ */
+{template .Event_time}
+  {let $separator: $customSeparator ?: ' - ' /}
+  {let $format: $hourFormat ? $hourFormat : '3:04 PM' /}
+
+  {if not $hideEventTime and sameDay($start, $end)}
+    <div class="Event-timeWrapper">
+      <span class="Event-time Event-time--start">
+        {timestampf($format, $start)}
+      </span>
+      {if not $showStartTimeOnly}
+        <span class="Event-time Event-time--separator">
+          {$separator |noAutoescape}
+        </span>
+        <span class="Event-time Event-time--end">
+          {timestampf($format, $end)}
+        </span>
+      {/if}
+    </div>
+  {/if}
+{/template}
+
+/**
+ * @param eventUrl
+ * @param title
+ * @param? disableEventTitleLink
+ * @param? hideSchema
+ * @param? hLevel
+ */
+{template .Event_title}
+  {call components.Util.HLevel}
+    {param level: $hLevel ?: 3 /}
+    {param class: 'Event-title' /}
+    {param contents}
+      <div class="Event-titleContent"
+           {if not $hideSchema} itemprop="name"{/if}>
+        {if $eventUrl and not $disableEventTitleLink}
+          <a class="Event-titleLink"
+             href="{$eventUrl}"
+             data-ga-cateogry="Event Details"
+             {if not $hideSchema} itemprop="url"{/if}
+             {call common.helpers.link_new_tab /}>
+             {$title |noAutoescape}
+          </a>
+        {else}
+          {$title |noAutoescape}
+          // Fixes an issue with Google Schema Tool requiring a URL for events
+          // This is essentially the same as linking back to the page,
+          // without needing to print a canonical
+          {if not $hideSchema}
+            <link href="?" itemprop="url">
+          {/if}
+        {/if}
+      </div>
+    {/param}
+  {/call}
+{/template}
+
+/**
+ * @param photo
+ * @param? hideSchema
+ * @param? imageSize
+ */
+{template .Event_image}
+  {if $photo}
+    {if $photo.clickthroughUrl}
+      <a class="Event-imageLink"
+         href="{$photo.clickthroughUrl}">
+    {/if}
+    {call components.Image.ObjectFit}
+      {param image}
+        <img class="Event-image"
+             src="{imageBySizeEntity($photo.image, $imageSize ?: '768x')}"
+             alt="{$photo.image.alternateText ?: ''}"
+             {if not $hideSchema} itemprop="image"{/if}>
+      {/param}
+      {param fit: 'cover' /}
+    {/call}
+    {if $photo.clickthroughUrl}
+      </a>
+    {/if}
+  {/if}
+{/template}
+
+/**
+ * @param description
+ *
+ * Description params
+ * @param? allowHTML
+ * @param? readMoreText
+ * @param? readLessText
+ * @param? readMoreTextLength
+ * @param? showReadMore
+ */
+{template .Event_description}
+  {if $description}
+    <div class="Event-description">
+      {call components.Description.Description data="all" /}
+    </div>
+  {/if}
+{/template}
+
+/**
+ * @param eventUrl
+ * @param? disableEventTitleLink
+ * @param? hideSchema
+ * @param? eventLinkText
+ */
+{template .Event_link}
+  {if $eventUrl}
+    <div class="Event-linkWrapper">
+      <a class="Event-link"
+         href="{$eventUrl}"
+         data-ga-category="Event Details"
+         {if not $hideSchema and $disableEventTitleLink} itemprop="url"{/if}
+         {call common.helpers.link_new_tab /}>
+        {if $eventLinkText}
+          {$eventLinkText |noAutoescape}
+        {else}
+          {call strings.events_cta /}
+        {/if}
+      </a>
+    </div>
+  {/if}
+{/template}
+
+/**
+ * @param eventUrl
+ * @param crumbUrls
+ */
+{template .Event_offerSchema}
+  <span itemscope itemprop="offers" itemtype="http://schema.org/Offer">
+    {let $offerUrl: $eventUrl ? $eventUrl : $crumbUrls[length($crumbUrls)-1] /}
+    <meta itemprop="price" content="0.00">
+    <meta itemprop="url" content="{$offerUrl}">
+  </span>
+{/template}

@@ -1,0 +1,41 @@
+@import "./_set-properties.scss";
+
+// nice helper for generating border declarations
+// example: @include border(blue, (top, bottom)) would output:
+// border-top-color: blue;
+// border-bottom-color: blue;
+// border-bottom-style: solid;
+// border-top-style: solid;
+// border-bottom-width: 1px;
+// border-top-width: 1px;
+@mixin border($color, $directions: null, $width: 1px, $style: solid)
+{
+  @if type-of($directions) == 'list'
+  {
+    @each $dir in $directions
+    {
+      @include set-property(border-#{$dir}-color, $color);
+      @include set-property(border-#{$dir}-width, $width);
+      @include set-property(border-#{$dir}-style, $style);
+    }
+  }
+
+  @elseif $directions == null
+  {
+    @include set-property(border-color, $color);
+    @include set-property(border-width, $width);
+    @include set-property(border-style, $style);
+  }
+
+  @elseif type-of($directions) == 'string'
+  {
+    @include set-property(border-#{$directions}-color, $color);
+    @include set-property(border-#{$directions}-width, $width);
+    @include set-property(border-#{$directions}-style, $style);
+  }
+
+  @else
+  {
+    @error "unexpected directions value: '#{$directions}'";
+  }
+}

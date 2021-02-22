@@ -1,0 +1,38 @@
+/** @define SpinnerModal */
+$spinner-modal-background: white !default;
+$spinner-modal-zindex: 10 !default;
+$spinner-modal-opacity: 0.7 !default;
+$spinner-modal-transition: visibility 0s linear 100ms, opacity 700ms !default;
+
+.SpinnerModal
+{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: $spinner-modal-background;
+  opacity: 0;
+  visibility: hidden;
+
+  &-parent
+  {
+    position: relative;
+  }
+
+  &-image
+  {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%);
+  }
+
+  &--visible
+  {
+    visibility: visible;
+    z-index: $spinner-modal-zindex;
+    opacity: $spinner-modal-opacity;
+    transition: $spinner-modal-transition;
+  }
+}

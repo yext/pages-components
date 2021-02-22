@@ -1,0 +1,34 @@
+{namespace components.Image}
+
+/*
+  {call components.Image.ObjectFit}
+    {param image}
+      <img class="Event-image" src="image.png" alt="Image Alt">
+    {/param}
+    {param fit: 'cover' /}
+    {param position: 'top right' /}
+  {/call}
+
+  Make sure to still target your image in CSS, and set a height/width
+
+  .Event-image
+  {
+    height: 10rem;
+    width: 100%;
+  }
+*/
+
+/**
+ * @param image
+ * @param? fit fill, contain, cover, none -- https://www.w3schools.com/csS/css3_object-fit.asp
+ * @param? position -- https://www.w3schools.com/CSSref/css3_pr_object-position.asp
+ */
+{template .ObjectFit}
+  {if ($fit ?: 'fill') == 'fill'}
+    {$image |noAutoescape}
+  {else}
+    <div data-object-fit="{$fit}"{if $position} data-object-position="{$position}"{/if}>
+      {$image |noAutoescape}
+    </div>
+  {/if}
+{/template}

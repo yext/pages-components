@@ -1,0 +1,272 @@
+{namespace components.Hours}
+/**
+ * Day Wrapper
+ * @param content
+ * @param? status OPEN24, OPENSTODAY, OPENSNEXT, CLOSESTODAY, CLOSESNEXT, CLOSED
+ */
+{template .Helpers_dayWrapper}
+  <span class="Hours-status Hours-status--ace{if $status} Hours-status--{$status |slugify}{/if}">
+    {$content| noAutoescape}
+  </span>
+{/template}
+
+/**
+ * Monday
+ */
+{template .Helpers_monday}
+  {call .Helpers_dayWrapper data="all"}
+    {param content}
+      {call strings.day_monday /}
+    {/param}
+  {/call}
+{/template}
+
+/**
+ * Tuesday
+ */
+{template .Helpers_tuesday}
+  {call .Helpers_dayWrapper data="all"}
+    {param content}
+      {call strings.day_tuesday /}
+    {/param}
+  {/call}
+{/template}
+
+/**
+ * Wednesday
+ */
+{template .Helpers_wednesday}
+  {call .Helpers_dayWrapper data="all"}
+    {param content}
+      {call strings.day_wednesday /}
+    {/param}
+  {/call}
+{/template}
+
+/**
+ * Thursday
+ */
+{template .Helpers_thursday}
+  {call .Helpers_dayWrapper data="all"}
+    {param content}
+      {call strings.day_thursday /}
+    {/param}
+  {/call}
+{/template}
+
+/**
+ * Friday
+ */
+{template .Helpers_friday}
+  {call .Helpers_dayWrapper data="all"}
+    {param content}
+      {call strings.day_friday /}
+    {/param}
+  {/call}
+{/template}
+
+/**
+ * Saturday
+ */
+{template .Helpers_saturday}
+  {call .Helpers_dayWrapper data="all"}
+    {param content}
+      {call strings.day_saturday /}
+    {/param}
+  {/call}
+{/template}
+
+/**
+ * Sunday
+ */
+{template .Helpers_sunday}
+  {call .Helpers_dayWrapper data="all"}
+    {param content}
+      {call strings.day_sunday /}
+    {/param}
+  {/call}
+{/template}
+
+/**
+ * Closed
+ */
+{template .Helpers_closed}
+  <span class="Hours-statusText">
+    {call strings.hours_statusClosed /}
+  </span>
+{/template}
+
+/**
+ * Open24Hours
+ */
+{template .Helpers_open24Hours}
+  <span class="Hours-statusText">
+    {call strings.hours_open24Hours /}
+  </span>
+{/template}
+
+/**
+ * DisplayTime
+ * @param time
+ * @param? timeFormatString
+ * @param? twentyFourHourClock
+ */
+{template .Helpers_displayTime}
+  <span class="HoursInterval-time">
+    {timef($timeFormatString ?: ($twentyFourHourClock ? '15:04' : '3:04 PM'), floor($time))}
+  </span>
+{/template}
+
+/**
+ * DisplayDay
+ * @param day
+ */
+{template .Helpers_displayDay}
+  <span class="HoursInterval-day">
+    {$day}
+  </span>
+{/template}
+
+/**
+ * OpenClosesAt
+ * @param time
+ * @param? timeFormatString
+ * @param? twentyFourHourClock
+ */
+{template .Helpers_openClosesAt}
+  {let $displayTime}
+    {call .Helpers_displayTime data="all" /}
+  {/let}
+  {let $statusText}
+    <span class="Hours-statusText">
+      <span class="Hours-statusText--current">
+        {call strings.hours_statusOpenNow /}
+      </span>
+      <span class="Hours-statusSeparator"> - </span>
+      {call strings.hours_closesAt /}
+    </span>
+  {/let}
+  {msg desc=""}
+    {$statusText} {$displayTime| noAutoescape}
+  {/msg}
+{/template}
+
+/**
+ * OpenClosesAtNextInterval
+ * @param time
+ * @param day
+ * @param? timeFormatString
+ * @param? twentyFourHourClock
+ */
+{template .Helpers_openClosesAtNextInterval}
+  {let $displayTime}
+    {call .Helpers_displayTime data="all" /}
+  {/let}
+  {let $displayDay}
+    {call .Helpers_displayDay data="all" /}
+  {/let}
+  {let $statusText}
+    <span class="Hours-statusText">
+      <span class="Hours-statusText--current">
+        {call strings.hours_statusOpenNow /}
+      </span>
+      <span class="Hours-statusSeparator"> - </span>
+      {call strings.hours_closesAt /}
+    </span>
+  {/let}
+  {msg desc=""}
+    {$statusText} {$displayTime| noAutoescape} {$displayDay| noAutoescape}
+  {/msg}
+{/template}
+
+/**
+ * ClosedOpensAt
+ * @param time
+ * @param? timeFormatString
+ * @param? twentyFourHourClock
+ */
+{template .Helpers_closedOpensAt}
+  {let $displayTime}
+    {call .Helpers_displayTime data="all" /}
+  {/let}
+  {let $statusText}
+    <span class="Hours-statusText">
+      <span class="Hours-statusText--current">
+        {call strings.hours_statusClosed /}
+      </span>
+      <span class="Hours-statusSeparator"> - </span>
+      {call strings.hours_opensAt /}
+    </span>
+  {/let}
+  {msg desc=""}
+    {$statusText} {$displayTime| noAutoescape}
+  {/msg}
+{/template}
+
+/**
+ * ClosedOpensAtNextInterval
+ * @param time
+ * @param day
+ * @param? timeFormatString
+ * @param? twentyFourHourClock
+ */
+{template .Helpers_closedOpensAtNextInterval}
+  {let $displayTime}
+    {call .Helpers_displayTime data="all" /}
+  {/let}
+  {let $displayDay}
+    {call .Helpers_displayDay data="all" /}
+  {/let}
+  {let $statusText}
+    <span class="Hours-statusText">
+      <span class="Hours-statusText--current">
+        {call strings.hours_statusClosed /}
+      </span>
+      <span class="Hours-statusSeparator"> - </span>
+      {call strings.hours_opensAt /}
+    </span>
+  {/let}
+  {msg desc=""}
+    {$statusText} {$displayTime| noAutoescape} {$displayDay| noAutoescape}
+  {/msg}
+{/template}
+
+/**
+ * @param dayOfWeek
+ * @param? dayOfWeekMap
+ */
+{template .Helpers_localizeDayOfWeek}
+  {let $mon}
+    {call strings.day_monday /}
+  {/let}
+  {let $tue}
+    {call strings.day_tuesday /}
+  {/let}
+  {let $wed}
+    {call strings.day_wednesday /}
+  {/let}
+  {let $thu}
+    {call strings.day_thursday /}
+  {/let}
+  {let $fri}
+    {call strings.day_friday /}
+  {/let}
+  {let $sat}
+    {call strings.day_saturday /}
+  {/let}
+  {let $sun}
+    {call strings.day_sunday /}
+  {/let}
+  {let $formattableDays: $dayOfWeekMap ?:
+    [
+    'MONDAY':    $mon,
+    'TUESDAY':   $tue,
+    'WEDNESDAY': $wed,
+    'THURSDAY':  $thu,
+    'FRIDAY':    $fri,
+    'SATURDAY':  $sat,
+    'SUNDAY':    $sun
+    ]
+  /}
+  {$formattableDays[$dayOfWeek] ?: $dayOfWeek |noAutoescape}
+{/template}

@@ -1,0 +1,37 @@
+{namespace components.Util}
+
+/**
+ * @param wrapperClass
+ * @param? photo
+ * @param? gradient
+ * @param? mediaQuery
+ * @param? showOnAllWidths
+ */
+
+{template .BgPhotoWithGradient}
+  {let $class: substring($wrapperClass, 0, 1) == '.' ? $wrapperClass : '.' + $wrapperClass /}
+  {if $photo or $gradient}
+    {let $prefixes: ['-o-', '-ms-', '-moz-', '-webkit-'] /}
+    <style>
+      {if not $showOnAllWidths}
+      {$mediaQuery ?: '@media(max-width: 767px)'}
+      {lb}
+      {/if}
+        {$class}
+        {lb}
+          {if $gradient}
+            {foreach $prefix in $prefixes}
+              background-image: {$prefix}linear-gradient({$gradient}){if $photo and $gradient}, {/if}{if $photo}url({$photo |noAutoescape}){/if};
+            {/foreach}
+          {/if}
+          background-image: {if $gradient}linear-gradient({$gradient}){/if}{if $photo and $gradient}, {/if}{if $photo}url({$photo |noAutoescape}){/if};
+          {if $photo}
+            background-size: cover;
+          {/if}
+        {rb}
+      {if not $showOnAllWidths}
+      {rb}
+      {/if}
+    </style>
+  {/if}
+{/template}

@@ -1,0 +1,11 @@
+{namespace components.Maps}
+
+/**
+ * @param? mapID
+ * @param? yaScope
+ */
+{template .Map}
+  <div class="c-map-with-pins"{if $yaScope} data-ya-scope="{$yaScope}"{/if}>
+    <div id="dir-map{if $mapID}-{$mapID}{/if}" class="dir-map"></div>
+  </div>
+{/template}

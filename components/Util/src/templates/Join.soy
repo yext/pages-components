@@ -1,0 +1,11 @@
+{namespace components.Util}
+
+/**
+ * @param list
+ * @param? delimiter
+ */
+{template .Join}
+  {foreach $el in $list}
+    {$el |noAutoescape}{if not isLast($el)}{$delimiter ?: ', '}{/if}
+  {/foreach}
+{/template}

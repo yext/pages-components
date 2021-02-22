@@ -1,0 +1,16 @@
+{namespace components.Util}
+
+/**
+ * @param keyPath
+ */
+{template .SlugifyKeyPath}
+  {let $keyPathString}
+    {foreach $key in $keyPath}
+      {$key}
+      {if not isLast($key)}
+        ####
+      {/if}
+    {/foreach}
+  {/let}
+  {$keyPathString |slugify}
+{/template}

@@ -1,0 +1,66 @@
+{namespace components.Events}
+
+/**
+ * @param baseUrl
+ * @param crumbUrls
+ *
+ * Content params
+ * @param events
+ * @param? title
+ *
+ * Configuration params
+ * @param? customSeparator
+ * @param? dateFormat
+ * @param? dateFormatNoYear
+ * @param? disableEventTitleLink
+ * @param? hideEventTime
+ * @param? hideSchema
+ * @param? hLevel
+ * @param? hourFormat
+ * @param? imageSize
+ * @param? isECLEvent
+ * @param? maxEntries
+ * @param? showStartTimeOnly
+ *
+ * Description params
+ * @param? allowHTML
+ * @param? readMoreText
+ * @param? readLessText
+ * @param? readMoreTextLength
+ * @param? showReadMore
+ */
+{template .EventList}
+  {if length($events ?: [])}
+    <section class="EventList">
+      {call components.Util.HLevel}
+        {param level: $hLevel ?: 2 /}
+        {param class: 'Events-title' /}
+        {param contents}
+          {if $title}
+            {$title |noAutoescape}
+          {else}
+            {call strings.events_title /}
+          {/if}
+        {/param}
+      {/call}
+      <div class="EventList-events">
+        {foreach $event in $events}
+          {if index($event) < ($maxEntries ?: length($events))}
+            {if $isECLEvent}
+              {call .Event_ecl data="all"}
+                {param event: $event /}
+                {param hLevel: $hLevel ? $hLevel + 1 : 3 /}
+              {/call}
+            {else}
+              {call .Event_default data="all"}
+                {param profile: $event.profile /}
+                {param url: $event.url /}
+                {param hLevel: $hLevel ? $hLevel + 1 : 3 /}
+              {/call}
+            {/if}
+          {/if}
+        {/foreach}
+      </div>
+    </section>
+  {/if}
+{/template}

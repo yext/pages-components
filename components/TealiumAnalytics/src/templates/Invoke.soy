@@ -1,0 +1,13 @@
+{namespace components.TealiumAnalytics}
+
+/**
+ * @param tealiumPageViewData
+ * @param? invokePageView
+ */
+{template .Invoke}
+  <script>
+    {if $invokePageView ?: true}
+      tealium('pageview', {$tealiumPageViewData |json});
+    {/if}
+  </script>
+{/template}

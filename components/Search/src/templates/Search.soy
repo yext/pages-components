@@ -1,0 +1,147 @@
+{namespace components.Search}
+
+/**
+ * @param baseUrl
+ * @param siteAttributes
+ *
+ * Content params
+ * @param? defaultValue
+ * @param? formLabel
+ * @param? optionalInputs
+ * @param? placeHolder
+ * @param? queryParameter
+ * @param? submitLabel
+ * @param? title
+ *
+ * Configuration params
+ * @param searcherPath
+ * @param? autofocus
+ * @param? disableAutocomplete
+ * @param? disableAutocorrect
+ * @param? hideHeader
+ * @param? hLevel
+ * @param? formId
+ * @param? inputId
+ * @param? required
+ * @param? submitYaTrack
+ */
+{template .Search}
+  <div class="search-wrapper">
+    {if not $hideHeader}
+      {call components.Util.HLevel}
+        {param contents: $title ?: 'Find a location' /}
+        {param level: $hLevel ?: 2 /}
+        {param class: 'search-title' /}
+      {/call}
+    {/if}
+    {call .Search_form data="all"}
+      {param content}
+        <div class="search-form-main">
+          {call .Search_input data="all"}
+            {param placeHolder}
+              {if $placeHolder}
+                {$placeHolder |noAutoescape}
+              {elseif strlen($siteAttributes?.search?.placeholder ?: '') > 0}
+                {$siteAttributes.search.placeholder |noAutoescape}
+              {else}
+                New York, NY
+              {/if}
+            {/param}
+          {/call}
+          {call .Search_button data="all" /}
+        </div>
+        {call .Search_optionalInputs data="all" /}
+      {/param}
+    {/call}
+  </div>
+{/template}
+
+/**
+ * @param content
+ * @param searcherPath
+ * @param? class
+ * @param? formId
+ */
+{template .Search_form}
+  <form method="get" {if $formId}id="{$formId}" {/if}class="search{if $class} {$class}{/if}" action="{$searcherPath}">
+    {$content |noAutoescape}
+  </form>
+{/template}
+
+/**
+ * @param? class
+ * @param? submitLabel
+ * @param? submitYaTrack
+ */
+{template .Search_button}
+  {let $button: $submitLabel ?: 'Go' /}
+  <button type="submit" class="search-button{if $class} {$class}{/if}"{if $submitYaTrack} data-ya-track="{$submitYaTrack}"{/if}>{$button |noAutoescape}</button>
+{/template}
+
+/**
+ * @param? optionalInputs
+ */
+{template .Search_optionalInputs}
+  {if $optionalInputs}
+    <div class="search-optional-inputs">
+      {$optionalInputs |noAutoescape}
+    </div>
+  {/if}
+{/template}
+
+/**
+ *  @param baseUrl
+ *
+ * Content params
+ * @param placeHolder
+ * @param? defaultValue
+ * @param? formLabel
+ * @param? queryParameter
+ *
+ * Configuration params
+ * @param? autofocus
+ * @param? class
+ * @param? disableAutocomplete
+ * @param? disableAutocorrect
+ * @param? inputId
+ * @param? required
+ */
+{template .Search_input}
+  {let $searchHelpText}
+    {call strings.search_label /}
+  {/let}
+  {let $labelText}
+    {if $formLabel}
+      {$formLabel |noAutoescape}
+    {else}
+    {call components.Svg.Icon data="all"}
+      {param iconName: 'search' /}
+    {/call}
+    <span class="sr-only">
+      {$searchHelpText}
+    </span>
+    {/if}
+  {/let}
+  {let $id: $inputId ?: $queryParameter ?: 'q' /}
+  <label class="search-label"
+         for="{$id |noAutoescape}">{$labelText |noAutoescape}</label>
+  <input placeholder="{$placeHolder|noAutoescape}"
+         class="search-input{if $class} {$class}{/if}"
+         type="text"
+         name="{$queryParameter ?: 'q' |noAutoescape}"
+         id="{$id |noAutoescape}"
+         value="{$defaultValue ?: '' |noAutoescape}"
+         onfocus="this.setSelectionRange(0, this.value.length);"
+         {if $autofocus}
+           {sp}autofocus
+         {/if}
+         {if $disableAutocomplete}
+           {sp}autocomplete="off"
+         {/if}
+         {if $disableAutocorrect}
+           {sp}autocorrect="off"
+         {/if}
+         {if $required ?: true}
+           {sp}required
+         {/if}>
+{/template}

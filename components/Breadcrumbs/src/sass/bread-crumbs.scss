@@ -1,0 +1,32 @@
+//
+// Bread crumbs Component SCSS Stylesheet
+//
+
+.c-bread-crumbs
+{
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+
+  &-list
+  {
+    padding-left: 0px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+  }
+
+  &-item
+  {
+    display: inline-block;
+
+    &:not(:first-child)
+    {
+      &:before
+      {
+        content:'/';
+        padding-left: 1ex;
+        padding-right: 1ex;
+      }
+    }
+  }
+}

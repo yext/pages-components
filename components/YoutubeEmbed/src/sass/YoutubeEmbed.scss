@@ -1,0 +1,71 @@
+//
+// Youtube Component SCSS Stylesheet
+//
+
+.youtube
+{
+  &-embed
+  {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: none;
+
+    &-video
+    {
+      &-wrapper
+      {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 */
+        padding-top: 25px;
+        height: 0;
+        margin-bottom: $grid-gutter-width/2;
+      }
+    }
+  }
+
+  &-thumbnail
+  {
+    &-wrapper
+    {
+      &-outer
+      {
+        text-align: center;
+      }
+
+      &-inner
+      {
+        display: inline-block;
+        position: relative;
+      }
+    }
+
+    &-play
+    {
+      &-table
+      {
+        height: 100%;
+        width: 100%;
+
+        &-wrapper
+        {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      &-button
+      {
+        display: inline;
+        width: 50px;
+        height: 38px;
+        background-image: url('/assets/modules/youtube-play-button.png');
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+//
+// Social Component SCSS Stylesheet
+//
+
+.c-social
+{
+  &-links
+  {
+    @include reset-list;
+
+    &-item
+    {
+      display: inline-block;
+    }
+  }
+}

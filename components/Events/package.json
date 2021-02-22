@@ -1,0 +1,32 @@
+{
+  "name": "@yext/components-events",
+  "version": "1.1.2",
+  "description": "",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=12.16.x"
+  },
+  "main": "index.js",
+  "directories": {
+    "lib": "src"
+  },
+  "files": [
+    "src",
+    "_index.scss",
+    "index.js"
+  ],
+  "sideEffects": [],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "@yext/components-description": "1.1.1",
+    "@yext/components-image": "1.1.2",
+    "@yext/components-util": "1.1.1"
+  },
+  "peerDependencies": {
+    "@yext/components-description": "1.1.1",
+    "@yext/components-image": "1.1.2",
+    "@yext/components-util": "1.1.1"
+  }
+}

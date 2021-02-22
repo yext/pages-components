@@ -1,0 +1,46 @@
+.c-uber
+{
+  &-ride-link
+  {
+    // Prefer flexbox to center the icon and text vertically
+    display: flex;
+    align-items: center;
+
+    // However, if flex isn't supported, use vertical-align as a 'close-enough'
+    // fallback
+    > *
+    {
+      vertical-align: middle;
+    }
+
+    &-icon
+    {
+      width: 1em;
+
+      &.circle
+      {
+        content: url('assets/images/uber_icon_circle.svg');
+      }
+
+      &.square
+      {
+        content: url('assets/images/uber_icon_square.svg');
+      }
+    }
+
+    > * + *
+    {
+      margin-left: .5em;
+    }
+  }
+}
+
+// If you want to float the trailing icon to the far right, often for a full-width
+// button style
+//
+// | [ Get a Ride with Uber                 [icon] ] |
+//
+// .c-uber-ride-link-icon:last-child {
+//     margin-left: auto;
+//     margin-right: 1em;
+// }

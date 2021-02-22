@@ -1,0 +1,20 @@
+{namespace components.Util}
+
+/**
+ * @param keyPath array of strings that form a keypath, e.g ['customByName', 'CustomField'] or ['city']
+ * @param object
+ **/
+{template .ForObj}
+  {let $keyPathClass}
+    key-path-item-
+    {call .SlugifyKeyPath data="all" /}
+  {/let}
+  {foreach $key in $keyPath}
+    {let $obj: isFirst($key) ? $object[$key] : $obj[$key] /}
+    {if isLast($key)}
+      <span class="key-path-item {$keyPathClass}">
+        {$obj ?: ''}
+      </span>
+    {/if}
+  {/foreach}
+{/template}

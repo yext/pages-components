@@ -1,0 +1,30 @@
+{namespace components.Phone}
+
+/**
+ * [Define] .ProfilePhoneCounter returns the number (as a string) of profile phone types
+ * from a given list that exist in the data
+ * Example: If mainPhone, fax, and alternatePhone exist in the data, then given
+ * the input ['main', 'tty', 'fax', 'alternate'], this template returns '3'
+ *
+ * @param profile
+ * @param phoneTypes List of strings
+ *        Example: ['main', 'tty', 'fax', 'alternate']
+ */
+{template .ProfilePhoneCounter}
+  {let $phoneTypeMap: [
+    'main': $profile.mainPhone,
+    'alternate': $profile.alternatePhone,
+    'mobile': $profile.mobilePhone,
+    'fax': $profile.fax,
+    'tty': $profile.ttyPhone,
+    'tollFree': $profile.tollFreePhone
+  ] /}
+  {let $phoneCounter}
+    {foreach $type in $phoneTypes}
+      {if $phoneTypeMap[$type]}
+        .
+      {/if}
+    {/foreach}
+  {/let}
+  {strlen($phoneCounter)}
+{/template}

@@ -1,0 +1,15 @@
+//
+// Google Speech SCSS Stylesheet
+//
+
+.speech-button
+{
+  fill: black;
+  color: black;
+}
+
+.speech-button.active
+{
+  fill: red;
+  color: red;
+}

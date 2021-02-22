@@ -1,0 +1,30 @@
+//
+// Instagram Component SCSS Stylesheet
+//
+
+.c-instagram
+{
+  &-photo
+  {
+    &-wrapper
+    {
+      max-width: 100%;
+    }
+
+    &-info
+    {
+      margin-top: 6px;
+      margin-bottom: 12px;
+
+      .fa
+      {
+        margin-right: 4px;
+      }
+
+      &-likes
+      {
+        margin-right: 20px;
+      }
+    }
+  }
+}

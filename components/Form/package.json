@@ -1,0 +1,30 @@
+{
+  "name": "@yext/components-form",
+  "version": "2.0.0",
+  "description": "",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=12.16.x"
+  },
+  "main": "index.js",
+  "directories": {
+    "lib": "src"
+  },
+  "files": [
+    "src",
+    "_index.scss",
+    "index.js"
+  ],
+  "sideEffects": [],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "@yext/components-google-recaptcha": "2.0.0",
+    "@yext/components-spinner-modal": "1.1.1"
+  },
+  "peerDependencies": {
+    "@yext/components-google-recaptcha": "2.0.0",
+    "@yext/components-spinner-modal": "1.1.1"
+  }
+}

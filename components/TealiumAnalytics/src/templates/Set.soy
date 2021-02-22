@@ -1,0 +1,10 @@
+{namespace components.TealiumAnalytics}
+
+/**
+ * @param tealiumSetData
+ */
+{template .Set}
+  <script>
+    tealium('set', {$tealiumSetData |json});
+  </script>
+{/template}

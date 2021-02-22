@@ -1,0 +1,25 @@
+{
+  "name": "@yext/components-corsair",
+  "version": "2.0.0",
+  "description": "",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=12.16.x"
+  },
+  "main": "index.js",
+  "directories": {
+    "lib": "src"
+  },
+  "files": [
+    "src",
+    "index.js"
+  ],
+  "sideEffects": [],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "promise-polyfill": "6.0.2",
+    "whatwg-fetch": "2.0.3"
+  }
+}

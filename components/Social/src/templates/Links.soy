@@ -1,0 +1,99 @@
+{namespace components.Social}
+
+/**
+ * Social component
+ * @param baseUrl
+ * @param yaTrack
+ * @param? facebook_url
+ * @param? twitter_url
+ * @param? pinterest_url
+ * @param? google_plus_url
+ * @param? youtube_url
+ * @param? instagram_url
+ * @param? linkedin_url
+ * @param? yelp_url
+ * @param? foursquare_url
+ * @param? customOrder
+ * @param? hideSchema
+ * @param? linkNewTab
+ */
+{template .Links}
+  {let $haveLinks:  ($facebook_url ?: false)
+                 or ($twitter_url ?: false)
+                 or ($pinterest_url ?: false)
+                 or ($google_plus_url ?: false)
+                 or ($youtube_url ?: false)
+                 or ($instagram_url ?: false)
+                 or ($linkedin_url ?: false)
+                 or ($yelp_url ?: false)
+                 or ($foursquare_url ?: false) /}
+  {let $order: $customOrder ?: ['Facebook', 'Twitter', 'Pinterest', 'Google+', 'YouTube', 'Instagram', 'LinkedIn', 'Yelp', 'FourSquare'] /}
+  {let $socialLinks: [
+      'Facebook': $facebook_url ? [
+        'url': $facebook_url,
+        'networkName': 'facebook',
+        'prettyName': 'Facebook'
+      ] : null,
+      'Twitter': $twitter_url ? [
+        'url': $twitter_url,
+        'networkName': 'twitter',
+        'prettyName': 'Twitter'
+      ] : null,
+      'Pinterest': $pinterest_url ? [
+        'url': $pinterest_url,
+        'networkName': 'pinterest',
+        'prettyName': 'Pinterest'
+      ] : null,
+      'Google+': $google_plus_url ? [
+        'url': $google_plus_url,
+        'networkName': 'google-plus',
+        'prettyName': 'Google <abbr title="Plus">+</abbr>'
+      ] : null,
+      'YouTube': $youtube_url ? [
+        'url': $youtube_url,
+        'networkName': 'youtube',
+        'prettyName': 'YouTube'
+      ] : null,
+      'Instagram': $instagram_url ? [
+        'url': $instagram_url,
+        'networkName': 'instagram',
+        'prettyName': 'Instagram'
+      ] : null,
+      'LinkedIn': $linkedin_url ? [
+        'url': $linkedin_url,
+        'networkName': 'linkedin',
+        'prettyName': 'LinkedIn'
+      ] : null,
+      'Yelp': $yelp_url ? [
+        'url': $yelp_url,
+        'networkName': 'yelp',
+        'prettyName': 'Yelp'
+      ] : null,
+      'FourSquare': $foursquare_url ? [
+        'url': $foursquare_url,
+        'networkName': 'foursquare',
+        'prettyName': 'FourSquare'
+      ] : null
+    ]
+  /}
+
+  {if $haveLinks}
+    <ul class="c-social-links"
+      {if $yaTrack}{sp}data-ya-scope="social"{/if}>
+      {foreach $networkKey in $order}
+        {if $socialLinks[$networkKey]}
+          <li class="c-social-links-item">
+            {call .Icon data="$socialLinks[$networkKey]"}
+              {param baseUrl: $baseUrl /}
+              {param hideSchema: $hideSchema /}
+              {param yaTrack: $yaTrack /}
+              {param linkNewTab: $linkNewTab /}
+            {/call}
+          </li>
+        {/if}
+      {/foreach}
+    </ul>
+  {else}
+    <!-- no social links passed -->
+  {/if}
+{/template}

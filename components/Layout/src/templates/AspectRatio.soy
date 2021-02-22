@@ -1,0 +1,60 @@
+{namespace components.Layout}
+
+// This template creates a container that maintains
+//  a provided aspect ratio on window resize.
+//
+// @param (displayEl: string|noAutoescape) the element that will
+//          be rendered in the container
+//
+// @param (aspectRatio: float) should be 'height / width'.
+//          Some common aspect ratios:
+//            1:1 = 1.0, 4:3 = 0.75, 16:9 = 0.5625
+//
+// @param? (maxWidth: int) The maximum width in pixels that the
+//          container will expand to.
+//
+//  Control the size of the container by setting the width of the
+//   parent element of this template.
+// @param? (baseClass: string) If truthy, a parent wrapper class
+//          'baseClass-ARwrapper' will be created around the container
+//
+// You shouldn't need to style any of the inner classes.
+//
+
+/**
+ * @param displayEl
+ * @param aspectRatio
+ * @param? maxWidth
+ * @param? baseClass
+ */
+{template .AspectRatio}
+  {if $baseClass}
+    <div class="{$baseClass}-arWrapper">
+  {/if}
+      <div class="AspectRatio-limiter"
+           {if $maxWidth} style="max-width: {$maxWidth}px; max-height: {$maxWidth * $aspectRatio}px;"{/if}>
+        <div class="AspectRatio-definer"
+             style="padding-top: {$aspectRatio * 100}%">
+          <div class="AspectRatio-container">
+            {$displayEl |noAutoescape}
+          </div>
+        </div>
+      </div>
+  {if $baseClass}
+    </div>
+  {/if}
+{/template}
+
+// Technical stuff
+//
+// This component takes advantage of the fact that padding with % units always
+//  use the width as the % unit, even for vertical padding.
+//
+// AspectRatio-limiter sets a maximum size the image can grow to
+//
+// AspectRatio-definer uses padding-top and width to maintain a constant
+//  aspect ratio
+//
+// AspectRatio-container covers 100% of AspectRatio-definer in a div, because
+//  you can't put content in AspectRatio-definer because it is all padding
+//

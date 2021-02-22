@@ -1,0 +1,193 @@
+$reviews-offset: 180px !default;
+
+.c-ReviewsList
+{
+  list-style: none;
+  padding: 0;
+  z-index: 1;
+}
+
+.c-ReviewsSummary
+{
+  display: flex;
+
+  &-number
+  {
+    margin-right: 15px;
+  }
+
+  &-stars
+  {
+    margin-right: 15px;
+  }
+}
+
+
+.c-ReviewStars
+{
+  color: #FFDA27;
+  margin-right: 10px;
+
+  &-star
+  {
+    font-size: 26px;
+    margin-right: 5px;
+  }
+}
+
+.c-Reviews
+{
+  .slick-disabled
+  {
+    visibility: hidden;
+
+    @include bplte(xs)
+    {
+      display: none !important;
+    }
+  }
+
+  .slick-disabled + .c-ReviewsControls-linkSeparator
+  {
+    display: none !important;
+  }
+
+  .c-ReviewsControls-linkSeparator
+  {
+    margin-right: 15px;
+  }
+}
+
+.c-Review
+{
+  padding-top: 30px;
+  padding-bottom: 30px;
+  border-top: 1px solid #9B9B9B;
+
+
+  &-body
+  {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+
+    @include bplte(xs)
+    {
+      flex-direction: column;
+    }
+  }
+
+  &-stars
+  {
+    letter-spacing: 5px;
+
+    @include bplte(xs)
+    {
+      order: 3;
+    }
+  }
+
+  &-date
+  {
+    @include bplte(sm)
+    {
+      order: 2;
+    }
+  }
+
+  &-content
+  {
+    @include bplte(sm)
+    {
+      order: 4;
+    }
+  }
+
+  &-author, &-date
+  {
+    width: $reviews-offset;
+
+    @include bplte(sm)
+    {
+      width: 100%;
+    }
+  }
+
+  &-stars, &-content
+  {
+    width: calc(100% - #{$reviews-offset});
+
+
+    @include bplte(sm)
+    {
+      width: 100%;
+    }
+  }
+
+  &-comment
+  {
+    width: calc(100% - #{$reviews-offset});
+    margin-left: calc(#{$reviews-offset} + 10px);
+    border-left: 3px solid black;
+    padding-left: 20px;
+
+    @include bplte(sm)
+    {
+      width: 100%;
+      margin-left: 10px;
+    }
+  }
+}
+
+.c-ReviewsPaging
+{
+
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  z-index: 5;
+
+  @include bplte(xs)
+  {
+    flex-direction: column;
+  }
+}
+
+.c-ReviewsControls
+{
+  &-link
+  {
+    border: none;
+    background-color: transparent;
+    padding: 0;
+
+    &:focus
+    {
+      outline: none;
+    }
+
+    &--previous
+    {
+      margin-right: 15px;
+
+      .fa
+      {
+        &:before
+        {
+          padding-right: 5px;
+        }
+      }
+    }
+
+    &--next
+    {
+      .fa
+      {
+        &:before
+        {
+          padding-left: 5px;
+        }
+      }
+    }
+  }  
+}

@@ -1,0 +1,512 @@
+{namespace components.Form}
+
+/**
+ * @param endpoint
+ * @param formContent
+ * @param baseUrl
+ * @param? extraClass
+ * @param? fsFormID
+ * @param? useSpinnerComponent
+ */
+{template .Form}
+  <form class="Form{if $extraClass} {$extraClass}{/if}"
+    data-endpoint="{$endpoint}"
+    {if $fsFormID}{sp}data-fs-formID="{$fsFormID}"{/if}>
+
+    {if $useSpinnerComponent}
+      {call components.SpinnerModal.SpinnerModal data="all" /}
+    {/if}
+
+    {$formContent | noAutoescape}
+  </form>
+{/template}
+
+/**
+ * @param name
+ * @param type
+ * @param id
+ * @param? labelText
+ * @param? fsKey
+ * @param? fsSubfieldName
+ * @param? required
+ * @param? pattern
+ * @param? validationText
+ * @param? hideLabel
+ * @param? hideInput
+ * @param? defaultValue
+ * @param? obfuscateValue
+ * @param? wrapperModifier
+ * @param? labelModifier
+ * @param? pattern
+ * @param? maxLength
+ * @param? invalidMessage
+ */
+{template .Form_simpleInput}
+  <div class="Form-inputWrapper{if $wrapperModifier} Form-inputWrapper--{$wrapperModifier}{/if}">
+    <label for="{$id}"
+      class="Form-inputLabel{if $hideLabel or $hideInput} sr-only{/if}{if $labelModifier} Form-inputLabel--{$labelModifier}{/if}">
+      {$labelText ?: $name}
+      {if $required}
+        <span class="Form-inputLabelRequiredMarker">*</span>
+      {/if}
+    </label>
+    <input class="Form-input Form-input--{$type} js-form-input{if $hideInput} sr-only{/if}" name="{$name}" type="{$type}" id="{$id}"
+      {if $defaultValue}{sp}value="{if $obfuscateValue}{$defaultValue|encodeBase64}{else}{$defaultValue}{/if}"{/if}
+      {if $fsKey}{sp}data-fsKey="{$fsKey}"{/if}
+      {if $fsSubfieldName}{sp}data-fs-subfield="{$fsSubfieldName}"{/if}
+      {if $required}{sp}required{/if}
+      {if $pattern}{sp}pattern="{$pattern}"{/if}
+      {if $validationText}{sp}title="{$validationText}"{/if}
+      {if $pattern}{sp}pattern="{$pattern}"{/if}
+      {if $maxLength}{sp}maxlength="{$maxLength}"{/if}
+      {if $invalidMessage}{sp}title="{$invalidMessage}"{/if}>
+  </div>
+{/template}
+
+/**
+ * @param name
+ * @param id
+ * @param? labelText
+ * @param? fsKey
+ * @param? fsSubfieldName
+ * @param? required
+ * @param? pattern
+ * @param? validationText
+ * @param? hideLabel
+ * @param? hideInput
+ * @param? defaultValue
+ * @param? wrapperModifier
+ * @param? labelModifier
+ * @param? pattern
+ * @param? maxLength
+ * @param? invalidMessage
+ */
+{template .Form_textarea}
+  <div class="Form-inputWrapper{if $wrapperModifier} Form-inputWrapper--{$wrapperModifier}{/if}">
+    <label for="{$id}"
+      class="Form-inputLabel{if $hideLabel or $hideInput} sr-only{/if}{if $labelModifier} Form-inputLabel--{$labelModifier}{/if}">
+      {$labelText ?: $name}
+      {if $required}
+        <span class="Form-inputLabelRequiredMarker">*</span>
+      {/if}
+    </label>
+    <textarea class="Form-input Form-input--textarea js-form-input{if $hideInput} sr-only{/if}" name="{$name}" id="{$id}"
+      {if $defaultValue}{sp}value="{$defaultValue}"{/if}
+      {if $fsKey}{sp}data-fsKey="{$fsKey}"{/if}
+      {if $fsSubfieldName}{sp}data-fs-subfield="{$fsSubfieldName}"{/if}
+      {if $required}{sp}required{/if}
+      {if $pattern}{sp}pattern="{$pattern}"{/if}
+      {if $validationText}{sp}title="{$validationText}"{/if}
+      {if $pattern}{sp}pattern="{$pattern}"{/if}
+      {if $maxLength}{sp}maxlength="{$maxLength}"{/if}
+      {if $invalidMessage}{sp}title="{$invalidMessage}"{/if}>
+    </textarea>
+  </div>
+{/template}
+
+/**
+ * @param options
+ * @param name
+ * @param uniqueId
+ * @param? fsKey
+ * @param? labelModifier
+ */
+{template .Form_inputMultiOption}
+  <fieldset role="group" class="Form-multioption js-form-multioption"
+    {if $fsKey}{sp}data-fsKey="{$fsKey}"{/if}>
+    <div class="Form-multioptionWrapper">
+      {foreach $opt in $options}
+        <label class="Form-inputLabel Form-multioptionLabel{if $labelModifier} Form-inputLabel--{$labelModifier}{/if}" for="{$uniqueId}-{$opt}">
+          <input class="Form-multioptionCheckbox js-form-checkbox" type="checkbox" name="{$name}" value="{$opt}" id="{$uniqueId}-{$opt}">
+          {$opt}
+        </label>
+      {/foreach}
+    </div>
+  </fieldset>
+{/template}
+
+/**
+ * @param id
+ * @param locale
+ * @param? name
+ * @param? useFullStateNameAsValue
+ * @param? useFullStateNameAsDisplay
+ * @param? fsKey
+ * @param? labelText
+ * @param? hideLabel
+ * @param? fsSubfieldName
+ * @param? required
+ * @param? selectStateText
+ * @param? wrapperModifier
+ * @param? labelModifier
+*/
+{template .Form_inputStateSelect}
+  {let $selectName: $name ?: 'State' /}
+  {let $states:
+    [
+      'AL',
+      'AK',
+      'AZ',
+      'AR',
+      'CA',
+      'CO',
+      'CT',
+      'DE',
+      'DC',
+      'FL',
+      'GA',
+      'HI',
+      'ID',
+      'IL',
+      'IN',
+      'IA',
+      'KS',
+      'KY',
+      'LA',
+      'ME',
+      'MD',
+      'MA',
+      'MI',
+      'MN',
+      'MS',
+      'MO',
+      'MT',
+      'NE',
+      'NV',
+      'NH',
+      'NJ',
+      'NM',
+      'NY',
+      'NC',
+      'ND',
+      'OH',
+      'OK',
+      'OR',
+      'PA',
+      'RI',
+      'SC',
+      'SD',
+      'TN',
+      'TX',
+      'UT',
+      'VT',
+      'VA',
+      'WA',
+      'WV',
+      'WI',
+      'WY'
+    ]
+  /}
+  <div class="Form-inputWrapper{if $wrapperModifier} Form-inputWrapper--{$wrapperModifier}{/if}">
+    <label class="Form-inputLabel{if $hideLabel} sr-only{/if}{if $labelModifier} Form-inputLabel--{$labelModifier}{/if}" for="{$id}">
+      {$labelText ?: $selectName}
+      {if $required}
+        <span class="Form-inputLabelRequiredMarker">*</span>
+      {/if}
+    </label>
+    <select class="Form-input Form-input--select js-form-input" name="{$selectName}" id="{$id}"
+      {if $fsKey}{sp}data-fsKey="{$fsKey}"{/if}
+      {if $fsSubfieldName}{sp}data-fs-subfield="{$fsSubfieldName}"{/if}
+      {if $required}{sp}required{/if}>
+      <option selected disabled value="">
+        {if $selectStateText}
+          {$selectStateText}
+        {else}
+          {call strings.form_select_state /}
+        {/if}
+      </option>
+      {foreach $state in $states}
+        <option value="{$useFullStateNameAsValue ? lregionName($locale, 'US', $state) : $state}">{$useFullStateNameAsDisplay ? lregionName($locale, 'US', $state) : $state}</option>
+      {/foreach}
+    </select>
+  </div>
+{/template}
+
+/**
+ * @param id
+ * @param locale
+ * @param? name
+ * @param? fsKey
+ * @param? labelText
+ * @param? hideLabel
+ * @param? fsSubfieldName
+ * @param? required
+ * @param? wrapperModifier
+ * @param? labelModifier
+ * @param? useCountryCodeAsValue
+ * @param? useCountryCodeAsDisplay
+ * @param? selectCountryText
+ * @param? blacklist // List of country codes to omit from the options
+*/
+{template .Form_countryDropdown}
+  {let $countryCodes: [
+    'AF',
+    'AX',
+    'AL',
+    'DZ',
+    'AS',
+    'AD',
+    'AO',
+    'AI',
+    'AG',
+    'AR',
+    'AM',
+    'AW',
+    'AU',
+    'AT',
+    'AZ',
+    'BS',
+    'BH',
+    'BD',
+    'BB',
+    'BY',
+    'BE',
+    'BZ',
+    'BJ',
+    'BM',
+    'BT',
+    'BO',
+    'BQ',
+    'BA',
+    'BW',
+    'BR',
+    'IO',
+    'BN',
+    'BG',
+    'BF',
+    'BI',
+    'CV',
+    'KH',
+    'CM',
+    'CA',
+    'KY',
+    'CF',
+    'TD',
+    'CL',
+    'CN',
+    'CX',
+    'CC',
+    'CO',
+    'KM',
+    'CG',
+    'CD',
+    'CK',
+    'CR',
+    'CI',
+    'HR',
+    'CU',
+    'CW',
+    'CY',
+    'CZ',
+    'DK',
+    'DJ',
+    'DM',
+    'DO',
+    'EC',
+    'EG',
+    'SV',
+    'GQ',
+    'ER',
+    'EE',
+    'SZ',
+    'ET',
+    'FK',
+    'FO',
+    'FJ',
+    'FI',
+    'FR',
+    'GF',
+    'PF',
+    'GA',
+    'GM',
+    'GE',
+    'DE',
+    'GH',
+    'GI',
+    'GR',
+    'GL',
+    'GD',
+    'GP',
+    'GU',
+    'GT',
+    'GG',
+    'GN',
+    'GW',
+    'GY',
+    'HT',
+    'HN',
+    'HK',
+    'HU',
+    'IS',
+    'IN',
+    'ID',
+    'IR',
+    'IQ',
+    'IE',
+    'IM',
+    'IL',
+    'IT',
+    'JM',
+    'JP',
+    'JE',
+    'JO',
+    'KZ',
+    'KE',
+    'KI',
+    'KP',
+    'KR',
+    'KW',
+    'KG',
+    'LA',
+    'LV',
+    'LB',
+    'LS',
+    'LR',
+    'LY',
+    'LI',
+    'LT',
+    'LU',
+    'MO',
+    'MG',
+    'MW',
+    'MY',
+    'ML',
+    'MT',
+    'MH',
+    'MQ',
+    'MR',
+    'MU',
+    'YT',
+    'MX',
+    'FM',
+    'MD',
+    'MC',
+    'MN',
+    'ME',
+    'MS',
+    'MA',
+    'MZ',
+    'MM',
+    'NA',
+    'NR',
+    'NP',
+    'NL',
+    'NC',
+    'NZ',
+    'NI',
+    'NE',
+    'NG',
+    'NU',
+    'NF',
+    'MK',
+    'MP',
+    'NO',
+    'OM',
+    'PK',
+    'PW',
+    'PS',
+    'PA',
+    'PG',
+    'PY',
+    'PE',
+    'PH',
+    'PN',
+    'PL',
+    'PT',
+    'PR',
+    'QA',
+    'RE',
+    'RO',
+    'RU',
+    'RW',
+    'BL',
+    'SH',
+    'KN',
+    'LC',
+    'MF',
+    'PM',
+    'VC',
+    'WS',
+    'SM',
+    'ST',
+    'SA',
+    'SN',
+    'RS',
+    'SC',
+    'SL',
+    'SG',
+    'SX',
+    'SK',
+    'SI',
+    'SB',
+    'SO',
+    'ZA',
+    'SS',
+    'ES',
+    'LK',
+    'SD',
+    'SR',
+    'SJ',
+    'SE',
+    'CH',
+    'SY',
+    'TW',
+    'TZ',
+    'TH',
+    'TL',
+    'TG',
+    'TK',
+    'TO',
+    'TT',
+    'TN',
+    'TR',
+    'TC',
+    'TV',
+    'UG',
+    'UA',
+    'AE',
+    'GB',
+    'US',
+    'UM',
+    'UY',
+    'UZ',
+    'VU',
+    'VE',
+    'VN',
+    'VG',
+    'VI',
+    'WF',
+    'EH',
+    'YE',
+    'ZM',
+    'ZW'
+  ]/}
+
+  {let $selectName: $name ?: 'Country' /}
+
+  <div class="Form-inputWrapper{if $wrapperModifier} Form-inputWrapper--{$wrapperModifier}{/if}">
+    <label class="Form-inputLabel{if $hideLabel} sr-only{/if}{if $labelModifier} Form-inputLabel--{$labelModifier}{/if}" for="{$id}">
+      {$labelText ?: $selectName}
+      {if $required}
+        <span class="Form-inputLabelRequiredMarker">*</span>
+      {/if}
+    </label>
+    <select class="Form-input Form-input--select js-form-input" name="{$selectName}" id="{$id}"
+      {if $fsKey}{sp}data-fsKey="{$fsKey}"{/if}
+      {if $fsSubfieldName}{sp}data-fs-subfield="{$fsSubfieldName}"{/if}
+      {if $required}{sp}required{/if}>
+      <option selected disabled value="">
+        {if $selectCountryText}
+          {$selectCountryText}
+        {else}
+          {call strings.form_select_country /}
+        {/if}
+      </option>
+      {foreach $code in $countryCodes}
+        {if not contains($blacklist ?: [], $code)}
+          <option value="{$useCountryCodeAsValue ? $code : lcountryName($locale, $code)}">{$useCountryCodeAsDisplay ? $code : lcountryName($locale, $code)}</option>
+        {/if}
+      {/foreach}
+    </select>
+  </div>
+{/template}

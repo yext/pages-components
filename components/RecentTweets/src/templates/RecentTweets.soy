@@ -1,0 +1,42 @@
+{namespace components.RecentTweets}
+
+/**
+ * Recent tweets component
+ * @param twitterHandle
+ * @param? tweetLimit Optional, defaults to 3.  Set to -1 to leave unspecified in widget.
+ * @param? width // Default is auto - probably what you want, so leaving unspecified is a good choice.
+ * @param? height // No effect if tweetLimit is set.
+ * @param? followUsCTA
+ * @param? dataChrome
+ * @param? dataScreenName
+ */
+{template .RecentTweets}
+  {let $th: strContains($twitterHandle, '@') ? $twitterHandle : '@' + $twitterHandle /}
+  {let $nakedHandle: substring($th, 1) /}
+  {let $limit: $tweetLimit ?: 3 /}
+  <div class="c-recent-tweets">
+    <div class="c-recent-tweets-follow-us">
+      {if $followUsCTA}
+        {$followUsCTA |noAutoescape}
+      {else}
+        {call strings.social_twitterCTA /}
+      {/if}
+      {sp}
+      <a href="http://www.twitter.com/{$twitterHandle}"
+         {call common.helpers.link_new_tab /}>
+        {$th}
+      </a>
+    </div>
+    <a class="twitter-timeline"
+       {sp}data-dnt="true"
+       {sp}href="https://twitter.com/{$nakedHandle}"
+       {sp}data-screen-name="{if $dataScreenName}{$dataScreenName}{else}{$nakedHandle}{/if}"
+       {if $limit >= 0} data-tweet-limit="{$limit}"{/if}
+       {if $width} width="{$width}"{/if}
+       {if $height} height="{$height}"{/if}
+       {sp}data-chrome="{$dataChrome ?: 'nofooter transparent noborders noheader'}"></a>
+    {literal}
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    {/literal}
+  </div>
+{/template}

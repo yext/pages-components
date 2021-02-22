@@ -1,0 +1,64 @@
+{namespace components.Autocomplete}
+
+/**
+ * @param? id
+ */
+{template .Autocomplete}
+  <div class="c-Autocomplete">
+    <div class="c-Autocomplete-instructions sr-only" id="{$id ? $id : 'initInstr'}">
+      {call strings.autocomplete_initialInstructions /}
+    </div>
+    <div class="c-Autocomplete-ariaResults sr-only" aria-live="assertive" ></div>
+    <ul class="c-Autocomplete-list" id="results" role="listbox" tabindex="0">
+
+    </ul>
+    <div class="c-Autocomplete-attrContainer">
+
+    </div>
+  </div>
+{/template}
+
+/**
+  * @param name
+  * @param index
+  */
+{template .Autocomplete_result}
+  <li class="c-Autocomplete-item"
+      role="option"
+      aria-selected="false"
+      tab-index="-1"
+      data-index="{$index}">
+    {$name}
+  </li>
+{/template}
+
+/**
+ *  @param baseUrl
+  * @param? darkMode
+*/
+{template .Autocomplete_googleAttribution}
+  {let $attributionSrc}
+    {$baseUrl}
+    {if $darkMode}
+      assets/modules/poweredByGoogleDarkMode.png
+    {else}
+      assets/modules/poweredByGoogle.png
+    {/if}
+  {/let}
+  <img class="c-Autocomplete-attrImage" src="{$attributionSrc}" alt="Powered by Google">
+  <div class="c-Autocomplete-placesAttrEl"></div>
+{/template}
+
+/**
+  * @param numResults
+*/
+{template .Autocomplete_srDirections}
+  {if $numResults}
+    {msg desc="screen reader directions for autocomplete results"}
+      {$numResults} results are available. Keyboard users, use up and down arrows to review and enter to select.
+      Touch device users, explore by touch or with swipe gestures.
+    {/msg}
+  {else}
+    {call strings.autocomplete_noResults /}
+  {/if}
+{/template}

@@ -1,0 +1,10 @@
+{namespace components.Util}
+
+/**
+* @param path
+* @param siteDomain
+* @param isHttps
+*/
+{template .Absolutize}
+  http{if $isHttps}s{/if}://{$siteDomain}/{$path}
+{/template}

@@ -1,0 +1,76 @@
+{namespace components.Social}
+
+/**
+ * @param appId
+ * @param? includeFBSDK // Only include once on a page!
+ */
+{template .ShareButton_facebook}
+  <div class="social-share-button fb-share-button-wrapper">
+    <div class="fb-share-button" data-layout="button"></div>
+    {if $includeFBSDK}
+      {call .ShareButton_facebookSdk data="all" /}
+    {/if}
+  </div>
+{/template}
+
+/**
+ * @param appId
+ */
+{template .ShareButton_facebookSdk}
+  <div id="fb-root"></div>
+  <script>(function(d, s, id) {lb}
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId={$appId}&version=v2.10";
+    fjs.parentNode.insertBefore(js, fjs);
+  {rb}(document, 'script', 'facebook-jssdk'));</script>
+{/template}
+
+{template .ShareButton_twitter}
+  <div class="social-share-button twitter-share-button-wrapper">
+    {literal}
+      <a href="https://twitter.com/share" class="twitter-share-button" data-count="none" data-dnt="true">Tweet</a>
+      <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+      </script>
+    {/literal}
+  </div>
+{/template}
+
+/**
+ * @param siteDomain
+ * @param imageLink // the relative image url
+ * @param shareUrl
+ * @param pinterestDescription
+ */
+{template .ShareButton_pinterest}
+  <div class="social-share-button pinterest-pin-button-wrapper">
+    <a href="//www.pinterest.com/pin/create/button/?url={$shareUrl}&media={$siteDomain}{$imageLink}&description={$pinterestDescription |escapeUri}" data-pin-do="buttonPin" data-pin-config="none" data-pin-color="red"><img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_red_20.png" /></a>
+    <!-- Please call pinit.js only once per page -->
+    <script async defer src="//assets.pinterest.com/js/pinit.js"></script>
+  </div>
+{/template}
+
+/**
+ * @param shareUrl
+ */
+{template .ShareButton_linkedin}
+  <script src="//platform.linkedin.com/in.js" async defer> lang: en_US</script>
+  <div class="social-share-button linkedin-share-button-wrapper">
+    <script type="IN/Share" data-url="{$shareUrl}"></script>
+  </div>
+{/template}
+
+/**
+ * @param instagramHandle
+ */
+{template .ShareButton_instagram}
+  <div class="social-share-button instagram-share-button-wrapper">
+    <a class="instagram-share-button"
+       href="http://instagram.com/{$instagramHandle}"
+       {call common.helpers.link_new_tab /}>
+      <span class="fa fa-instagram"></span>
+      {call strings.social_instagramCTA /}
+    </a>
+  </div>
+{/template}

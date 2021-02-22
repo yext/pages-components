@@ -1,0 +1,11 @@
+{
+  "ignoreChanges": [
+    "components/*/LICENSE",
+    "components/*/tests/**"
+  ],
+  "npmClient": "yarn",
+  "packages": [
+    "components/*"
+  ],
+  "version": "independent"
+}

@@ -1,0 +1,37 @@
+{namespace components.Util}
+
+/**
+ * @param? id
+ * @param content
+ * @param? class
+ * @param? prerenderedJson
+ */
+{template .DataForJs}
+  <script type="text/data"
+          {if $id} id="{$id}"{/if}
+          {if $class} class="{$class}"{/if}>
+    {if $prerenderedJson}
+      {$content |noAutoescape}
+    {else}
+      {$content |json}
+    {/if}
+  </script>
+{/template}
+
+/**
+ * @param var
+ * @param content
+ * @param? prerenderedJson
+ */
+{template .DataForJs_global}
+  <script class="data-for-js-global" data-global="{$var}">
+    if (typeof {$var} !== 'undefined') {lb}
+      throw new Error('DataForJs_global: {$var} already exists');
+    {rb}
+    var {$var} = {if $prerenderedJson}
+      {$content |noAutoescape}
+    {else}
+      {$content |json}
+    {/if};
+  </script>
+{/template}

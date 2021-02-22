@@ -1,0 +1,73 @@
+{namespace components.Address}
+
+/**
+ * Format a location address.
+ * Generates a formatted address based on the options
+ * specified as paramaters in the soy template call.
+ *
+ * @param locale
+ *
+ * Entity params
+ * @param profile
+ * @param? derivedData
+ * @param? relatedData
+ * @param? listings
+ *
+ * Configuration params
+ * @param? hideSchema
+ * @param? htmlElement
+ * @param? itemRefId An ID to use when referencing an address from an itemref attribute
+ * @param? linkToGetDirections
+ * @param? provider
+ * @param? regionAbbr Boolean to indicate whether or not to abbreviate the region (e.g. state)
+ * @param? yaTrack
+ *
+ * Passthrough params
+ * @param? useCurrentLocation -> components.Maps.GetDirections_url
+ */
+{template .Address}
+  {if not $hideSchema}
+    {call .Address_geoCoordinates data="all" /}
+  {/if}
+
+  {let $itemScope}
+    {if not $hideSchema}
+      {if strlen($itemRefId ?: '')>0}
+        {sp}id="{$itemRefId}"
+      {/if}
+      {sp}itemscope itemtype="http://schema.org/PostalAddress" itemprop="address"
+    {/if}
+  {/let}
+  {let $element: $htmlElement ?: 'address' /}
+  <{$element} class="c-address"{$itemScope |noAutoescape} data-country="{$profile.address.countryCode}">
+    {if $linkToGetDirections}
+      <a href="{call components.Maps.GetDirections_url data="all"/}"
+         data-ga-category="Get Directions/Location Address"
+         data-ya-track="{$yaTrack ?: 'directions_address'}"
+         class="c-address-get-directions-link"
+         {call common.helpers.link_new_tab /}>
+    {/if}
+
+    {call components.Address.Fields_localitySchema data="all" /}
+    {call components.Address.Fields_streetSchema data="all" /}
+    {call components.Address.I18n_addressForCountry data="all" /}
+
+    {if $linkToGetDirections}
+      </a>
+    {/if}
+  </{$element}>
+{/template}
+
+/**
+ * Pulls geo schema tag info
+ *
+ * @param profile
+ */
+{template .Address_geoCoordinates}
+  {if $profile.yextDisplayCoordinate}
+    <span class="coordinates" itemprop="geo" itemscope itemtype="http://schema.org/GeoCoordinates">
+      <meta itemprop="latitude" content="{$profile.yextDisplayCoordinate.lat}">
+      <meta itemprop="longitude" content="{$profile.yextDisplayCoordinate.long}">
+    </span>
+  {/if}
+{/template}

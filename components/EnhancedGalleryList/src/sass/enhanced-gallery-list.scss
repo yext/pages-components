@@ -1,0 +1,40 @@
+//
+// Gallery list Component SCSS Stylesheet
+//
+
+.c-enhanced-gallery-list
+{
+  &-item
+  {
+    &-list
+    {
+      @include make-row();
+    }
+
+    &-wrapper
+    {
+      @include make-md-column(3);
+    }
+
+    &-name
+    {
+      margin-bottom: 7px;
+    }
+
+    &-image
+    {
+      width: 100%;
+      height: auto;
+      margin-bottom: 7px;
+    }
+
+    &-youtube
+    {
+      &-embed
+      {
+        width: 100%;
+        height: 300px;
+      }
+    }
+  }
+}

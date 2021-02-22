@@ -1,0 +1,34 @@
+//
+// Description Component SCSS Stylesheet
+//
+
+.c-description
+{
+  &.show-full-description
+  {
+    .c-description
+    {
+      &-truncated
+      {
+        display:none;
+      }
+      &-full
+      {
+        display:block;
+      }
+    }
+  }
+
+  &-truncated
+  {
+
+  }
+  &-full
+  {
+    display:none;
+  }
+  &-button--new-line
+  {
+    display: block;
+  }
+}

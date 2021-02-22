@@ -1,0 +1,35 @@
+{
+  "name": "@yext/components-location-map",
+  "version": "2.0.1",
+  "description": "",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=12.16.x"
+  },
+  "main": "index.js",
+  "directories": {
+    "lib": "src"
+  },
+  "files": [
+    "src",
+    "index.js"
+  ],
+  "sideEffects": [],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "@yext/components-address": "1.1.7",
+    "@yext/components-geo": "1.1.1",
+    "@yext/components-maps": "2.1.0",
+    "@yext/components-run-if-visible": "1.1.1",
+    "@yext/components-util": "1.1.1"
+  },
+  "peerDependencies": {
+    "@yext/components-address": "1.1.7",
+    "@yext/components-geo": "1.1.1",
+    "@yext/components-maps": "2.1.0",
+    "@yext/components-run-if-visible": "1.1.1",
+    "@yext/components-util": "1.1.1"
+  }
+}

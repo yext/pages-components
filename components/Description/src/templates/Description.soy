@@ -1,0 +1,68 @@
+{namespace components.Description}
+
+/**
+ * Description component
+ * @param description
+ * @param? showReadMore Enable text truncation
+ * @param? readMoreText Text for read more button
+ * @param? readLessText Text for read less button
+ * @param? readMoreTextLength Number of characters to truncate to
+ * @param? readMoreOnNewLine Boolean: True = read more/less button on its own line. False = button is inlined
+ * @param? hideSchema
+ * @param? allowHTML Note: HTML cannot be used if you are also truncating text
+ */
+{template .Description}
+  <div class="c-description">
+    {if $showReadMore and strlen($description) > ($readMoreTextLength ?: 150)}
+      <div class="c-description-truncated">
+        // Truncated description will ALWAYS escape HTML. If we allowed HTML with truncation, it would
+        // likely result in a closing tag being chopped off, which could break an entire page's display.
+        {$description |truncate:$readMoreTextLength ?: 150,true |changeNewlineToBr}
+        <button class="c-description-visible-read-more c-description-button{if $readMoreOnNewLine} c-description-button--new-line{/if} js-show-more">
+          {if $readMoreText}
+            {$readMoreText |noAutoescape}
+          {else}
+            <span class="c-description-visible-read-more-text" aria-hidden="true">
+              {call strings.description_expand /}
+            </span>
+            <span class="sr-only">
+              {call strings.description_expandVerbose /}
+            </span>
+          {/if}
+        </button>
+      </div>
+      <div class="c-description-full">
+        <span class="c-description-text"{if not $hideSchema} itemprop="description"{/if}>
+          {if $allowHTML}
+            {rreplace($description, '\r\n|\r|\n', '<br>') |noAutoescape}
+          {else}
+            {$description |changeNewlineToBr}
+          {/if}
+        </span>
+        <button class="c-description-visible-read-less c-description-button{if $readMoreOnNewLine} c-description-button--new-line{/if} js-show-less">
+          {if $readLessText}
+            {$readLessText |noAutoescape}
+          {else}
+            <span class="c-description-visible-read-less-text" aria-hidden="true">
+              {call strings.description_collapse /}
+            </span>
+            <span class="sr-only">
+              {call strings.description_collapseVerbose /}
+            </span>
+          {/if}
+        </button>
+      </div>
+    {else}
+      {let $el}
+        {if $allowHTML}div{else}span{/if}
+      {/let}
+      <{$el}{if not $hideSchema} itemprop="description"{/if}>
+        {if $allowHTML}
+          {rreplace($description, '\r\n|\r|\n', '<br>') |noAutoescape}
+        {else}
+          {$description |changeNewlineToBr}
+        {/if}
+      </{$el}>
+    {/if}
+  </div>
+{/template}

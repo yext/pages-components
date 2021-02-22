@@ -1,0 +1,18 @@
+{namespace components.Util}
+
+/**
+ * @param keyPaths array of key path arrays, e.g. [['customByName', 'CustomField'], ['city']]
+ * @param object
+ * @param? separator
+ **/
+{template .MultipleForObj}
+  {foreach $keyPath in $keyPaths}
+    {call .ForObj data="all"}
+      {param keyPath: $keyPath /}
+    {/call}{if not isLast($keyPath)}
+      <span class="key-path-item-separator">
+        {$separator ?: ' '}
+      </span>
+    {/if}
+  {/foreach}
+{/template}

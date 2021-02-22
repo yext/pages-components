@@ -1,0 +1,21 @@
+{namespace components.GoogleTagManager}
+
+/**
+ * include this in <head>
+ * Example:
+ * {call components.GoogleTagManager.Head}
+ *   {param id: 'GTM-XXXXXXX' /}
+ *   {param name: 'dataLayer' /}
+ * {/call}
+ * @param id container ID for Google Tag Manager (GTM)
+ * @param? name container Name for Google Tag Manager (GTM)
+ */
+{template .Head}
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){lb}w[l]=w[l]||[];w[l].push({lb}'gtm.start':
+  new Date().getTime(),event:'gtm.js'{rb});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  {rb})(window,document,'script','{$name ? $name : 'dataLayer'}','{$id}');</script>
+  <!-- End Google Tag Manager -->
+{/template}

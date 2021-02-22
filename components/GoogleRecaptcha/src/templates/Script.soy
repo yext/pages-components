@@ -1,0 +1,11 @@
+{namespace components.GoogleRecaptcha}
+
+/**
+ * This script should be placed in the <head> before any JS is added to the page.
+ * You must add your site's staging and prod domains to the corresponding Recaptcha Admin accounts.
+ * If you don't have access to the accounts, ask around for somebody to provide it to you.
+ * @param recaptchaSiteKey
+ */
+{template .Script}
+  <script src="https://www.google.com/recaptcha/api.js?render={$recaptchaSiteKey}"></script>
+{/template}

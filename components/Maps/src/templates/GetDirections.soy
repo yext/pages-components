@@ -1,0 +1,98 @@
+{namespace components.Maps}
+
+/**
+ * Entity params
+ * @param profile
+ * @param? relatedData
+ * @param? listings Used in place of relatedData.listings on locators
+ *
+ * Content params
+ * @param? buttonText
+ *
+ * Configuration params
+ * @param? gaCategory
+ * @param? noTrack
+ * @param? provider
+ * @param? useCurrentLocation
+ * @param? yaTrack
+ * @param? outerClass
+ * @param? wrapperClass
+ * @param? linkClass
+ */
+{template .GetDirections}
+  {let $trackingTag: $yaTrack ? $yaTrack : 'directions' /}
+  <div class="c-get-directions{if $outerClass} {$outerClass}{/if}">
+    <div class="c-get-directions-button-wrapper{if $wrapperClass} {$wrapperClass}{/if}">
+      <a class="c-get-directions-button{if $linkClass} {$linkClass}{/if}"
+         href='{call .GetDirections_url data="all" /}'
+         data-ga-category="{$gaCategory ?: 'Get Directions'}"
+         data-ya-track="{$trackingTag}"
+         {if $noTrack} data-ga-no-track="true"{/if}
+         {call common.helpers.link_new_tab /}>
+          {if $buttonText}
+            {$buttonText |noAutoescape}
+          {else}
+            {call strings.getDirectionsCTA /}
+          {/if}
+      </a>
+    </div>
+  </div>
+{/template}
+
+/**
+ * Entity params
+ * @param profile
+ * @param? relatedData
+ * @param? listings Used in place of relatedData.listings on locators
+ *
+ * Configuration params
+ * @param? provider
+ * @param? useCurrentLocation
+ */
+{template .GetDirections_url}
+  {let $address1: $profile.address.line1 /}
+  {let $address2: $profile.address.line2 /}
+  {let $city: $profile.address.city /}
+  {let $region: $profile.address.region /}
+  {let $postalCode: $profile.address.postalCode /}
+  {let $country: $profile.address.countryCode /}
+
+  {let $entityListings: $listings ?: $relatedData?.listings /}
+
+  {let $url}
+    {if $provider == 'Bing'}
+      {let $query}
+        {$address1 |noAutoescape}, {$city}, {$region} {$postalCode}
+      {/let}
+      http://bing.com/maps/default.aspx?where1={$query |escapeUri}
+    {elseif strContains($provider ?: '', 'MapQuest')}
+      {let $query}
+        {$address1 |noAutoescape}{if $address2} {$address2 |noAutoescape}{/if} {$city} {$region} {$postalCode}{if $country} {$country}{/if}
+      {/let}
+      http://mapq.st/directions?q={$query |escapeUri}&maptype=map
+    {else}
+      {if $entityListings?.googleMyBusiness?.placeId and $useCurrentLocation}
+        https://www.google.com/maps/dir/?api=1&destination_place_id={$entityListings.googleMyBusiness.placeId}&destination=direct
+      {elseif $entityListings?.googleMyBusiness?.url and indexOf($entityListings.googleMyBusiness.url, 'maps.google.com') != -1}
+        {$entityListings.googleMyBusiness.url}
+      {elseif $entityListings?.googleReviews?.url}
+        {$entityListings.googleReviews.url}
+      {elseif $profile.googlePlaceId}
+        {let $query}
+          {$address1 |noAutoescape}, {if $address2}{$address2 |noAutoescape}, {/if}{$city}, {$region} {$postalCode} {$country}
+        {/let}
+        https://www.google.com/maps/search/?api=1&query={$query |noAutoescape|escapeUri}&query_place_id={$profile.googlePlaceId}
+      {else}
+        {let $query}
+          {$address1 |noAutoescape}, {if $address2}{$address2 |noAutoescape}, {/if}{$city}, {$region} {$postalCode} {$country}
+        {/let}
+        {if $useCurrentLocation}
+          https://www.google.com/maps/dir/Current+Location/{$query |noAutoescape |escapeUri}
+        {else}
+          https://www.google.com/maps/search/?api=1&query={$query |noAutoescape |escapeUri}&output=classic
+        {/if}
+      {/if}
+    {/if}
+  {/let}
+  {$url |noAutoescape}
+{/template}

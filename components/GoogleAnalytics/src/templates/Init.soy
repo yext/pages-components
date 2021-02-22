@@ -1,0 +1,11 @@
+{namespace components.GoogleAnalytics}
+
+{template .Init}
+  <script>
+    window.ga=window.ga||function(){lb}
+      (ga.q=ga.q||[]).push(arguments)
+    {rb};
+    ga.l=+new Date;
+  </script>
+  <script src="https://www.google-analytics.com/analytics.js"></script>
+{/template}

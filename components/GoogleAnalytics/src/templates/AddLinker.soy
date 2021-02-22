@@ -1,0 +1,18 @@
+{namespace components.GoogleAnalytics}
+
+/**
+ * see here: https://developers.google.com/analytics/devguides/collection/analyticsjs/linker
+ * @param name
+ * @param linkedDomains
+ */
+{template .GoogleAnalytics_addLinker}
+  <script>
+    (function () {lb}
+      ga('{$name}.set', {lb}
+        'allowLinker': true
+      {rb});
+      ga('require', 'linker');
+      ga('linker:autoLink', {$linkedDomains});
+    {rb})();
+  </script>
+{/template}

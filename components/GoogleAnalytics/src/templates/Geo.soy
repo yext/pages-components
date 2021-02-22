@@ -1,0 +1,85 @@
+{namespace components.GoogleAnalytics}
+
+/**
+ * @param analyticsMap
+ * @param state
+ * @param? city
+ * @param resultCount
+ */
+{template .Geo}
+  {let $geoCategory}
+    {if $city and $state}
+      CityList Directory (count = {$resultCount})
+    {else}
+      StateList Directory (count = {$resultCount})
+    {/if}
+  {/let}
+
+  {call .Geo_recordEventLabels data="all"}
+    {param category: $geoCategory /}
+    {param levels: [$city, $state] /}
+  {/call}
+{/template}
+
+/**
+ * @param analyticsMap
+ * @param response
+ */
+{template .Geo_locator}
+  {if $response?.geo and length(keys($response?.geo) ?: [])}
+    {let $resultsNumThreshold: 5 /} // Number of max results we send a 'Few Results' label
+    {let $city: $response.geo.address.city /}
+    {let $state: $response.geo.address.region /}
+
+    {let $geoCategory}
+      {if $response.count == 0}
+        Search - Zero Results
+      {elseif $response.count > $resultsNumThreshold}
+        Search - Many Results (> {$resultsNumThreshold})
+      {else}
+        Search - Few Results (0 <= {$resultsNumThreshold})
+      {/if}
+    {/let}
+
+    {call .Geo_recordEventLabels data="all"}
+      {param category: $geoCategory /}
+      {param levels: [$city, $state] /}
+    {/call}
+  {/if}
+{/template}
+
+/**
+ * @param analyticsMap
+ * @param category
+ * @param levels
+ */
+{template .Geo_recordEventLabels}
+  {let $label}
+    {foreach $level in $levels}
+      {if $level}
+        {$level}{if not isLast($level)}, {/if}
+      {/if}
+    {/foreach}
+  {/let}
+
+  {if $label}
+    {call .Geo_recordEvent data="all"}
+      {param label: $label /}
+    {/call}
+  {/if}
+{/template}
+
+/**
+ * @param analyticsMap
+ * @param category
+ * @param label
+ */
+{template .Geo_recordEvent}
+  <script>
+    {foreach $key in keys($analyticsMap)}
+      {if strlen($category) > 0}
+        ga('{$key}.send', 'event', 'Geo', '{$category |noAutoescape}', '{$label |noAutoescape}');
+      {/if}
+    {/foreach}
+  </script>
+{/template}

@@ -1,0 +1,22 @@
+{namespace components.TealiumAnalytics}
+
+/**
+ * Tealium Analytics Setup component
+ * @param tealiumAccount
+ * @param tealiumProfile // typically 'main'
+ * @param tealiumEnv // dev, qa, or prod
+ * @param tealiumPageViewData Data to send to pageview event fire
+ * @param? invokePageView Default: true. Automatically trigger a page view
+ * @param? tealiumSetData Add data to TealiumAnalytics Object for use in js
+ * @param? pageViewFireEvent
+ * @param? pageViewSetTag
+ */
+{template .Setup}
+  {call .Launch data="all" /}
+
+  {if $tealiumSetData}
+    {call .Set data="all" /}
+  {/if}
+
+  {call .Invoke data="all" /}
+{/template}

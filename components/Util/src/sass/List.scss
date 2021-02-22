@@ -1,0 +1,24 @@
+$list-inset: 20px !default;
+$list-vertical-spacing-ratio: 1.5 !default;
+
+// List is a simple mixin for creating bulleted list styling
+
+/** @define List */
+@mixin List($inset: $list-inset, $spacing: $list-vertical-spacing-ratio)
+{
+  list-style-type: disc;
+  display: block;
+  padding-left: $inset;
+  margin-top: $list-vertical-spacing-ratio * 1em;
+  margin-bottom: $list-vertical-spacing-ratio * 1em;
+
+  &-item
+  {
+    display: list-item;
+  }
+}
+
+.List
+{
+  @include List;
+}

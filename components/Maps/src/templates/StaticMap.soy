@@ -1,0 +1,175 @@
+{namespace components.Maps}
+
+/**
+ * Create a static map from our map API
+ *
+ * @param? siteDomain
+ *
+ * Entity params
+ * @param profile
+ *
+ * Configuration params
+ * @param provider
+ * @param providerApiKey
+ * @param? gaCategory
+ * @param? yaTrackName
+ * @param? height
+ * @param? width
+ * @param? hideSchema
+ * @param? mapType One of ('road', 'satellite')
+ * @param? markerUrl
+ * @param? noTrack
+ * @param? options
+ */
+{template .StaticMap}
+  {let $imgAltText}
+    {msg desc=""}
+      Map of {$profile.address.line1 |noAutoescape} in {$profile.address.city |noAutoescape}
+    {/msg}
+  {/let}
+  <div class="map-wrapper" itemscope itemtype="http://schema.org/Place">
+    // Since this is just meta data but needs to be structured
+    // We use hidden meta tags in a hidden span element
+    {if not $hideSchema}
+      <span class="coordinates" itemprop="geo" itemscope itemtype="http://schema.org/GeoCoordinates">
+        <meta itemprop="latitude" content="{$profile.yextDisplayCoordinate.lat}">
+        <meta itemprop="longitude" content="{$profile.yextDisplayCoordinate.long}">
+      </span>
+    {/if}
+
+    <a href="{call .GetDirections_url data="all" /}"
+       {call common.helpers.link_new_tab /}
+       {if $noTrack} data-ga-no-track="true"{/if}
+       {if $gaCategory} data-ga-category="{$gaCategory}"{/if}
+       {if $yaTrackName} data-ya-track="{$yaTrackName}"{/if}>
+      <img src="{call .StaticMap_url data="all" /}"
+           alt="{$imgAltText}"
+           {if not $hideSchema} itemprop="map"{/if}>
+    </a>
+  </div>
+{/template}
+
+/**
+ * @param? siteDomain
+ *
+ * Entity params
+ * @param profile
+ *
+ * Configuration params
+ * @param provider
+ * @param providerApiKey
+ * @param? height
+ * @param? width
+ * @param? mapType One of ('road', 'satellite')
+ * @param? markerUrl
+ * @param? options
+ */
+{template .StaticMap_url}
+  {switch $provider}
+    {case 'Bing'}
+      {call .StaticMap_bingUrl data="all"}
+        {param apiKey: $providerApiKey /}
+        {param width: $width ?: 350 /}
+        {param height: $height ?: 350 /}
+      {/call}
+    {case 'Leaflet', 'Mapbox'}
+      {call .StaticMap_mapboxUrl data="all"}
+        {param apiKey: $providerApiKey /}
+        {param width: $width ?: 350 /}
+        {param height: $height ?: 350 /}
+      {/call}
+    {case 'MapQuest'}
+      {call .StaticMap_mapquestUrl data="all"}
+        {param apiKey: $providerApiKey /}
+        {param width: $width ?: 350 /}
+        {param height: $height ?: 350 /}
+      {/call}
+    {default}
+      {call .StaticMap_googleUrl data="all"}
+        {param mapType: $mapType ?: 'road' /}
+        {param width: $width ?: 350 /}
+        {param height: $height ?: 350 /}
+      {/call}
+  {/switch}
+{/template}
+
+/**
+ * @param siteDomain
+ *
+ * Entity params
+ * @param profile
+ *
+ * Configuration params
+ * @param height
+ * @param width
+ * @param mapType One of ('road', 'satellite')
+ * @param? markerUrl
+ */
+{template .StaticMap_googleUrl}
+  {let $latlng: $profile.yextDisplayCoordinate.lat + ',' + $profile.yextDisplayCoordinate.long /}
+  // note: markerUrl must be absolute, also it will trigger a warning until icon is publicly visible
+  {let $params: [
+    'center': $latlng,
+    'zoom': '13',
+    'size': $width + 'x' + $height,
+    'maptype': $mapType == 'road' ? 'roadmap' : 'satellite',
+    'markers': ($markerUrl ? 'icon:' + $markerUrl : 'color:red') + '|' + $latlng,
+    'sensor': 'false',
+    'channel' : $siteDomain
+  ] /}
+  // GENERATOR TODO: This needs to accept a client API key
+  {gmap('/maps/api/staticmap', $params) |noAutoescape}
+{/template}
+
+/**
+ * @param profile
+ * @param height
+ * @param width
+ * @param apiKey
+ */
+{template .StaticMap_bingUrl}
+  https://dev.virtualearth.net/REST/v1/Imagery/Map/road{nil}
+  ?{$width},{$height}
+  &pushpin={$profile.yextDisplayCoordinate.lat},{$profile.yextDisplayCoordinate.long}
+  &key={$apiKey}
+{/template}
+
+/**
+ * @param profile
+ * @param height
+ * @param width
+ * @param apiKey
+ * @param? options Map
+ */
+{template .StaticMap_mapquestUrl}
+  https://www.mapquestapi.com/staticmap/v4/getmap{nil}
+  ?key={$apiKey}
+  &size={$width},{$height}
+  &zoom={$options?.zoom ?: 10}
+  &center={$profile.yextDisplayCoordinate.lat},{$profile.yextDisplayCoordinate.long}
+{/template}
+
+/**
+ * @param profile
+ * @param height
+ * @param width
+ * @param apiKey
+ * @param? options Map
+ */
+{template .StaticMap_mapboxUrl}
+  {let $coordinate: $profile.yextDisplayCoordinate.long + ',' + $profile.yextDisplayCoordinate.lat /}
+  {let $pinSize: $options?.pinSize ?: 'pin-m' /}
+  {let $marker: $options?.marker ? '-' + $options.marker : '' /}
+  {let $color: $options?.color ? '+' + $options.color : '' /}
+
+  https://api.mapbox.com/styles/v1{nil}
+  /{$options?.mapboxMapIdentifier ?: 'mapbox'}
+  /{$options?.style ?: 'streets-v9'}
+  /static{nil}
+  {if not $options?.noOverlay}
+    /{$pinSize}{$marker}{$color}({$coordinate})
+  {/if}
+  /{$coordinate},{$options?.zoom ?: 15}
+  /{$width}x{$height}
+  ?access_token={$apiKey}
+{/template}

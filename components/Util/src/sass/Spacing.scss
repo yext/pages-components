@@ -1,0 +1,73 @@
+@import "./_set-properties.scss";
+
+$spacing-base: $grid-gutter-width/2 !default;
+
+// see https://www.viget.com/articles/sass-with-maps
+// for explanation of why sass maps are great for stuff like spacing
+$spacing: (
+  zero: 0,
+  oneFifth: $spacing-base / 5,            // 3px
+  oneThird: $spacing-base / 3,            // 5px
+  half: $spacing-base / 2,                // 7.5px
+  twoFifths: $spacing-base * (2 / 5),     // 6px
+  twoThirds: $spacing-base * (2 / 3),     // 10px
+  fourFifths: $spacing-base * (4 / 5),    // 12px
+  base: $spacing-base,                    // 15px **
+  fourThirds: $spacing-base * (4 / 3),    // 20px
+  double: $spacing-base * 2,              // 30px
+  buttonHeight: $spacing-base * (7 / 3),  // 35px
+  eightThirds: $spacing-base * (8 / 3),   // 40px
+  triple: $spacing-base * 3,              // 45px
+  tenThirds: $spacing-base * (10 / 3),    // 50px
+  quadruple: $spacing-base * 4,           // 60px
+);
+
+@function spacing($multiplier, $neg: false)
+{
+  @if map-has-key($spacing, $multiplier)
+  {
+    $value: map-get($spacing, $multiplier);
+
+    @if $neg
+    {
+      @return -1 * $value;
+    }
+
+    @else
+    {
+      @return $value;
+    }
+  }
+
+  @error "Unknown spacing multiplier '#{$multiplier}'";
+
+  @return null;
+}
+
+@mixin space($multiplierOrValue, $type, $directions: (), $negative: false)
+{
+  @if map-has-key($spacing, $multiplierOrValue)
+  {
+    @include properties(spacing($multiplierOrValue, $negative), $type, $directions);
+  }
+
+  @else if type-of($multiplierOrValue) == number or $multiplierOrValue == 'auto'
+  {
+    @include properties($multiplierOrValue, $type, $directions);
+  }
+
+  @else
+  {
+    @error "unexpected value of input '#{$multiplierOrValue}' must be a number, spacing value, or 'auto'";
+  }
+}
+
+@mixin margin($multiplierOrValue: base, $directions: (top, right, bottom, left), $negative: false)
+{
+  @include space($multiplierOrValue, 'margin', $directions, $negative);
+}
+
+@mixin padding($multiplierOrValue: base, $directions: (top, right, bottom, left), $negative: false)
+{
+  @include space($multiplierOrValue, 'padding', $directions, $negative);
+}

@@ -1,0 +1,21 @@
+{namespace components.Monitoring}
+
+/**
+ * Boostrap data needed to provide context for error monitoring.
+ *
+ * @param siteId
+ * @param siteDomain
+ * @param isStaging
+ * @param soyTemplateName
+ */
+{template .Init}
+  {call components.Util.DataForJs}
+    {param id: 'monitoring-data' /}
+    {param content: [
+      'isStaging': $isStaging,
+      'siteId': $siteId,
+      'siteDomain': $siteDomain,
+      'soyTemplateName': $soyTemplateName
+    ] /}
+  {/call}
+{/template}

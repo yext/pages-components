@@ -1,0 +1,19 @@
+{namespace components.InfoWindow}
+
+/**
+ * @param baseUrl
+ */
+{template .InfoWindow}
+  // Outer div is created in JS
+  <button class="InfoWindow-close js-infowindow-close">
+    <span class="sr-only">
+      {call strings.infoWindow_close /}
+    </span>
+    {call components.Svg.Icon data="all"}
+      {param iconName: 'close' /}
+      {param additionalClasses: 'InfoWindow-closeIcon' /}
+    {/call}
+  </button>
+  <div class="InfoWindow-content Text js-infowindow-content"></div>
+  <div class="InfoWindow-tip js-infowindow-tip"></div>
+{/template}

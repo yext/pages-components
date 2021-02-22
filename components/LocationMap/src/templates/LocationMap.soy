@@ -1,0 +1,70 @@
+{namespace components.LocationMap}
+
+/**
+ * Entity params
+ * @param profile
+ * @param? relatedData
+ * @param? listings
+ *
+ * Configuration params
+ * @param provider For Static Map
+ * @param providerApiKey For Static Map
+ * @param? height For Static Map
+ * @param? width For Static Map
+ * @param? hideSchema
+ * @param? itemRefs Space-separated strings that reference IDs of schema elements, e.g. 'telephone address location-name storephoto'
+ * @param? linkToGetDirections
+ * @param? linkSameTab
+ * @param? mapID
+ * @param? pinUrl URL to open when the pin is clicked
+ * @param? yaScope
+ * @param? yaTrack
+ */
+{template .LocationMap}
+  {let $refs: $itemRefs ?: 'telephone address location-name storephoto' /}
+  {let $entityListings: $listings ?: $relatedData?.listings /}
+  {let $getDirectionsUrl}
+    {call components.Maps.GetDirections_url data="all" /}
+  {/let}
+  {let $linkText}
+    {if $linkToGetDirections}
+      {msg desc="Screen reader text for a map pin that links to driving directions"}
+        Get directions to {$profile.name} at {$profile.address.line1} {$profile.address.city}, {$profile.address.region}
+      {/msg}
+    {else}
+      {msg desc="Screen reader text for a map pin that links to a URL"}
+        {$profile.name} at {$profile.address.line1} {$profile.address.city}, {$profile.address.region}
+      {/msg}
+    {/if}
+  {/let}
+
+  <div class="location-map-wrapper js-location-map-wrapper"{if not $hideSchema} id="schema-location" itemprop="location" itemscope itemtype="http://schema.org/Place" itemref="{$refs}"{/if}>
+    {if not $hideSchema}
+      {let $staticMapUrl}
+        {if $entityListings?.googleMyBusiness?.url}
+          {$entityListings.googleMyBusiness.url}
+        {else}
+          {call components.Maps.StaticMap_url data="all" /}
+        {/if}
+      {/let}
+      {call components.Address.Address_geoCoordinates data="all" /}
+      <link itemprop="hasMap" href="{$staticMapUrl |noAutoescape}">
+    {/if}
+    {call components.Maps.Map data="all" /}
+    {call components.Util.DataForJs}
+      {param class: 'js-map-data' /}
+      {param content: [
+        'latitude': $profile.yextDisplayCoordinate?.lat,
+        'longitude': $profile.yextDisplayCoordinate?.long
+      ] /}
+    {/call}
+    {if $linkToGetDirections or $pinUrl}
+      <a class="location-map-link js-pin-link sr-only sr-only-focusable"
+         href="{$linkToGetDirections ? $getDirectionsUrl : $pinUrl}"
+         {if not $linkSameTab}{call common.helpers.link_new_tab /}{/if}
+         {if $yaTrack} data-ya-track="{$yaTrack}"{/if}>
+        {$linkText}
+      </a>
+    {/if}
+  </div>
+{/template}

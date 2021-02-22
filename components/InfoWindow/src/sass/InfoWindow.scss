@@ -1,0 +1,41 @@
+/** @define InfoWindow */
+
+.InfoWindow
+{
+  position: relative;
+  right: 50%;
+  cursor: auto;
+  background: white;
+  padding: 32px 16px 16px;
+
+  // Override Maps reset
+  .dir-map &,
+  .dir-map & *
+  {
+    box-sizing: border-box;
+  }
+
+  &-close
+  {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+
+  &-closeIcon.icon
+  {
+    display: block;
+    height: 16px;
+    width: 16px;
+  }
+
+  &-tip
+  {
+    position: absolute;
+    top: 100%;
+    left: calc(50% - 16px);
+    border-top: 16px solid white;
+    border-right: 16px solid transparent;
+    border-left: 16px solid transparent;
+  }
+}

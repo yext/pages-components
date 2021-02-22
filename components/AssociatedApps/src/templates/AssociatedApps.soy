@@ -1,0 +1,57 @@
+{namespace components.AssociatedApps}
+
+/**
+ * This will automatically work for Apple in iOS 6+. Android still does not
+ * have support. To get iOS 4 & 5 and Android support, you need to install
+ * the jquery.smartbanner bower component
+ * @param apple_app_id (required for Apple app) The Apple app's unique identifier
+ * @param crumbUrls
+ * @param https
+ * @param siteDomain
+ * @param? apple_affiliate_data (optional) Your iTunes affiliate string
+ * @param? android_app_id (required for Android app) The Android app's unique identifier
+ */
+{template .AppSearchMetadata}
+  {call .AppMetadata data="all"}
+    {param apple_app_argument}
+      http{if $https}s{/if}://{$siteDomain}/{$crumbUrls[length($crumbUrls)-1]}
+    {/param}
+  {/call}
+{/template}
+
+/**
+ * This will automatically work for Apple in iOS 6+. Android still does not
+ * have support. To get iOS 4 & 5 and Android support, you need to install
+ * the jquery.smartbanner bower component
+ * @param? apple_app_id (required for Apple app) The Apple app's unique identifier
+ * @param? apple_affiliate_data (optional) Your iTunes affiliate string
+ * @param? apple_app_argument (optional) A URL that provides context to your native app. If you include this, and the user has your app installed, she can jump from your website to the corresponding position in your iOS app
+ * @param? android_app_id (required for Android app) The Android app's unique identifier
+ */
+{template .AppMetadata}
+  {if isNonnull($apple_app_id)}
+    {call .AppleAppMetadata data="all" /}
+  {/if}
+  {if isNonnull($android_app_id)}
+    {call .AndroidAppMetadata data="all" /}
+  {/if}
+{/template}
+
+/**
+ * This will automatically work for Apple in iOS 6+. To get iOS 4 & 5 support,
+ * you need to install the jquery.smartbanner bower component
+ * @param apple_app_id (required for Apple app) The Apple app's unique identifier
+ * @param? apple_affiliate_data (optional) Your iTunes affiliate string
+ * @param? apple_app_argument (optional) A URL that provides context to your native app. If you include this, and the user has your app installed, she can jump from your website to the corresponding position in your iOS app
+ */
+{template .AppleAppMetadata}
+  <meta name="apple-itunes-app" content="app-id={$apple_app_id}{if isNonnull($apple_affiliate_data)}, affiliate-data={$apple_affiliate_data}{/if}{if isNonnull($apple_app_argument)}, app-argument={$apple_app_argument}{/if}">
+{/template}
+
+/**
+ * To get Android support, you need to install the jquery.smartbanner bower component
+ * @param android_app_id (required for Android app) The Android app's unique identifier
+ */
+{template .AndroidAppMetadata}
+  <meta name="google-play-app" content="app-id={$android_app_id}">
+{/template}

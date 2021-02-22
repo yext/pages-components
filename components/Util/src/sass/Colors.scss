@@ -1,0 +1,36 @@
+/*
+ * This file adds a color map and a color function for quick hierarchical access
+ * to colors, e.g. color: color(gray, one) or color(brand, red).  This provides
+ * a bit more safety and context than using a raw variable.
+*/
+$colors: () !default;
+
+/** example
+* $colors: (
+*   grey: (
+*     one: #c3c4c5,
+*   ),
+*   silver: (
+*     one: #dbdcdc,
+*   ),
+* )
+*/
+
+@function color($name, $variant: null)
+{
+  @if map-has-key($colors, $name)
+  {
+    $result: map-get($colors, $name);
+
+    @if type-of($result) == 'map'
+    {
+      @return map-get($result, $variant);
+    }
+
+    @return $result;
+  }
+
+  @error "Unknown color variable '#{$name}'";
+
+  @return null;
+}

@@ -1,0 +1,394 @@
+{namespace components.EnhancedGalleryList}
+
+/**
+ * Gallery list component
+ * @param productLists Must be in the form of productLists[x].sections[x].items[]
+ * @param listName Product List Name
+ * @param? numberOfImagesToDisplay Number of gallery images to display
+ * @param? sectionName Section Name
+ * @param? title
+ * @param? showName
+ * @param? showDescription
+ * @param? showPrice
+ * @param? showPriceCents
+ * @param? gallerySizeIndex
+ * @param? embedYouTube To use this, you MUST add the YouTube component
+ * @param? showVideoTitle
+ * @param? hideVideoControls
+ * @param? showYouTubeThumbnail
+ * @param? thumbnailIndex
+ * @param? linkItemName
+ * @param? notLinkItemImage True or false
+ * @param? showExternalLink
+ * @param? externalLinkText Actual text displayed
+ * @param? showOptions Optional text fields/pricing/etc
+ * @param? showOptionsCalories Optional text fields/pricing/etc
+ * @param? showOptionsCents Optional text fields/pricing/etc
+ * @param? showOptionsText Optional text fields/pricing/etc
+ * @param? hideSchema Optional Passthrough
+ * @param? locale
+ */
+{template .EnhancedGalleryList}
+  {if $title and isNonnull($productLists) and length($productLists) > 0}
+    <h3 class="c-enhanced-gallery-list-title">
+      {$title}
+    </h3>
+  {/if}
+  {if isNonnull($productLists) and length($productLists) > 0}
+    {foreach $list in $productLists}
+      {if ($list.title == $listName or $list.name == $listName) and length($list.sections) > 0}
+        {if strlen($sectionName ?: '') >0}
+          {foreach $section in $list.sections}
+            {if (not isNonnull($sectionName) and $section.name == '') or $section.name == $sectionName}
+              {call .EnhancedGalleryList_items data="all"}
+                {param items: $section.items /}
+                {param currency: $list.currency /}
+                {param numberOfImagesToDisplay: $numberOfImagesToDisplay ?: 10000 /}
+              {/call}
+            {/if}
+          {/foreach}
+        {else}
+          {call .EnhancedGalleryList_items data="all"}
+            {param items: listItems($list.sections) /}
+            {param currency: $list.currency /}
+            {param numberOfImagesToDisplay: $numberOfImagesToDisplay ?: 10000 /}
+          {/call}
+        {/if}
+      {/if}
+    {/foreach}
+  {/if}
+{/template}
+
+/**
+ * @param items
+ * @param numberOfImagesToDisplay
+ * @param currency Property on the list, passthrough
+ * @param? showName
+ * @param? showDescription
+ * @param? showPrice
+ * @param? showPriceCents
+ * @param? gallerySizeIndex
+ * @param? embedYouTube To use this, you MUST add the YouTube component
+ * @param? showVideoTitle
+ * @param? hideVideoControls
+ * @param? showYouTubeThumbnail
+ * @param? thumbnailIndex
+ * @param? linkItemName
+ * @param? notLinkItemImage True or false
+ * @param? showExternalLink
+ * @param? externalLinkText Actual text displayed
+ * @param? showOptions Optional text fields/pricing/etc
+ * @param? showOptionsCalories Optional text fields/pricing/etc
+ * @param? showOptionsCents Optional text fields/pricing/etc
+ * @param? showOptionsText Optional text fields/pricing/etc
+ * @param? hideSchema Optional Passthrough
+ * @param? locale
+ */
+{template .EnhancedGalleryList_items}
+  <div class="c-enhanced-gallery-list-item-list">
+    {foreach $item in $items}
+      {if index($item) < $numberOfImagesToDisplay}
+      <div class="c-enhanced-gallery-list-item-wrapper">
+        {call .EnhancedGalleryList_item data="all"}
+          {param item: $item /}
+        {/call}
+      </div>
+      {/if}
+    {/foreach}
+  </div>
+{/template}
+
+/**
+ * @param item
+ * @param currency Property on the list
+ * @param? showName
+ * @param? showDescription
+ * @param? showPrice
+ * @param? showPriceCents
+ * @param? gallerySizeIndex
+ * @param? embedYouTube To use this, you MUST add the YouTube component
+ * @param? showVideoTitle
+ * @param? hideVideoControls
+ * @param? showYouTubeThumbnail
+ * @param? thumbnailIndex
+ * @param? linkItemName
+ * @param? notLinkItemImage True or false
+ * @param? showExternalLink
+ * @param? externalLinkText Actual text displayed
+ * @param? showOptions Optional text fields/pricing/etc
+ * @param? showOptionsCalories Optional text fields/pricing/etc
+ * @param? showOptionsCents Optional text fields/pricing/etc
+ * @param? showOptionsText Optional text fields/pricing/etc
+ * @param? hideSchema
+ * @param? locale
+ */
+{template .EnhancedGalleryList_item}
+  {let $youtubeOnly: not $showName and not $showDescription and not $showPrice and not $showPriceCents and not $gallerySizeIndex /}
+  {let $itemScope}
+    {if not $hideSchema and not $youtubeOnly}
+      itemprop="makesOffer" itemscope itemtype="http://schema.org/Offer"
+      {if $item.price.cents}
+        {let $strPrice}{$item.price.cents}{/let}
+        itemref="price-{$item.name |slugify}-{$strPrice |slugify}"
+      {/if}
+    {/if}
+  {/let}
+  <article {$itemScope|noAutoescape} class="c-enhanced-gallery-list-item">
+    <div class="c-enhanced-gallery-list-item-offer" {if not $hideSchema and not $youtubeOnly} itemprop="itemOffered" itemscope itemtype="http://schema.org/Offer"{/if}>
+      {call .EnhancedGalleryList_imageOrVideo data="all" /}
+      {if $showName}
+        {call .EnhancedGalleryList_itemName data="all" /}
+      {/if}
+      {if $showDescription}
+        {call .EnhancedGalleryList_itemDescription data="all" /}
+      {/if}
+      {if $showPrice and $item.price.cents > 0}
+        {call .EnhancedGalleryList_itemPrice data="all" /} // needs currency
+      {/if}
+      <div class="c-enhanced-gallery-list-item-options-button-wrapper">
+        {if $showOptions}
+          {call .EnhancedGalleryList_itemOptions data="all" /}
+        {/if}
+        {if $showExternalLink and isNonnull($item.url) and strlen($item.url) > 0}
+          {call .EnhancedGalleryList_itemLink data="all" /}
+        {/if}
+      </div>
+    </div>
+  </article>
+{/template}
+
+
+/**
+ * @param item
+ * @param? embedYouTube To use this, you MUST add the YouTube component
+ * @param? showVideoTitle
+ * @param? hideVideoControls
+ * @param? showYouTubeThumbnail
+ * @param? thumbnailIndex
+ * @param? notLinkItemImage True or false
+ * @param? gallerySizeIndex
+ * @param? hideSchema Passthrough
+ */
+{template .EnhancedGalleryList_imageOrVideo}
+  {if $embedYouTube and strlen($item.videoUrl) > 0}
+    {call components.YoutubeEmbed.YoutubeEmbed data="all"}
+      {param video}
+        {replace($item.videoUrl, 'http://www.youtube.com/watch?v=', '')}
+      {/param}
+      {param hideSchema: true /}
+    {/call}
+  {elseif $showYouTubeThumbnail and strlen($item.videoUrl) > 0}
+    {call .EnhancedGalleryList_youtubeThumbnail data="all" /}
+  {else}
+    {call .EnhancedGalleryList_image data="all" /}
+  {/if}
+{/template}
+
+/**
+ * @param item
+ * @param? thumbnailIndex
+ */
+{template .EnhancedGalleryList_youtubeThumbnail}
+  <div class="c-enhanced-gallery-list-item-youtube-thumbnail-wrapper-outer">
+    <div class="c-enhanced-gallery-list-item-youtube-thumbnail-wrapper-inner">
+      <img class="c-enhanced-gallery-list-item-youtube-thumbnail-image"
+           data-youtubeurl="{$item.videoUrl}"
+           data-thumbnailindex="{$thumbnailIndex ?: 'mqdefault'}"
+           alt="{msg desc=""}YouTube video about {$item.name}{/msg}">
+      <div class="c-enhanced-gallery-list-item-youtube-thumbnail-play-table-wrapper">
+        <table class="c-enhanced-gallery-list-item-youtube-thumbnail-play-table">
+          <tr>
+            <td>
+              <a class="c-enhanced-gallery-list-item-youtube-thumbnail-play-button"
+                 href="{$item.videoUrl}"
+                 {call common.helpers.link_new_tab /}></a>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+{/template}
+
+/**
+ * @param item
+ * @param? notLinkItemImage
+ * @param? gallerySizeIndex
+ * @param? hideSchema
+ */
+{template .EnhancedGalleryList_image}
+  {if not $notLinkItemImage and isNonnull($item.url) and strlen($item.url) > 0}
+      <a href="{$item.url}"
+         class="c-enhanced-gallery-list-item-link"
+         {call common.helpers.link_new_tab /}>
+    {/if}
+    {if length($item.gallery)>0}
+      {let $index: $gallerySizeIndex ?: 0 /}
+      {let $imageSrc}
+        {if length($item.gallery[0].sizes) > $index}
+          {$item.gallery[0].sizes[$index].url}
+        {elseif length($item.gallery[0].sizes) >0}
+          {$item.gallery[0].sizes[0].url}
+        {/if}
+      {/let}
+      <div class="c-enhanced-gallery-list-item-image-wrapper">
+        <img class="c-enhanced-gallery-list-item-image"
+             src="{$imageSrc}"
+             alt="Image of {$item.name}"
+             {if not $hideSchema} itemprop="image"{/if}
+             >
+      </div>
+    {/if}
+    {if not $notLinkItemImage and isNonnull($item.url) and strlen($item.url) > 0}
+      </a>
+    {/if}
+{/template}
+
+/**
+ * @param item
+ * @param? linkItemName
+ * @param? hideSchema
+ * @param? hLevel
+ */
+{template .EnhancedGalleryList_itemName}
+  {if not $hideSchema}
+    <link itemprop="url" href="{$item.url}">
+  {/if}
+  {call components.Util.HLevel}
+    {param contents}
+      {if $linkItemName and isNonnull($item.url) and strlen($item.url) > 0}
+        <a href="{$item.url}"
+           class="c-enhanced-gallery-list-item-name-link"
+           {call common.helpers.link_new_tab /}>
+      {/if}
+        {if not $hideSchema}
+          <span itemprop="name">
+        {/if}
+        {$item.name}
+        {if not $hideSchema}
+          </span>
+        {/if}
+      {if $linkItemName and isNonnull($item.url) and strlen($item.url) > 0}
+        </a>
+      {/if}
+    {/param}
+    {param level: $hLevel ?: 3 /}
+    {param class: 'c-enhanced-gallery-list-item-name' /}
+  {/call}
+{/template}
+
+/**
+ * @param item
+ * @param? hideSchema
+ */
+{template .EnhancedGalleryList_itemDescription}
+  {let $itemprop}
+    {if not $hideSchema}
+      itemprop="description"
+    {/if}
+  {/let}
+  <div class="c-enhanced-gallery-list-item-description" {$itemprop |noAutoescape}>
+    {$item.description |changeNewlineToBr}
+  </div>
+{/template}
+
+/**
+ * @param item
+ * @param showPriceCents
+ * @param currency
+ * @param? hideSchema
+ * @param? locale
+ */
+{template .EnhancedGalleryList_itemPrice}
+  // As of 9/30/2015 ECLs only support EUR, USD, and GBP so this will work
+  // until they start supporting JPY (yen) but at that point ECLs will need
+  // to change their price logic.
+  {let $priceRange: $item.price.type == 'Range' /}
+  {let $strPrice}
+    {if $priceRange}
+      {$item.price.range.lowCents}-{$item.price.range.highCents}
+    {else}
+      {$item.price.cents}
+    {/if}
+  {/let}
+
+  <div class="c-enhanced-gallery-list-item-price"
+       {if not $hideSchema}
+        {sp}itemprop="offers"
+        {sp}itemscope
+        {sp}itemtype="http://schema.org/Offer"
+       {/if}>
+    <span id="price-{$item.name |slugify}-{$strPrice |slugify}"
+          {if not $hideSchema} itemprop="{if $priceRange}priceSpecification{else}price{/if}"{/if}> // it's not necessary to do the currency indicator separately now that we have lcurrencyf()
+      {if $item.price.type == 'Range'}
+        {if $showPriceCents}
+          <span class="c-enhanced-gallery-list-item-price-range-low">
+            {lcurrencyf($locale ?: 'en_US', $currency, $item.price.range.lowCents / 100.0)}
+          </span>
+          {sp}-{sp}
+          <span class="c-enhanced-gallery-list-item-price-range-low">
+            {lcurrencyf($locale ?: 'en_US', $currency, $item.price.range.highCents / 100.0)}
+          </span>
+        {else}
+          <span class="c-enhanced-gallery-list-item-price-range-low">
+            {lcurrencyf($locale ?: 'en_US', $currency, round($item.price.range.lowCents / 100)*1.0)}
+          </span>
+          {sp}-{sp}
+          <span class="c-enhanced-gallery-list-item-price-range-low">
+            {lcurrencyf($locale ?: 'en_US', $currency, round($item.price.range.highCents / 100)*1.0)}
+          </span>
+        {/if}
+      {else}
+        {if $showPriceCents}
+          {lcurrencyf($locale ?: 'en_US', $currency, $item.price.cents / 100.0)}
+        {else}
+          {lcurrencyf($locale ?: 'en_US', $currency, round($item.price.cents / 100)*1.0)}
+        {/if}
+      {/if}
+    </span>
+  </div>
+{/template}
+
+/**
+ * @param item
+ * @param? showOptionsCalories Optional text fields/pricing/etc
+ * @param? showOptionsCents Optional text fields/pricing/etc
+ * @param? showOptionsText Optional text fields/pricing/etc
+ */
+{template .EnhancedGalleryList_itemOptions}
+  {foreach $option in $item.options ?: []}
+    <div class="c-enhanced-gallery-list-item-options c-enhanced-gallery-list-item-options-{$option.text |slugify}">
+      {if $showOptionsCalories}
+        <div class="c-enhanced-gallery-list-item-options-calories">
+          {$option.calories}
+        </div>
+      {/if}
+      {if $showOptionsCents}
+        <div class="c-enhanced-gallery-list-item-options-cents">
+          ${floor($option.cents / 100)}.
+          {if $option.cents % 100 < 10}
+            0
+          {/if}
+            {$option.cents % 100}
+        </div>
+      {/if}
+      {if $showOptionsText}
+        <div class="c-enhanced-gallery-list-item-options-text">
+          {$option.text}
+        </div>
+      {/if}
+    </div>
+  {/foreach}
+{/template}
+
+/**
+ * @param item
+ * @param externalLinkText
+ */
+{template .EnhancedGalleryList_itemLink}
+  <a href="{$item.url}"
+     class="c-enhanced-gallery-list-item-name-link"
+     {call common.helpers.link_new_tab /}>
+    {$externalLinkText |noAutoescape}
+  </a>
+{/template}

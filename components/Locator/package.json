@@ -1,0 +1,35 @@
+{
+  "name": "@yext/components-locator",
+  "version": "2.0.2",
+  "description": "",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=12.16.x"
+  },
+  "main": "index.js",
+  "directories": {
+    "lib": "src"
+  },
+  "files": [
+    "src",
+    "index.js"
+  ],
+  "sideEffects": [],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "@yext/components-historian": "1.1.2",
+    "@yext/components-renderer": "1.1.7",
+    "@yext/components-search-form": "1.2.1",
+    "@yext/components-util": "1.1.1",
+    "raven-js": "3.27.2",
+    "urijs": "1.18.12"
+  },
+  "peerDependencies": {
+    "@yext/components-historian": "1.1.2",
+    "@yext/components-renderer": "1.1.7",
+    "@yext/components-search-form": "1.2.1",
+    "@yext/components-util": "1.1.1"
+  }
+}

@@ -1,0 +1,24 @@
+{namespace components.Hours}
+
+/**
+ * @param hours
+ * @param? twentyFourHourClock
+ * @param? modifier
+ */
+{template .Today}
+  <div class="HoursToday{if $modifier} {$modifier}{/if}"
+       data-hours='{$hours |json}'
+       data-twenty-four-hour-clock="{$twentyFourHourClock ? true : false |json}"
+  >
+  </div>
+{/template}
+
+/**
+ * @param content
+ * @param? modifier
+ */
+{template .Today_status}
+  <span class="HoursToday-status{if $modifier} {$modifier}{/if}">
+    {$content| noAutoescape}
+  </span>
+{/template}

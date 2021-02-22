@@ -1,0 +1,110 @@
+// These will not work if the properties are already defined on the svg itself
+$star-width: 3.125rem !default;
+$star-height: 3rem !default;
+$star-stroke-color: #ccac00 !default;
+$star-stroke-width: 3 !default;
+$star-fill-color: #fff !default;
+$star-fill-color-checked: #ffdf00 !default;
+
+.c-reviews-form
+{
+  &-wrapper
+  {
+    position: relative;
+
+    .spinner
+    {
+      position: absolute !important; // Override spinjs inline styling
+      top: 50%;
+      left: 50%;
+    }
+  }
+
+  &-label
+  {
+    display: block;
+  }
+
+  &-text-input
+  {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    border: 1px solid black;
+  }
+
+  &-privacy-check
+  {
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 0.3rem;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 2rem;
+  }
+
+  &-terms-policy
+  {
+    display: inline-block;
+    width: calc(100% - 2rem);
+  }
+}
+
+// Star Rating SCSS
+.c-reviews-form-star-rating
+{
+  position: relative;
+  display: block;
+  border: none;
+  margin: 0;
+  font-size: 0;
+  white-space: nowrap;
+  width: 18rem;
+  max-width: 100%;
+  height: 3rem;
+
+  &-stars-wrapper
+  {
+    display: flex;
+    flex-direction: row-reverse;
+  }
+
+  input
+  {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    appearance: none;
+
+    &:checked ~ .c-reviews-form-star > svg
+    {
+      fill: $star-fill-color-checked;
+    }
+  }
+
+  svg
+  {
+    width: $star-width;
+    height: $star-height;
+    fill: $star-fill-color;
+    stroke: $star-stroke-color;
+    stroke-width: $star-stroke-width;
+  }
+}
+
+.c-reviews-form-star
+{
+  display: inline-block;
+  height: 100%;
+  width: 20%;
+
+  &:hover,
+  &:hover ~ .c-reviews-form-star
+  {
+    > svg
+    {
+      fill: $star-fill-color-checked;
+    }
+  }
+}

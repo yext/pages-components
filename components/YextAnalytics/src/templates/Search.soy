@@ -1,0 +1,23 @@
+{namespace components.YextAnalytics}
+
+/**
+ * Yext Analytics Search component
+ * @param businessId
+ * @param isStaging
+ * @param searchId
+ * @param siteAttributes
+ * @param siteId
+ *
+ * Configuration params
+ * @param? clickTrackings
+ * @param? invokePageView Default: true. Put the code in to automatically trigger a page view
+ */
+{template .Search}
+  {call .Launch data="all" /}
+  {call .Helpers_enableConversionTracking data="all" /}
+  {call .Invoke data="all"}
+    {param data: [
+      'searchId': $searchId
+    ] /}
+  {/call}
+{/template}

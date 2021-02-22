@@ -1,0 +1,21 @@
+{namespace components.Util}
+
+/**
+ * @param contents
+ * @param level must be in [1,2,3,4,5,6]
+ * @param? class
+ */
+{template .HLevel}
+  {if $level != 1 and $level != 2 and $level != 3 and $level != 4 and $level != 5 and $level != 6}
+    {log}
+      Level must be 1,2,3,4,5, or 6
+    {/log}
+    {let $error_invalid_h_level: null /}
+    {$error_invalid_h_level[0]}
+  {/if}
+  {if strlen($contents ?: '') > 0}
+    <h{$level}{if $class} class="{$class}"{/if} aria-level="{$level}">
+      {$contents |noAutoescape}
+    </h{$level}>
+  {/if}
+{/template}

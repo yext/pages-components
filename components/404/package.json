@@ -1,0 +1,28 @@
+{
+  "name": "@yext/components-404",
+  "version": "2.0.0",
+  "description": "",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=12.16.x"
+  },
+  "scripts": {
+    "test-unit": "mocha 'tests/unit' --require @babel/register,esm,should --file tests/soyLoader.js --recursive"
+  },
+  "main": "index.js",
+  "directories": {
+    "lib": "src",
+    "test": "tests"
+  },
+  "files": [
+    "src",
+    "index.js"
+  ],
+  "sideEffects": [],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "urijs": "1.18.12"
+  }
+}

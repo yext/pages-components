@@ -1,0 +1,74 @@
+{namespace components.Layout}
+
+// Usage (soy):
+//
+// {call .components.Layout.Accordion}
+//   {param id: 'used for aria-attr only' /}
+//   {param className: 'Target this for CSS' /}
+//   {param label}
+//     // *** Put some HTML content here that will be in the Accordion label (not clickable) ***
+//     {call common.modules.Accordion_button}
+//       {param modifier: '"default" or "[modifier]" for custom styles' /}
+//       {param buttonText}
+//         // *** Put some HTML content here that will be in the clickable button ***
+//       {/param}
+//     {/call}
+//   {/param}
+//   {param content}
+//     // *** Put some HTML content here that will expand/collapse ***
+//   {/param}
+// {/call}
+//
+
+/**
+ * @param id          // Used for aria-controls & aria-labelledby
+ * @param label       // The part that doesn't expand or collapse (expects .Accordion_button in this)
+ * @param content     // The part that does
+ * @param? className
+ * @param? contentIsAbove
+ * @param? yaScopeName
+ */
+{template .Accordion}
+  <div class="Accordion js-accordion{if $className} {$className}{/if}"
+       {if $yaScopeName} data-ya-scope="{$yaScopeName}"{/if}>
+    {if not $contentIsAbove}
+      <div id="{$id}-label"
+           class="Accordion-label js-accordion-label"
+           aria-controls="{$id}-content">
+        {$label |noAutoescape}
+      </div>
+    {/if}
+    <div id="{$id}-content"
+         class="Accordion-content js-accordion-collapsible-content"
+         aria-labelledby="{$id}-label">
+      {$content |noAutoescape}
+    </div>
+    {if $contentIsAbove}
+      <div id="{$id}-label"
+           class="Accordion-label js-accordion-label"
+           aria-controls="{$id}-content">
+        {$label |noAutoescape}
+      </div>
+    {/if}
+  </div>
+{/template}
+
+/**
+ * @param? className
+ * @param? buttonText
+ * @param? modifier     // Pass this to add custom styles, otherwise uses the default
+ * @param? yaTrackName
+ */
+{template .Accordion_button}
+  <button class="Accordion-button js-accordion-btn
+                {if $className} {$className}{/if}
+                {if $modifier} Accordion-button--{$modifier}{else} Accordion-button--default{/if}"
+          {if $yaTrackName} data-ya-track="{$yaTrackName}"{/if}>
+    <span class="sr-only">
+      {call strings.accordion_toggle /}
+    </span>
+    {if $buttonText}
+      {$buttonText |noAutoescape}
+    {/if}
+  </button>
+{/template}

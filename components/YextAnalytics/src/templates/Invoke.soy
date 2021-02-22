@@ -1,0 +1,19 @@
+{namespace components.YextAnalytics}
+
+/**
+ * invoke
+ * @param data
+ * @param? invokePageView
+ * @param? clickTrackings
+ */
+{template .Invoke}
+  <script>
+    ya('set',{$data |json});
+    {if $invokePageView ?: true}
+      ya('pageview');
+    {/if}
+  </script>
+  {foreach $tracker in $clickTrackings ?: []}
+    {call .Click data="$tracker" /}
+  {/foreach}
+{/template}

@@ -1,0 +1,33 @@
+{namespace components.Brands}
+
+/**
+ * Brands component
+ * @param? columns Maximum number of columns
+ * @param? rows Maximum number of rows per column
+ * @param brands Passthrough
+ */
+{template .Brands}
+  {let $r: $rows ?: 10 /}
+  {let $c: $columns ?: 2 /}
+
+  <div class="c-brands">
+    <div class="c-brands-title">
+      {call strings.brands_title /}
+    </div>
+    <table class="c-brands-table">
+      <tr class="c-brands-table-row">
+        {for $col in range(0, $c)}
+          <td class="c-brands-table-cell">
+            {for $row in range($col * $r, ($col + 1) * $r)}
+              {if $row < length($brands)}
+                <div class="c-brands-entry">
+                  {$brands[$row]}
+                </div>
+              {/if}
+            {/for}
+          </td>
+        {/for}
+      </tr>
+    </table>
+  </div>
+{/template}

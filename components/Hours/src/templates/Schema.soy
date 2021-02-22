@@ -1,0 +1,45 @@
+{namespace components.Hours}
+
+/**
+ * @param day
+ * @param? through
+ * @param? collapseDays
+ * @param intervals
+ */
+{template .Schema}
+  {let $weekschema: [
+    'MONDAY':    'Mo',
+    'TUESDAY':   'Tu',
+    'WEDNESDAY': 'We',
+    'THURSDAY':  'Th',
+    'FRIDAY':    'Fr',
+    'SATURDAY':  'Sa',
+    'SUNDAY':    'Su'
+  ] /}
+  {if $intervals}
+    {if length($intervals) > 0}
+      {let $interval: $intervals[0]/}
+      {if $interval and ($interval.start or $interval.end)}
+        itemprop="openingHours" content="
+          {$weekschema[$day]}{if $through and $collapseDays}-{$weekschema[$through]}{/if}{sp}
+          {foreach $interval in $intervals}
+            {timef('15:04', $interval.start)}-{timef('15:04', $interval.end)}
+            {if not isLast($interval)}
+              {sp}
+            {/if}
+          {/foreach}
+        "
+      {elseif isNonnull($interval.start) and isNonnull($interval.end)} // start & end are 0 so open 24 hours
+        {let $allDayMessage}
+          {call strings.hours_allDay /}
+        {/let}
+        itemprop="openingHours" content="{$weekschema[$day]}{if $through}-{$weekschema[$through]}{/if}{sp}{$allDayMessage}"
+      {/if}
+    {else}
+      {let $closedMessage}
+        {call strings.hours_statusClosed /}
+      {/let}
+      itemprop="openingHours" content="{$weekschema[$day]}{if $through}-{$weekschema[$through]}{/if}{sp}{$closedMessage}"
+    {/if}
+  {/if}
+{/template}

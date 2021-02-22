@@ -1,0 +1,17 @@
+{namespace components.LocationTitle}
+
+/**
+ * Location Title component
+ * @param name
+ * @param? hideSchema
+ */
+{template .LocationTitle}
+  <div class="c-location-title-wrapper">
+    <h1 class="c-location-title"
+        aria-level="1"
+        {if not $hideSchema} id="location-name" itemprop="name"{/if}
+      >
+      {$name |noAutoescape}
+    </h1>
+  </div>
+{/template}

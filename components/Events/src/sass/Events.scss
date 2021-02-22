@@ -1,0 +1,46 @@
+//
+// Events Component SCSS Stylesheet
+//
+
+.EventList
+{
+  &-event
+  {
+    margin-bottom:$grid-gutter-width / 2;
+  }
+}
+
+.Event
+{
+  &-date
+  {
+    margin-bottom:0px;
+  }
+  &-title
+  {
+    margin-bottom:0px;
+  }
+  &-description
+  {
+    margin-top:10px;
+
+    &.show-full-description
+    {
+      .c-events-section-event-details-description
+      {
+        &-truncated
+        {
+          display:none;
+        }
+        &-full
+        {
+          display:block;
+        }
+      }
+    }
+    &-full
+    {
+      display:none;
+    }
+  }
+}

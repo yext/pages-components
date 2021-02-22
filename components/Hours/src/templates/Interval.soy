@@ -1,0 +1,74 @@
+{namespace components.Hours}
+
+/**
+ * @param start
+ * @param end
+ * @param allDayMessage
+ * @param? twentyFourHourClock
+ * @param parentClass
+ * @param? openUntilMidnightMessage
+ * @param? openUntilMessage
+ * @param? opensAtMessage
+ * @param? closedAtMessage
+ * @param? disableOpenUntil
+ * @param? timeFormatString
+ */
+{template .Interval}
+  {let $openUntilMidnightText}
+    {if $openUntilMidnightMessage}
+      {$openUntilMidnightMessage |noAutoescape}
+    {else}
+      {call strings.hours_openUntilMidnight /}
+    {/if}
+  {/let}
+  {let $openUntilText}
+    {if $openUntilMessage}
+      {$openUntilMessage |noAutoescape}
+    {else}
+      {call strings.hours_openUntil /}
+    {/if}
+  {/let}
+  {let $closedAtText}
+    {if $closedAtMessage}
+      {$closedAtMessage |noAutoescape}
+    {else}
+      {call strings.hours_closedAt /}
+    {/if}
+  {/let}
+  {let $timeFormat: $timeFormatString ?: ($twentyFourHourClock ? '15:04' : '3:04 PM') /}
+
+  <span class="{$parentClass}-intervals-instance{if not $disableOpenUntil} js-hours-interval-instance{/if}"
+        {if not $disableOpenUntil}{sp}
+          data-twenty-four-hour-clock="{$twentyFourHourClock ?: false}"
+          data-open-interval-start="{$start}"
+          data-open-interval-end="{$end}"
+          data-midnight-text="{$openUntilMidnightText}"
+          data-open-until-text="{$openUntilText}"
+          data-close-at-text="{$closedAtText}"
+          {if $opensAtMessage} data-opens-at-text="{$opensAtMessage}"{/if}
+        {/if}>
+    {if $start == 0 and $end == 2359}
+      {if isNonnull($allDayMessage)}
+        {$allDayMessage |noAutoescape}
+      {else}
+        {call strings.hours_open24Hours /}
+      {/if}
+    {else}
+      {if $opensAtMessage}
+        <span class="{$parentClass}-intervals-instance-open">
+          {$opensAtMessage |noAutoescape} {timef($timeFormat, floor($start))}
+        </span>
+      {else}
+        <span class="{$parentClass}-intervals-instance-open">
+          {timef($timeFormat, floor($start))}
+        </span>
+        <span class="{$parentClass}-intervals-instance-separator" aria-label="To">
+          {sp}-{sp}
+        </span>
+        <span class="{$parentClass}-intervals-instance-close">
+          {timef($timeFormat, floor($end))}
+        </span>
+      {/if}
+    {/if}
+  </span>
+{/template}

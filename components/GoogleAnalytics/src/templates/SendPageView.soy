@@ -1,0 +1,13 @@
+{namespace components.GoogleAnalytics}
+
+/**
+ * see here: https://developers.google.com/analytics/devguides/collection/analyticsjs/sending-hits
+ * @param name
+ */
+{template .SendPageView}
+  {call .SendEvent data="all"}
+    {param properties: [
+      'hitType': 'pageview'
+    ] /}
+  {/call}
+{/template}

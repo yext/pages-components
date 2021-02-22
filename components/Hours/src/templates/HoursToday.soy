@@ -1,0 +1,135 @@
+{namespace components.Hours}
+
+/**
+ * Location hours today component
+ * @param hours
+ * @param profile
+ * @param? open24HoursMessage
+ * @param? hourIntervalSeparator
+ * @param? hideSchema
+ * @param? openTodayMessage
+ * @param? closedTodayMessage
+ * @param? collapseDays
+ * @param? allWeekMessage
+ * @param? disableOpenUntil passthrough to intervals
+ * @param? openUntilMidnightMessage passthrough to intervals
+ * @param? openUntilMessage passthrough to intervals
+ * @param? opensAtMessage passthrough to intervals
+ * @param? closedAtMessage passthrough to intervals
+ * @param? twentyFourHourClock passthrough to intervals
+ * @param? timeFormatString passthrough to intervals
+ * @param? useDayForOpenToday
+ */
+{template .HoursToday}
+
+  {if $hours}
+    {let $dayIndexes: [
+      'SUNDAY': 0,
+      'MONDAY': 1,
+      'TUESDAY': 2,
+      'WEDNESDAY': 3,
+      'THURSDAY': 4,
+      'FRIDAY': 5,
+      'SATURDAY': 6
+      ]
+    /}
+    <span class="c-hours-today js-hours-today"
+      {call .Hours_data data="all" }{param utcOffsets: $profile.meta.utcOffsets /}{/call}>
+
+      {let $days: $collapseDays ? collapseDays($hours) : $hours /}
+
+      {foreach $d in $days }
+        {let $dayHours: $d.dailyHolidayHours?.isRegularHours ? $d.intervals : $d.dailyHolidayHours?.intervals ?: $d.intervals /}
+        {let $disable: length($dayHours) > 1 ? true : $disableOpenUntil /}
+        <span class="c-hours-today-details-row js-day-of-week-row{if $d.dailyHolidayHours} is-holiday{/if}"
+             data-day-of-week-start-index="{$dayIndexes[$d.day]}"
+             data-day-of-week-end-index="{$dayIndexes[$d.day]}"
+          {if not $hideSchema ?: false}
+            {sp}
+            {call .Schema}
+              {param day: $d.day /}
+              {param intervals: $dayHours /}
+              {param through: $d.through /}
+              {param collapseDays: $collapseDays /}
+            {/call}
+          {/if}
+          >
+          {let $otMessage}
+            {if $useDayForOpenToday}
+              {$d.day | casing:'lower'}
+            {elseif $disable}
+              {if $openTodayMessage}
+                {$openTodayMessage |noAutoescape}
+              {else}
+                {call strings.hours_openToday /}
+                :
+                {sp}{sp}
+              {/if}
+            {/if}
+          {/let}
+          {let $ctMessage}
+            {if $closedTodayMessage}
+              {$closedTodayMessage |noAutoescape}
+            {else}
+              {call strings.hours_closedToday /}
+              {sp}{sp}
+            {/if}
+          {/let}
+          <span class="c-hours-today-day-status">
+            {if length($dayHours) == 0}
+              {$ctMessage |noAutoescape}
+            {else}
+              {$otMessage |noAutoescape}
+            {/if}
+          </span>
+          {sp}
+          {call .HoursToday_intervals data="all"}
+            {param dayHours: $dayHours /}
+            {param disableOpenUntil: $disable /}
+          {/call}
+          {let $defaultAllWeekMessage}
+            {call strings.hours_allWeek /}
+          {/let}
+          {if length($days) == 1
+            and $days[0].day == 'MONDAY'
+            and $days[0].through == 'SUNDAY'}
+            , {$allWeekMessage ?: $defaultAllWeekMessage}
+          {/if}
+        </span>
+      {/foreach}
+    </span>
+  {/if}
+{/template}
+
+/**
+ * @param open24HoursMessage
+ * @param? hourIntervalSeparator
+ * @param dayHours
+ * @param? disableOpenUntil passthrough to intervals
+ * @param? openUntilMidnightMessage passthrough to intervals
+ * @param? openUntilMessage passthrough to intervals
+ * @param? opensAtMessage passthrough to intervals
+ * @param? closedAtMessage passthrough to intervals
+ * @param? twentyFourHourClock passthrough to intervals
+ * @param? timeFormatString passthrough to intervals
+ */
+{template .HoursToday_intervals}
+  <span class="c-hours-today-day-hours">
+    {foreach $interval in $dayHours}
+      {if index($interval) != 0}
+        <span class="c-hours-today-day-hours-interval-separator">{$hourIntervalSeparator ?: ',&nbsp;' |noAutoescape}</span>
+      {/if}
+      {call .Interval data="$interval all"}
+        {param allDayMessage: $open24HoursMessage /}
+        {param parentClass: 'c-hours-today-day-hours' /}
+        {param openUntilMidnightMessage: $openUntilMidnightMessage /}
+        {param openUntilMessage: $openUntilMessage /}
+        {param opensAtMessage: $opensAtMessage /}
+        {param closedAtMessage: $closedAtMessage /}
+        {param disableOpenUntil: $disableOpenUntil /}
+        {param twentyFourHourClock: $twentyFourHourClock /}
+        {param timeFormatString: $timeFormatString /}
+      {/call}
+    {/foreach}
+  </span>
+{/template}

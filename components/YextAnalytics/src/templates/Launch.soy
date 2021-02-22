@@ -1,0 +1,18 @@
+{namespace components.YextAnalytics}
+
+/**
+ * @param businessId
+ * @param isStaging
+ * @param siteId
+ */
+{template .Launch}
+  <script>
+    (function(w,d,y){lb}
+      w['YextAnalyticsObject']=y;
+      w[y]=w[y]||function(){lb}
+        (w[y].q=w[y].q||[]).push(arguments)
+      {rb};
+      w[y]('create',{$businessId |json},{$siteId |json},{$isStaging ?: false |json});
+    {rb})(window, document, 'ya');
+  </script>
+{/template}

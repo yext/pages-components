@@ -1,0 +1,75 @@
+{namespace components.Instagram}
+
+/**
+ * Instagram component
+ * Site Attributes for Handle, token, and userID,
+ * @param siteAttributes
+ * @param endpoint Instagram API endpoint base
+ * @param? showFollowUsMessage
+ * @param? followUsMessage
+ * @param? linkFollowUs
+ * @param? limit
+ * @param? resolution
+ * @param? divId needed when you want multiple instances of the component on a page
+ */
+{template .Instagram}
+  {call .Instagram_root data="all"}
+    {param instagramHandle: $siteAttributes.instagram.handle /}
+    {param accessToken: $siteAttributes.instagram.token /}
+    {param userId: $siteAttributes.instagram.user_id /}
+  {/call}
+{/template}
+
+/**
+ * Instagram component
+ * old individual params left in place for compatibility reasons
+ * @param instagramHandle
+ * @param accessToken how to generate: http://jelled.com/instagram/access-token
+ * @param userId instagram user id that you get from entering the Instagram handle at this site: http://www.otzberg.net/iguserid/
+ * @param endpoint Instagram API endpoint base
+ * @param? showFollowUsMessage
+ * @param? followUsMessage
+ * @param? linkFollowUs
+ * @param? limit
+ * @param? resolution
+ * @param? divId needed when you want multiple instances of the component on a page
+ */
+{template .Instagram_root}
+  {let $ih: strContains($instagramHandle, '@') ? $instagramHandle : '@' + $instagramHandle /}
+  {let $nakedHandle: substring($ih, 1) /}
+  {let $followMessage: $followUsMessage ?: 'Follow us on Instagram:' /}
+  <div class="c-instagram">
+    {if $showFollowUsMessage}
+      <div class="c-instagram-title">
+        {if $linkFollowUs}
+          {call .Instagram_followUsLink}
+            {param instagramHandle: $nakedHandle /}
+            {param linkText}
+              {$followMessage}{sp}{$ih}
+            {/param}
+          {/call}
+        {else}
+          <span class="c-instagram-follow-us-message">{$followMessage}{sp}</span>
+          {call .Instagram_followUsLink}
+            {param instagramHandle: $nakedHandle /}
+            {param linkText: $ih /}
+          {/call}
+        {/if}
+      </div>
+    {/if}
+    {call .Instafeed_root data="all" /}
+  </div>
+{/template}
+
+/**
+ * @param instagramHandle
+ * @param linkText
+ */
+
+{template .Instagram_followUsLink}
+  <a href="http://www.instagram.com/{$instagramHandle}"
+     class="c-instagram-follow-us-link"
+     {call common.helpers.link_new_tab /}>
+    {$linkText}
+  </a>
+{/template}

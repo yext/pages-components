@@ -1,0 +1,15 @@
+{namespace components.SpinnerModal}
+
+/**
+ * @param baseUrl
+ * @param? image
+ */
+{template .SpinnerModal}
+  {let $altText}
+    {call strings.spinnerAltText /}
+  {/let}
+  <div class="SpinnerModal" aria-hidden="true">
+    {let $spinnerImage: $image ?: $baseUrl + 'assets/modules/ajax-loader.gif' /}
+    <img class="SpinnerModal-image" src="{$spinnerImage}" alt="{$altText}">
+  </div>
+{/template}

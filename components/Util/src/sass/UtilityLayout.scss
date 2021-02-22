@@ -1,0 +1,123 @@
+@import "./Spacing.scss";
+@import "./UtilityMixins.scss";
+
+$generate-classes: false !default;
+$col-gap: spacing(base) !default;
+$splitting-points: (sm, md, lg) !default;
+
+
+@if $generate-classes
+{
+  .l-row
+  {
+    @include l-row;
+
+    &-separator
+    {
+      border-bottom:solid 1px #222;
+    }
+
+    &-vertical-margin
+    {
+      &-top
+      {
+        margin-top: $vertical-margin-top;
+
+        &-sm
+        {
+          margin-top: $vertical-margin-top / 2;
+        }
+      }
+
+      &-bottom
+      {
+        margin-bottom: $vertical-margin-top;
+
+        &-sm
+        {
+          margin-bottom: $vertical-margin-top / 2;
+        }
+      }
+    }
+  }
+
+  @for $colCount from 1 through $grid-columns
+  {
+    @each $start, $end, $direction in (lg, null, "up"),
+                                      (md, null, "up"),
+                                      (sm, null, "up"),
+                                      (null, md, "down"),
+                                      (null, sm, "down"),
+                                      (null, xs, "down")
+    {
+      $abbreviation: if($start, $start, $end);
+
+      .l-col-#{$abbreviation}-#{$colCount}-#{$direction}
+      {
+        @include bp($start, $end)
+        {
+          @include l-col($colCount, $grid-columns)
+        }
+      }
+    }
+  }
+
+  @for $colCount from 1 through $grid-columns
+  {
+    @each $start, $end in (lg, null),
+                          (md, md),
+                          (sm, sm),
+                          (null, xs)
+    {
+      $abbreviation: if($start, $start, $end);
+
+      .l-col-#{$abbreviation}-#{$colCount}
+      {
+        @include bp($start, $end)
+        {
+          @include l-col($colCount, $grid-columns)
+        }
+      }
+    }
+  }
+
+  @each $bp in $splitting-points
+  {
+    @include l-Split($bp, $col-gap, '.l-Split');
+  }
+
+  .l-centeredColumn
+  {
+    @include l-centeredColumn;
+  }
+}
+
+.l-container
+{
+  @include l-container;
+}
+
+.l-visible-only-xs
+{
+  @include visible-only-xs;
+}
+
+.l-hidden-xs
+{
+  @include hidden-xs;
+}
+
+.l-hidden-sm
+{
+  @include hidden-sm;
+}
+
+.l-hidden-md
+{
+  @include hidden-md;
+}
+
+.l-hidden-lg
+{
+  @include hidden-lg;
+}

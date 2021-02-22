@@ -1,0 +1,15 @@
+{namespace components.SpecialOffer}
+
+/**
+ * @param specialOffer
+ * @param? hideSchema
+ */
+{template .SpecialOffer}
+  <div class="c-special-offer">
+    {if $specialOffer and $specialOffer.url}
+      <a href="{$specialOffer.url}" class="c-special-offer-link"{if not $hideSchema} itemprop="makesOffer"{/if} data-ya-track="calltoactionclick">{$specialOffer.description}</a>
+    {elseif $specialOffer}
+      <span{if not $hideSchema} itemprop="makesOffer"{/if}>{$specialOffer.description}</span>
+    {/if}
+  </div>
+{/template}

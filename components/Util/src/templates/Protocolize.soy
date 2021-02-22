@@ -1,0 +1,13 @@
+{namespace components.Util}
+
+/**
+ * @param url will add protocol if the link is relative
+ * @param isHttps
+*/
+{template .Protocolize}
+  {if not strContains($url, 'http:') and not strContains($url, 'https:')}
+    http{if $isHttps}s{/if}:{$url}
+  {else}
+    {$url}
+  {/if}
+{/template}

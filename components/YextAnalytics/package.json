@@ -1,0 +1,32 @@
+{
+  "name": "@yext/components-yext-analytics",
+  "version": "2.1.1",
+  "description": "",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=12.16.x"
+  },
+  "scripts": {
+    "test-unit": "mocha 'tests/unit' --require @babel/register,esm,should --file tests/soyLoader.js --recursive"
+  },
+  "main": "index.js",
+  "directories": {
+    "lib": "src",
+    "test": "tests"
+  },
+  "files": [
+    "src",
+    "index.js"
+  ],
+  "sideEffects": [],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "@yext/components-util": "1.1.1",
+    "slugify": "1.4.0"
+  },
+  "peerDependencies": {
+    "@yext/components-util": "1.1.1"
+  }
+}

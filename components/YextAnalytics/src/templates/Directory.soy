@@ -1,0 +1,55 @@
+{namespace components.YextAnalytics}
+
+/**
+ * Yext Analytics Directory component
+ * @param businessId
+ * @param directoryId
+ * @param isStaging
+ * @param siteAttributes
+ * @param siteId
+ *
+ * Configuration params
+ * @param path The path to the current directory page (use yext_analytics.directory_default template unless you want to override the path variable)
+ * @param? clickTrackings
+ * @param? invokePageView Default: true. Put the code in to automatically trigger a page view
+ */
+{template .Directory}
+  {call .Launch data="all" /}
+  {call .Helpers_enableConversionTracking data="all" /}
+  {call .Invoke data="all"}
+    {param data: [
+      'directoryId': $directoryId,
+      'directoryPath': $path
+    ] /}
+  {/call}
+{/template}
+
+/**
+ * Yext Analytics Default Directory component
+ * @param businessId
+ * @param crumbNames
+ * @param directoryId
+ * @param isStaging
+ * @param siteAttributes
+ * @param siteId
+ * @param? clickTrackings
+ * @param? invokePageView Default: true. Put the code in to automatically trigger a page view
+ */
+{template .Directory_default}
+  {call .Directory data="all"}
+    {param path}{call .Directory_path data="all" /}{/param}
+  {/call}
+{/template}
+
+/**
+ * Yext Analytics Directory Path
+ * @param crumbNames
+ */
+{template .Directory_path}
+  {foreach $crumbName in $crumbNames}
+    {$crumbName}
+    {if not isFirst($crumbName) and not isLast($crumbName)}
+      /
+    {/if}
+  {/foreach}
+{/template}

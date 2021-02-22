@@ -1,0 +1,57 @@
+{namespace components.YextAnalytics}
+
+/**
+ * Yext Analytics Click Binder
+ * @param selector The selector on which to watch for events. Use double quotes or escape single quotes.
+ * @param analyticsEventName The name of the event to trigger in Yext Analytics
+ */
+{template .Click}
+  {let $data: [
+    'selector': $selector,
+    'name': $analyticsEventName
+  ] /}
+  <script>
+    ya('click',{$data |json});
+  </script>
+{/template}
+
+ /**
+  * Helper template to ensure that analytics get added with this designated event name by default
+  */
+{template .Click_callToAction}
+  {call .Click}
+    {param selector: '[data-ya-track="cta_main"]' /}
+    {param analyticsEventName: 'cta_main' /}
+  {/call}
+{/template}
+
+
+/**
+ * Helper template to ensure that analytics get added with this designated event name by default
+ */
+{template .Click_phoneCall}
+  {call .Click}
+    {param selector: '[data-ya-track="phone"]' /}
+    {param analyticsEventName: 'phone' /}
+  {/call}
+{/template}
+
+/**
+ * Helper template to ensure that analytics get added with this designated event name by default
+ */
+{template .Click_drivingDirection}
+  {call .Click}
+    {param selector: '[data-ya-track="directions"]' /}
+    {param analyticsEventName: 'directions' /}
+  {/call}
+{/template}
+
+/**
+ * Helper template to ensure that analytics get added with this designated event name by default
+ */
+{template .Click_website}
+  {call .Click}
+    {param selector: '[data-ya-track="website"]' /}
+    {param analyticsEventName: 'website' /}
+  {/call}
+{/template}
